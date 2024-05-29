@@ -8,19 +8,17 @@ const protect = (req, res, next) => {
     try {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, 'your_jwt_secret');
-      User.findById(decoded.id, (err, user) => {
-        if (err || !user) {
+      User.findByEmail(decoded.edu_mail, (err, users) => {
+        if (err || users.length === 0) {
           return res.status(401).json({ message: 'Not authorized' });
         }
-        req.user = user;
+        req.user = users[0];
         next();
       });
     } catch (error) {
       res.status(401).json({ message: 'Not authorized, token failed' });
     }
-  }
-
-  if (!token) {
+  } else {
     res.status(401).json({ message: 'Not authorized, no token' });
   }
 };

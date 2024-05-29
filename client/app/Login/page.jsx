@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 
 function page() {
     const [email,setEmail] = React.useState('');
-    const [password,setPassword] = React.useState('');
+    const [password,setPassword] = React.useState('');k
     console.log(email);
 
     const submit = async () => {
