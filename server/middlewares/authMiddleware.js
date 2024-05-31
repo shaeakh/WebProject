@@ -1,6 +1,11 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const isValidEmail = (email) => {
+  const regex = /^[a-zA-Z0-9._%+-]+@student\.sust\.edu$/;
+  return regex.test(email);
+};
+
 const protect = (req, res, next) => {
   let token;
 
@@ -9,7 +14,7 @@ const protect = (req, res, next) => {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, 'your_jwt_secret');
       User.findByEmail(decoded.edu_mail, (err, users) => {
-        if (err || users.length === 0) {
+        if (err || users.length === 0 || !isValidEmail(decoded.edu_mail)) {
           return res.status(401).json({ message: 'Not authorized' });
         }
         req.user = users[0];
