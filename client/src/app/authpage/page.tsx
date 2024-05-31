@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 import Login from "./Login"
 import Register from "./Register"
 export default function SignupFormDemo() {

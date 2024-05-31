@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import SubmitBtn from "../components/SubmitBtn";
 import {
   DropdownMenu,
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 export default function SignupFormDemo(props: any) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
