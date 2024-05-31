@@ -3,9 +3,19 @@ const generateToken = require('../utils/generateToken');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
 
+const isValidEmail = (email) => {
+  const regex = /^[a-zA-Z0-9._%+-]+@student\.sust\.edu$/;
+  return regex.test(email);
+};
 
 exports.registerUser = (req, res) => {
   const { name, edu_mail, phone, regNo, department, password } = req.body;
+
+    // Validate email
+    if (!isValidEmail(edu_mail)) {
+      return res.status(400).json({ message: 'Invalid email domain. Only @student.sust.edu emails are allowed.' });
+    }
+
   const userPic = req.file ? fs.readFileSync(req.file.path) : null;
 
   const newUser = {
@@ -35,6 +45,11 @@ exports.registerUser = (req, res) => {
 
 exports.authUser = (req, res) => {
   const { email, password } = req.body;
+
+    // Validate email
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ message: 'Invalid email domain. Only @student.sust.edu emails are allowed.' });
+    }
 
   User.findByEmail(email, (err, users) => {
     if (err) throw err;
