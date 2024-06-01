@@ -32,7 +32,7 @@ export const BentoGridItem = ({
   date?: string | React.ReactNode;
   header?: React.ReactNode;
   icon?: React.ReactNode;
-  backgroundImage?:string;
+  backgroundImage?: string;
 }) => {
   return (
     <div
@@ -47,10 +47,7 @@ export const BentoGridItem = ({
         filter: 'brightness(75%)',
       }}
     >
-      {header}
       <div className="group-hover/bento:translate-x-2 transition duration-200">
-                
-        
         <div className=" font-mono font-bold text-2xl brightness-100 text-white mb-2 mt-2">
           {title}
         </div>

@@ -17,10 +17,31 @@ function page() {
         Depertment: "Software Engineering",
         Phone_number: "01704567731"
     }
+    const participated_tournaments = [
+        {
+            title: "SWE Sports Week 2022",
+            date: "05/05/2022",
+            backgroundImage: "https://wearecardinals.com/wp-content/uploads/2020/04/u1Re9qgMfM8d6kumlW85PS6s55jQh5fbdmppgQsP.jpeg",
+            link: "#"
+        },
+        {
+            title: "SWE Sports Week 2023",
+            date: "05/05/2023",
+            backgroundImage: "https://wearecardinals.com/wp-content/uploads/2020/04/u1Re9qgMfM8d6kumlW85PS6s55jQh5fbdmppgQsP.jpeg",
+            link: "#"
+        },
+        {
+            title: "SWE Sports Week 2023",
+            date: "05/05/2022",
+            backgroundImage: "https://wearecardinals.com/wp-content/uploads/2020/04/u1Re9qgMfM8d6kumlW85PS6s55jQh5fbdmppgQsP.jpeg",
+            link: "#"
+        }
+
+    ]
 
     return (
         <div className='w-screen flex'>
-            <div className='w-1/6 flex-col  h-screen border-2 border-black'>
+            <div className='w-1/6 flex  flex-col  h-screen justify-center bg-gray-400 bg-opacity-50'> 
                 <div className='flex justify-center '>
                     <div className='w-56 h-56'>
                         <Aavatar />
@@ -35,14 +56,45 @@ function page() {
                 </div>
                 <div className=' flex justify-center'>
                     <div className='w-7/12'>
-                        <SubmitBtn text={"black"} bg={"white"} borderclr={"black"} hover_bg={"black"} hover_text={"white"} hover_border={"white"}
-                            value={"Update Profile"} />
+                        <button className="px-8 py-2 rounded-md bg-white text-black font-bold transition duration-200 hover:bg-black hover:text-white border-2 border-black  ">
+                            Update Profile
+                        </button>
                     </div>
                 </div>
             </div>
-            <div className=''>
-                <TournamentCard/>
+            <div className='w-5/6 p-4' >
+                <div className='flex justify-end w-full'>
+                    <div className='px-2' >
+                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
+                            Organise a tournament
+                        </button>
+
+                    </div>
+                    <div className='px-2'>
+                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
+                            Join a tournament
+                        </button>
+                    </div>
+
+
+                </div>
+                <div className='flex justify-start w-full p-2 '>
+                    <h1 className='text-4xl font-bold'>Participated Tournaments</h1>
+                </div>
+                <div className='flex flex-wrap w-full  '>
+                    {participated_tournaments.map((tournament, index) => (
+                        <div key={index} className='w-full sm:w-1/2 md:w-1/5 p-2'>
+                            <TournamentCard
+                                title={tournament.title}
+                                date={tournament.date}
+                                backgroundImage={tournament.backgroundImage}
+                                link={tournament.link}
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
+
         </div>
     )
 }

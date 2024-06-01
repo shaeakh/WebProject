@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
-import { Button } from "@/components/ui/button";
+
+
 import SubmitBtn from "../components/SubmitBtn";
 import {
   DropdownMenu,
@@ -14,21 +15,37 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { Value } from "@radix-ui/react-select";
+import UploadIImg from "../components/UploadIImg";
 
 export default function SignupFormDemo(props: any) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Form submitted");
   };
-  const [depertment, setDepertment] = React.useState("Depertment");
+
+
+
+  const [name, set_name] = React.useState("");
+  const [edu_mail, set_edu_mail] = React.useState("");
+  const [phone, set_phone] = React.useState("");
+  const [regNo, set_regNo] = React.useState("");
+  const [department, set_department] = React.useState("Department");
+  const [userPic, set_userPic] = React.useState("");
+  const [password, set_password] = React.useState("");
+  const [confirm_password, set_confirm_password] = React.useState("");
+
+  const handle_img = (img: any) => {
+    set_userPic(img);
+  }
 
   const handleRegister = () => {
     props.handleRegister(true)
-}
+  }
 
   return (
 
-    <div className="flex h-screen w-screen justify-center items-center">
+    <div className="flex h-full w-screen justify-center items-center">
       <div className="max-w-md w-screen mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
         <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
           Welcome to Online Player Auction
@@ -41,40 +58,50 @@ export default function SignupFormDemo(props: any) {
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
               <Label htmlFor="firstname">Name</Label>
-              <Input id="firstname" placeholder="John Doe" type="text" />
+              <Input value={name} onChange={(e) => set_name(e.target.value)}
+                id="firstname" placeholder="John Doe" type="text" />
             </LabelInputContainer>
           </div>
+
           <LabelInputContainer className="mb-4">
             <Label htmlFor="phone">Phone Number</Label>
-            <Input id="phone" placeholder="Enter phone number" type="tel" />
+            <Input value={phone} onChange={(e) => set_phone(e.target.value)} id="phone" placeholder="Enter phone number" type="tel" />
           </LabelInputContainer>
+
           <LabelInputContainer className="mb-4">
             <Label htmlFor="email">Educational Email Address</Label>
-            <Input id="email" placeholder="xyz12@student.sust.edu" type="email" />
+            <Input value={edu_mail} onChange={(e) => set_edu_mail(e.target.value)} id="email" placeholder="xyz12@student.sust.edu" type="email" />
           </LabelInputContainer>
+
           <LabelInputContainer className="mb-4">
             <Label htmlFor="studentRegistrationNo">Student Registration Number</Label>
-            <Input id="studentRegistrationNo" placeholder="Enter Registration Number" type="text" />
+            <Input value={regNo} onChange={(e) => set_regNo(e.target.value)} id="studentRegistrationNo" placeholder="Enter Registration Number" type="text" />
           </LabelInputContainer>
+
           <LabelInputContainer className="mb-4">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" placeholder="••••••••" type="password" />
+            <Input value={password} onChange={(e) => set_password(e.target.value)} id="password" placeholder="••••••••" type="password" />
           </LabelInputContainer>
+
           <LabelInputContainer className="mb-4">
             <Label htmlFor="password">Confirm Password</Label>
-            <Input id="password" placeholder="••••••••" type="password" />
+            <Input value={confirm_password} onChange={(e) => set_confirm_password(e.target.value)} id="password" placeholder="••••••••" type="password" />
           </LabelInputContainer>
+
+
           <div className="mb-4">
             <DropdownMenu >
               <DropdownMenuTrigger asChild >
-                <Button variant={"outline"}>{depertment}</Button>
+                <button className="px-8 py-2 rounded-md text-black border border-grey outline-none">
+                  {department}
+                </button>
+
               </DropdownMenuTrigger>
 
               <DropdownMenuContent className="w-56">
                 <DropdownMenuLabel>Depertments</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuRadioGroup value={depertment} onValueChange={setDepertment}>
-
+                <DropdownMenuRadioGroup value={department} onValueChange={set_department}>
                   <DropdownMenuRadioItem value="ARC">ARC</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="CSE">CSE</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="SWE">SWE</DropdownMenuRadioItem>
@@ -86,21 +113,25 @@ export default function SignupFormDemo(props: any) {
                   <DropdownMenuRadioItem value="BMB">BMB</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="GEB">GEB</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="PSS">PSS</DropdownMenuRadioItem>
-
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+
+
+
+          <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
+            <Label htmlFor="picture">Picture</Label>
+            <Input id="picture" type="file" />
+          </div>
+
           <SubmitBtn text={"black"} bg={"white"} borderclr={"black"} hover_bg={"black"} hover_text={"white"} hover_border={"white"}
             value={"Register"} />
           <div className="flex justify-center mb-4">
             <Label onClick={handleRegister} htmlFor="password">Already have account ? <b>Sign in</b></Label>
           </div>
-
         </form>
       </div>
-
-
     </div>
   );
 }

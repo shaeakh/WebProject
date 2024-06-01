@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { Button } from "@/components/ui/button"
 import SubmitBtn from "../components/SubmitBtn";
 import {
     DropdownMenu,
@@ -62,8 +61,12 @@ export default function SignupFormDemo(props: any) {
                         <Label htmlFor="password">Forgot Password ?</Label>
                     </div>
 
-                    <SubmitBtn text={"black"} bg={"white"} borderclr={"black"} hover_bg={"black"} hover_text={"white"} hover_border={"white"}
-                        value={"Login"} />
+                    <div className="flex justify-center w-full mb-4 ">
+                    <button className="px-8 w-full py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
+                            Login
+                        </button>
+                    </div>
+                        
 
                     <div className="flex justify-center mb-4">
                         <Label onClick={handleRegister}  htmlFor="password">Don't have any account ? <b>Register</b></Label>                        
