@@ -11,9 +11,9 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/SCdropdown-menu"
+import { Label } from "@/components/ui/SClabel";
+import { Input } from "@/components/ui/SCinput";
 import { cn } from "@/lib/utils";
 import { Value } from "@radix-ui/react-select";
 import UploadIImg from "../components/UploadIImg";

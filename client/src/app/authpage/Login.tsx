@@ -9,9 +9,9 @@ import {
     DropdownMenuRadioItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/SCdropdown-menu"
+import { Label } from "@/components/ui/SClabel";
+import { Input } from "@/components/ui/SCinput";
 import { cn } from "@/lib/utils";
 
 import {
@@ -20,7 +20,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/SCselect"
 
 import {
     IconBrandGithub,

@@ -1,18 +1,5 @@
 "use client";
 import React from "react";
-import { Button } from "@/components/ui/button"
-import SubmitBtn from "../components/SubmitBtn";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import Login from "./Login"
 import Register from "./Register"

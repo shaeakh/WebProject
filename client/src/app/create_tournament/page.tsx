@@ -1,7 +1,7 @@
 "use client"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/SCdropdown-menu';
+import { Input } from '@/components/ui/SCinput';
+import { Label } from '@/components/ui/SClabel';
 import { cn } from '@/lib/utils';
 import React from 'react'
   

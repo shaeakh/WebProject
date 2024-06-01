@@ -4,7 +4,7 @@ import {
     Avatar,
     AvatarFallback,
     AvatarImage,
-} from "@/components/ui/avatar"
+} from "@/components/ui/SCavatar"
 
 import Aavatar from '../components/Avater'
 import SubmitBtn from '../components/SubmitBtn'
