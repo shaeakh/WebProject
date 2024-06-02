@@ -44,6 +44,7 @@ CREATE TABLE player (
 CREATE TABLE manager (  
   tournament_id int not null, 
   reg_no VARCHAR(50) NOT NULL, 
+  team_name VARCHAR(255) NOT NULL ,
   team_logo LONGBLOB NOT NULL , 
   FOREIGN KEY (reg_no) REFERENCES users (reg_no), 
   FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) 

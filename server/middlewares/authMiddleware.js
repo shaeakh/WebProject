@@ -13,8 +13,8 @@ const protect = (req, res, next) => {
     try {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, 'your_jwt_secret');
-      User.findByEmail(decoded.edu_mail, (err, users) => {
-        if (err || users.length === 0 || !isValidEmail(decoded.edu_mail)) {
+      User.findById(decoded.id, (err, users) => {
+        if (err || users.length === 0 ) {
           return res.status(401).json({ message: 'Not authorized' });
         }
         req.user = users[0];
