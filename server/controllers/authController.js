@@ -8,6 +8,7 @@ const isValidEmail = (email) => {
   return regex.test(email);
 };
 
+// Register new user
 exports.registerUser = (req, res) => {
   const { name, edu_mail, phone, regNo, department, password } = req.body;
 
@@ -43,6 +44,8 @@ exports.registerUser = (req, res) => {
   });
 };
 
+
+// Authenticate user
 exports.authUser = (req, res) => {
   const { email, password } = req.body;
 
@@ -59,8 +62,41 @@ exports.authUser = (req, res) => {
 
     const user = users[0];
     if (bcrypt.compareSync(password, user.password)) {
-      res.json({
-        token: generateToken(user.id)
+      const token = generateToken(user.reg_no);
+      res.cookie('token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 });
+      res.json({ token });
+    } else {
+      res.status(401).json({ message: 'Invalid email or password' });
+    }
+  });
+};
+
+// Update user details
+exports.updateUser = (req, res) => {
+  const { name, phone, newPassword } = req.body;
+  const userPic = req.files.userPic ? fs.readFileSync(req.files.userPic[0].path) : null;
+  const { email, password } = req.body;
+
+  User.findByEmail(email, (err, users) => {
+    if (err) throw err;
+    if (users.length === 0) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    const user = users[0];
+    if (bcrypt.compareSync(password, user.password)) {
+      const updatedUser = {
+        name: name || user.name,
+        phone: phone || user.phone,
+        userPic: userPic || user.userPic,
+        password: newPassword ? bcrypt.hashSync(newPassword, 10) : user.password,
+      };
+
+      User.updateByEmail(email, updatedUser, (err, result) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error updating user', error: err });
+        }
+        res.status(200).json({ message: 'User updated successfully' });
       });
     } else {
       res.status(401).json({ message: 'Invalid email or password' });
