@@ -62,10 +62,10 @@ function page() {
                 </div>
 
                 <div className='w-full'>
-                    <button className="px-8 w-full   py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
-                        Create Tournament
-                    </button>
-                </div>
+                        <button className="px-8 w-full py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
+                            Create Tournament
+                        </button>
+                    </div>
             </form>
         </div>
     )
