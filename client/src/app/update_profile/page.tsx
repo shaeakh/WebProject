@@ -50,13 +50,13 @@ function page() {
                             <Label htmlFor="password">Update your password</Label>
                             <Input id="password" placeholder="••••••••" type="password" />
                         </LabelInputContainer>
-                        <hr className='mb-4' style={{ border: '1px solid #ddd', width: '100%' }} />
+                        <hr className='mb-4' style={{ border: '1px solid #ddd', width: '100%' }} />                        
 
                         <LabelInputContainer className="mb-4">
                             <Label htmlFor="password">Confirm with your current password</Label>
                             <Input id="password" placeholder="••••••••" type="password" />
                         </LabelInputContainer>
-                        
+
 
                         <div className="flex justify-center w-full mb-4 ">
                             <button className="px-8 w-full py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
