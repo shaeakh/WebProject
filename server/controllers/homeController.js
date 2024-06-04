@@ -2,6 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
 
+
 exports.getHomePage = (req, res) => {
   const regNo = req.user.reg_no;
 
@@ -16,7 +17,7 @@ exports.getHomePage = (req, res) => {
 
 exports.updateUser = (req, res) => {
   const { email, password, name, phone, newPassword } = req.body;
-  const userPic = req.files && req.files.userPic ? fs.readFileSync(req.files.userPic[0].path) : null;
+  const userPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/avatar.png";
   const regNo = req.user.reg_no;
 
   // Confirm email and password
@@ -31,9 +32,9 @@ exports.updateUser = (req, res) => {
     }
 
     const updatedUser = {
-      name,
-      phone,
-      userPic,
+      name: name || user.name,
+      phone: phone || user.phone,
+      userPicUrl: userPicUrl || user.userPicUrl,
       password: newPassword ? bcrypt.hashSync(newPassword, 10) : user.password,
     };
 
@@ -48,34 +49,33 @@ exports.updateUser = (req, res) => {
 
 exports.createTournament = (req, res) => {
   const { tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
-  const logoPic = req.file ? fs.readFileSync(req.file.path) : null;
+  const logoPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/tournament.png";
   const regNo = req.user.reg_no;
-
   const joinCode = Math.random().toString(36).substr(2, 9); // Generate a random join code
 
   const newTournament = {
     tournamentName,
     sportType,
     tournamentDate,
-    logoPic,
-    joinCode,
-    regNo,
     playerBaseCoin,
-    perTeamCoin
+    perTeamCoin,
+    logoPicUrl,
+    regNo,
+    joinCode
   };
 
   User.createTournament(newTournament, (err, result) => {
     if (err) {
       return res.status(500).json({ message: 'Error creating tournament', error: err });
     }
-    res.status(201).json({ message: 'Tournament created successfully', joinCode });
+    res.status(201).json({ message: 'Tournament created successfully', tournamentId: result.insertId });
   });
 };
 
 exports.joinTournament = (req, res) => {
   const { joinCode, role, position, teamName } = req.body;
   const regNo = req.user.reg_no;
-  const teamLogo = req.file;
+  const teamLogo = req.file ? req.file.cloudinaryUrl : "/uploads/team.png";
 
   User.findTournamentByJoinCode(joinCode, (err, tournaments) => {
     if (err || tournaments.length === 0) {
@@ -108,12 +108,11 @@ exports.joinTournament = (req, res) => {
           res.status(201).json({ message: 'Player joined tournament successfully' });
         });
       } else if (role === 'manager') {
-        const teamLogoBuffer = teamLogo ? fs.readFileSync(teamLogo.path) : null;
         const newManager = {
           tournamentId: tournament.tournament_id,
           regNo,
           teamName,
-          teamLogo: teamLogoBuffer
+          teamLogo, 
         };
 
         User.createManager(newManager, (err, result) => {

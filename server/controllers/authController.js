@@ -3,6 +3,7 @@ const generateToken = require('../utils/generateToken');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
 
+
 const isValidEmail = (email) => {
   const regex = /^[a-zA-Z0-9._%+-]+@student\.sust\.edu$/;
   return regex.test(email);
@@ -11,13 +12,12 @@ const isValidEmail = (email) => {
 // Register new user
 exports.registerUser = (req, res) => {
   const { name, edu_mail, phone, regNo, department, password } = req.body;
+  const userPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/avatar.png";
 
-    // Validate email
-    if (!isValidEmail(edu_mail)) {
-      return res.status(400).json({ message: 'Invalid email domain. Only @student.sust.edu emails are allowed.' });
-    }
-
-  const userPic = req.file ? fs.readFileSync(req.file.path) : null;
+  // Validate email
+  if (!isValidEmail(edu_mail)) {
+    return res.status(400).json({ message: 'Invalid email domain. Only @student.sust.edu emails are allowed.' });
+  }
 
   const newUser = {
     name,
@@ -25,7 +25,7 @@ exports.registerUser = (req, res) => {
     phone,
     regNo,
     department,
-    userPic,
+    userPicUrl,
     password
   };
 
@@ -43,7 +43,6 @@ exports.registerUser = (req, res) => {
     });
   });
 };
-
 
 // Authenticate user
 exports.authUser = (req, res) => {
@@ -71,10 +70,16 @@ exports.authUser = (req, res) => {
   });
 };
 
+// Logout user
+exports.logoutUser = (req, res) => {
+  res.clearCookie('token');
+  res.status(200).json({ message: 'Logged out successfully' });
+};
+
 // Update user details
 exports.updateUser = (req, res) => {
   const { name, phone, newPassword } = req.body;
-  const userPic = req.files.userPic ? fs.readFileSync(req.files.userPic[0].path) : null;
+  const userPicUrl = req.file ? req.file.cloudinaryUrl : null;
   const { email, password } = req.body;
 
   User.findByEmail(email, (err, users) => {
@@ -88,7 +93,7 @@ exports.updateUser = (req, res) => {
       const updatedUser = {
         name: name || user.name,
         phone: phone || user.phone,
-        userPic: userPic || user.userPic,
+        userPicUrl: userPicUrl || user.userPicUrl,
         password: newPassword ? bcrypt.hashSync(newPassword, 10) : user.password,
       };
 
