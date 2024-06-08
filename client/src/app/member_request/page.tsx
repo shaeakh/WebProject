@@ -33,14 +33,14 @@ const MemberRequest: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-5">
       <div className="flex justify-center items-center pt-5">
         <MoviingBorderButton borderRadius="1rem"
         className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
         >Member Request
         </MoviingBorderButton>
     </div>
-      <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
+      <div className="bg-gray-100 p-5 rounded-lg shadow-lg mt-5">
         <table className="w-full table-auto">
           <thead>
             <tr>
@@ -54,10 +54,10 @@ const MemberRequest: React.FC = () => {
           <tbody>
             {members.map((member, index) => (
               <tr key={index} className="text-center">
-                <td className="border px-4 py-2">{member.name}</td>
-                <td className="border px-4 py-2">{member.regNo}</td>
-                <td className="border px-4 py-2">{member.role}</td>
-                <td className="border px-4 py-2">
+                <td className="border-2 px-4 py-2">{member.name}</td>
+                <td className="border-2 px-4 py-2">{member.regNo}</td>
+                <td className="border-2 px-4 py-2">{member.role}</td>
+                <td className="border-2 px-4 py-2">
                   <button
                     className="text-green-500"
                     onClick={() => handleAccept(index)}
@@ -65,7 +65,7 @@ const MemberRequest: React.FC = () => {
                     ✓
                   </button>
                 </td>
-                <td className="border px-4 py-2">
+                <td className="border-2 px-4 py-2">
                   <button
                     className="text-red-500"
                     onClick={() => handleReject(index)}
