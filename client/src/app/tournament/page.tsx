@@ -8,6 +8,7 @@ import { FaRegCopy } from "react-icons/fa6";
 import { MoviingBorderButton } from "@/components/ui/SCmoving-border";
 import Teams from './Teams'
 import Teamheader from './Teamheader'
+import { DataTableDemo } from './DataTable'
 
 function Page() {
     let props = {
@@ -20,6 +21,42 @@ function Page() {
             manager: "Shaeakh",
             link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg"
         }]
+    }
+    let team = {
+        manager: "Shaeakh",
+        Players: [
+            {
+                name: "Sawon",
+                position: "Mid Fielder",
+                catagory: "Platinum",
+                value:500
+            },
+            {
+                name: "Emran",
+                position: "Forward",
+                catagory: "Platinum",
+                value:500
+            },
+            {
+                name: "Amit",
+                position: "Striker",
+                catagory: "Platinum",
+                value:500
+            },
+            {
+                name: "Niloy",
+                position: "Defense",
+                catagory: "Platinum",
+                value:500
+                
+            },
+            {
+                name: "Yeasin",
+                position: "Goal Keeper",
+                catagory: "Platinum",
+                value:500
+            }
+        ]
     }
 
     return (
@@ -71,12 +108,17 @@ function Page() {
                 </div>
             )}
             {(user.role === "manager" || user.role === "player") && (
-                <div className='w-8/12 border-black flex flex-col'>
+                <div className='w-8/12 border-red-600 flex flex-col'>
 
                     <div className='flex w-full '>
-                        <Teamheader/>                                         
+                        <Teamheader />
                     </div>
-
+                    <div className=' '>
+                        <div className='font-mono font-bold text-2xl text-center'>
+                            Player List 
+                        </div>  
+                        <DataTableDemo Players={team.Players}/>
+                    </div>  
                 </div>
             )}
             {user.role !== "admin" && user.role !== "manager" && user.role !== "player" && (
