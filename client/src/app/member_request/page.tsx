@@ -1,20 +1,85 @@
-import React from 'react'
+"use client";
 
-function page() {
+import React, { useState } from 'react';
+import { MoviingBorderButton } from "@/components/ui/SCmoving-border";
 
-    return (
-        <div className='w-screen h-screen flex'>
-            <div className='w-1/2 h-full border-2 border-black flex flex-col justify-start items-center'>
-                <div className='font-mono font-bold text-2xl text-center'>Manager Request</div>
-            </div>
-            <div className='mx-2 h-full flex flex-col justify-center'>
-                <div className='h-5/6 bg-black bg-opacity-50 rounded-lg'></div>
-            </div>
-            <div className='w-1/2 h-full border-2 border-black flex flex-col justify-start items-center'>
-                <div className='font-mono font-bold text-2xl text-center'>Players Request</div>
-            </div>
-        </div>
-    )
+interface Member {
+  name: string;
+  regNo: string;
+  role: string;
 }
 
-export default page
+const initialMembers: Member[] = [
+  { name: 'Farzine', regNo: '12345', role: 'Manager' },
+  { name: 'Farzine', regNo: '12345', role: 'Manager' },
+  { name: 'Farzine', regNo: '12345', role: 'Manager' },
+  { name: 'Farzine', regNo: '12345', role: 'Manager' },
+  { name: 'Farzine', regNo: '12345', role: 'Manager' },
+];
+
+const MemberRequest: React.FC = () => {
+  const [members, setMembers] = useState<Member[]>(initialMembers);
+
+  const handleAccept = (index: number) => {
+    console.log('Accepted:', members[index]);
+    // Add logic to handle accept action, e.g., update the database
+    setMembers(members.filter((_, i) => i !== index));
+  };
+
+  const handleReject = (index: number) => {
+    console.log('Rejected:', members[index]);
+    // Add logic to handle reject action, e.g., update the database
+    setMembers(members.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      <div className="flex justify-center items-center pt-5">
+        <MoviingBorderButton borderRadius="1rem"
+        className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
+        >Member Request
+        </MoviingBorderButton>
+    </div>
+      <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
+        <table className="w-full table-auto">
+          <thead>
+            <tr>
+              <th className="px-4 py-2">Name</th>
+              <th className="px-4 py-2">Reg No</th>
+              <th className="px-4 py-2">Role</th>
+              <th className="px-4 py-2">Accept</th>
+              <th className="px-4 py-2">Reject</th>
+            </tr>
+          </thead>
+          <tbody>
+            {members.map((member, index) => (
+              <tr key={index} className="text-center">
+                <td className="border px-4 py-2">{member.name}</td>
+                <td className="border px-4 py-2">{member.regNo}</td>
+                <td className="border px-4 py-2">{member.role}</td>
+                <td className="border px-4 py-2">
+                  <button
+                    className="text-green-500"
+                    onClick={() => handleAccept(index)}
+                  >
+                    ✓
+                  </button>
+                </td>
+                <td className="border px-4 py-2">
+                  <button
+                    className="text-red-500"
+                    onClick={() => handleReject(index)}
+                  >
+                    ✗
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default MemberRequest
