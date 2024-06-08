@@ -8,18 +8,66 @@ import { FaRegCopy } from "react-icons/fa6";
 import { MoviingBorderButton } from "@/components/ui/SCmoving-border";
 import Teams from './Teams'
 import Teamheader from './Teamheader'
+import { DataTableDemo } from './DataTable'
 
 function Page() {
     let props = {
         joincode: "#asdksadsa"
     }
     let user = {
-        role: "manager",
-        card: [{
-            team: "Argentina",
-            manager: "Shaeakh",
-            link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg"
-        }]
+        role: "admin",
+        card: [
+            {
+                team: "Argentina",
+                manager: "Shaeakh",
+                link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg"
+            },
+            {
+                team: "Brazil",
+                manager: "Shaeakh",
+                link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg"
+            },
+            {
+                team: "China",
+                manager: "Shaeakh",
+                link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg"
+            }
+        ]
+    }
+    let team = {
+        manager: "Shaeakh",
+        Players: [
+            {
+                name: "Sawon",
+                position: "Mid fielder",
+                category: "Platinum",
+                value: 1000
+            },
+            {
+                name: "Amit",
+                position: "Striker",
+                category: "Gold",
+                value: 900
+            },
+            {
+                name: "Niloy",
+                position: "Defense",
+                category: "Bronze",
+                value: 400
+            },
+            {
+                name: "Farzine",
+                position: "Forword",
+                category: "Silver",
+                value: 600
+            },
+            {
+                name: "Meraj",
+                position: "Goal Keeper",
+                category: "Platinum",
+                value: 500
+            }
+        ]
     }
 
     return (
@@ -67,16 +115,21 @@ function Page() {
                         </div>
                     </div>
                     <hr className='border border-grey w-full my-2' />
-                    <Teams />
+                    <Teams obj={user.card}/>
                 </div>
             )}
             {(user.role === "manager" || user.role === "player") && (
-                <div className='w-8/12 border-black flex flex-col'>
+                <div className='w-8/12 border-red-600 flex flex-col'>
 
                     <div className='flex w-full '>
-                        <Teamheader/>                                         
+                        <Teamheader />
                     </div>
-
+                    <div className=' '>
+                        <div className='font-mono font-bold text-2xl text-center'>
+                            Player List
+                        </div>
+                        <DataTableDemo Players={team.Players} />
+                    </div>
                 </div>
             )}
             {user.role !== "admin" && user.role !== "manager" && user.role !== "player" && (

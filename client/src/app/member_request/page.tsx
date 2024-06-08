@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -83,4 +82,4 @@ const MemberRequest: React.FC = () => {
   );
 };
 
-export default MemberRequest;
+export default MemberRequest
