@@ -15,46 +15,57 @@ function Page() {
         joincode: "#asdksadsa"
     }
     let user = {
-        role: "manager",
-        card: [{
-            team: "Argentina",
-            manager: "Shaeakh",
-            link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg"
-        }]
+        role: "admin",
+        card: [
+            {
+                team: "Argentina",
+                manager: "Shaeakh",
+                link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg"
+            },
+            {
+                team: "Brazil",
+                manager: "Shaeakh",
+                link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg"
+            },
+            {
+                team: "China",
+                manager: "Shaeakh",
+                link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg"
+            }
+        ]
     }
     let team = {
         manager: "Shaeakh",
         Players: [
             {
                 name: "Sawon",
-                position: "Mid Fielder",
-                catagory: "Platinum",
-                value:500
-            },
-            {
-                name: "Emran",
-                position: "Forward",
-                catagory: "Platinum",
-                value:500
+                position: "Mid fielder",
+                category: "Platinum",
+                value: 1000
             },
             {
                 name: "Amit",
                 position: "Striker",
-                catagory: "Platinum",
-                value:500
+                category: "Gold",
+                value: 900
             },
             {
                 name: "Niloy",
                 position: "Defense",
-                catagory: "Platinum",
-                value:500
-                
+                category: "Bronze",
+                value: 400
             },
             {
-                name: "Yeasin",
+                name: "Farzine",
+                position: "Forword",
+                category: "Silver",
+                value: 600
+            },
+            {
+                name: "Meraj",
                 position: "Goal Keeper",
-                catagory: "Platinum",
-                value:500
+                category: "Platinum",
+                value: 500
             }
         ]
     }
@@ -104,7 +115,7 @@ function Page() {
                         </div>
                     </div>
                     <hr className='border border-grey w-full my-2' />
-                    <Teams />
+                    <Teams obj={user.card}/>
                 </div>
             )}
             {(user.role === "manager" || user.role === "player") && (
@@ -115,10 +126,10 @@ function Page() {
                     </div>
                     <div className=' '>
                         <div className='font-mono font-bold text-2xl text-center'>
-                            Player List 
-                        </div>  
-                        <DataTableDemo Players={team.Players}/>
-                    </div>  
+                            Player List
+                        </div>
+                        <DataTableDemo Players={team.Players} />
+                    </div>
                 </div>
             )}
             {user.role !== "admin" && user.role !== "manager" && user.role !== "player" && (

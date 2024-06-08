@@ -93,9 +93,9 @@ export const columns: ColumnDef<Player>[] = [
     },
   },
   {
-    accessorKey: "catagory",
-    header: "Catagory",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("catagory")}</div>,
+    accessorKey: "category",
+    header: "Category",
+    cell: ({ row }) => <div className="lowercase">{row.getValue("category")}</div>,
   },
 
 ];
