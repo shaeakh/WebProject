@@ -127,3 +127,66 @@ exports.joinTournament = (req, res) => {
     });
   });
 };
+
+
+exports.updateTournament = (req, res) => {
+  const { tournamentId, tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
+  const logoPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/tournament.png";
+  const regNo = req.user.reg_no;
+
+  const updatedTournament = {
+    tournamentName,
+    sportType,
+    tournamentDate,
+    playerBaseCoin,
+    perTeamCoin,
+    logoPicUrl,
+  };
+
+  User.updateTournament(tournamentId, updatedTournament, regNo, (err, result) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error updating tournament', error: err });
+    }
+    res.status(200).json({ message: 'Tournament updated successfully' });
+  });
+};
+
+
+exports.getUserDetails = (req, res) => {
+  const regNo = req.user.reg_no;
+
+  User.findByRegNo(regNo, (err, users) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching user details', error: err });
+    }
+    if (users.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const user = users[0];
+    const userDetails = {
+      name: user.name,
+      edu_mail: user.edu_mail,
+      phone: user.phone,
+      department: user.department,
+      reg_no: user.reg_no,
+    };
+    res.status(200).json(userDetails);
+  });
+};
+
+
+exports.getCurrentTournamentDetails = (req, res) => {
+  const regNo = req.user.reg_no;
+
+  User.findCurrentTournamentByUser(regNo, (err, tournaments) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching current tournament', error: err });
+    }
+
+    if (tournaments.length === 0) {
+      return res.status(404).json({ message: 'No current tournament found' });
+    }
+
+    res.status(200).json({ message: 'Current tournament details', tournament: tournaments[0] });
+  });
+};
