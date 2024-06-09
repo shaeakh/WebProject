@@ -76,7 +76,7 @@ function Page() {
                 <img className='object-cover h-full w-full' src="https://staticg.sportskeeda.com/editor/2022/05/17c93-16519157288727-1920.jpg" alt="" />
             </div>
             {user.role === "admin" && (
-                <div className='border-2 w-8/12 border-black'>
+                <div className=' w-8/12  '>
                     <div className='flex justify-between w-full p-2'>
                         <div className='h-32 flex flex-col justify-center'>
                             <div className='flex flex-col justify-around p-2 border border-black rounded-lg'>
