@@ -51,8 +51,6 @@ function page() {
                                 <DropdownMenuRadioGroup value={tournament_type} onValueChange={set_tournament_type}>
                                     <DropdownMenuRadioItem value="Cricket">Cricket</DropdownMenuRadioItem>
                                     <DropdownMenuRadioItem value="Football">Football</DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="Handball">Handball</DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="Volleyball">Volleyball</DropdownMenuRadioItem>
                                 </DropdownMenuRadioGroup>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -100,7 +98,7 @@ function page() {
                 </div>
 
                 <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
-                    <Label htmlFor="picture">Upload your team logo</Label>
+                    <Label htmlFor="picture">Upload tournament logo</Label>
                     <Input id="picture" type="file" />
                 </div>
 

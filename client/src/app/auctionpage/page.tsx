@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/SCscroll-area"
 function page() {
 
     let user = {
-        role: "manager",
+        role: "admin",
         card: [
             {
                 team: "Argentina",
