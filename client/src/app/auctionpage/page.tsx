@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react'
 import Player from './Player'
 import { FaAngleRight } from "react-icons/fa6";
@@ -8,7 +10,7 @@ import { ScrollArea } from "@/components/ui/SCscroll-area"
 function page() {
 
     let user = {
-        role: "admin",
+        role: "manager",
         card: [
             {
                 team: "Argentina",
@@ -18,7 +20,7 @@ function page() {
         ]
     }
     let manager = {
-        maxbid: 500,
+        maxbid: 600,
         current_balance: 8000,
         players_bought: 2
     }
@@ -71,8 +73,7 @@ function page() {
             sold: false
         }
     ]
-    let values = {
-        current_bid: 500,
+    let values = {        
         sold: false
     }
     let teams_update = [
@@ -149,16 +150,31 @@ function page() {
             Current_balance: 400
         }
     ]
+    const [pause, set_Pause] = React.useState(false);
+    function handle_Pause() {
+        set_Pause(!pause);
+    }
+    const [bid_able, set_Bid_able] = React.useState(true);    
+    const [current_bid,set_Current_bid] = React.useState(200);
     
-    return (
+    function handle_Bid_ability(current_bid: any, bid_increase: any) {
+        if (manager.maxbid < (current_bid + bid_increase)) {
+            set_Bid_able(false);
+        }
+        else{            
+            set_Current_bid(current_bid+bid_increase);            
+        }
+    }
 
+
+    return (
         <div className='w-screen h-screen flex justify-center'>
             {user.role === "manager" && (
                 <div className='w-1/3 bg-black bg-opacity-15 border-2 border-black flex flex-col justify-center items-center bg-grey-300'>
-                    { }
-                    <div className='m-2 p-2 rounded-lg font-mono font-bold text-2xl  text-center bg-red-500 bg-opacity-75'>
+                    {(bid_able === false) && <div className='m-2 p-2 rounded-lg font-mono font-bold text-2xl  text-center bg-red-500 bg-opacity-75'>
                         You can't bid more then {manager.maxbid} points
-                    </div>
+                    </div>}
+
                     <div className='w-44 m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Time remaining</div>
                     <div className='flex justify-center m-2 p-2  rounded-lg font-mono font-bold text-xl  text-center '>
                         <div className='w-12 border-2 border-black rounded-lg'>{remaining_time.min}m</div>
@@ -175,14 +191,21 @@ function page() {
                         <div className='w-full m-2 p-2 rounded-lg h-max '>
                             <div className=' flex flex-col justify-around items-around gap-5'>
                                 <div className='flex justify-around w-full px-2'>
-                                    <button className="px-8 py-2 w-20 flex justify-center rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black">50</button>
-                                    <button className="px-8 py-2 w-20 flex justify-center rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black">100</button>
-                                    <button className="px-8 py-2 w-20 flex justify-center rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black">150</button>
+                                    <button className="px-8 py-2 w-20 flex justify-center rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black"
+                                        onClick={() => handle_Bid_ability(player[0].current_value, 50)}>50</button>
+                                    <button className="px-8 py-2 w-20 flex justify-center rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black"
+                                        onClick={() => handle_Bid_ability(player[0].current_value, 100)}>100</button>
+                                    <button className="px-8 py-2 w-20 flex justify-center rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black"
+                                        onClick={() => handle_Bid_ability(player[0].current_value, 150)}>150</button>
+
                                 </div>
                                 <div className='flex justify-around w-full px-2'>
-                                    <button className="px-8 py-2 w-20 flex justify-center rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black">200</button>
-                                    <button className="px-8 py-2 w-20 flex justify-center rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black">250</button>
-                                    <button className="px-8 py-2 w-20 flex justify-center rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black">300</button>
+                                    <button className="px-8 py-2 w-20 flex justify-center rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black"
+                                        onClick={() => handle_Bid_ability(player[0].current_value, 200)}>200</button>
+                                    <button className="px-8 py-2 w-20 flex justify-center rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black"
+                                        onClick={() => handle_Bid_ability(player[0].current_value, 250)}>250</button>
+                                    <button className="px-8 py-2 w-20 flex justify-center rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black"
+                                        onClick={() => handle_Bid_ability(player[0].current_value, 300)}>300</button>
                                 </div>
                             </div>
                         </div>
@@ -200,14 +223,14 @@ function page() {
                             <p>Current Balance</p>
                         </div>
                     </div>
-                    <ScrollArea className='w-full rounded-md p-4 border-2 border-black'>                        
-                        {teams_update.map((team,index) => (                            
-                                <div key={index} className="border border-2 rounded-md border-black grid grid-rows-auto grid-cols-4 gap-x-0 gap-y-4 p-4 justify-items-center">
-                                    <img src={team.link} alt="" className="h-10 rounded-lg self-center" />
-                                    <p className="self-center">{team.name}</p>
-                                    <p className="self-center">{team.Players_bought}</p>
-                                    <p className="self-center">{team.Current_balance}</p>
-                                </div>                                                           
+                    <ScrollArea className='w-full rounded-md p-4 border-2 border-black'>
+                        {teams_update.map((team, index) => (
+                            <div key={index} className="border border-2 rounded-md border-black grid grid-rows-auto grid-cols-4 gap-x-0 gap-y-4 p-4 justify-items-center">
+                                <img src={team.link} alt="" className="h-10 rounded-lg self-center" />
+                                <p className="self-center">{team.name}</p>
+                                <p className="self-center">{team.Players_bought}</p>
+                                <p className="self-center">{team.Current_balance}</p>
+                            </div>
                         ))}
                     </ScrollArea>
                 </div>
@@ -215,20 +238,28 @@ function page() {
 
             <div className='w-1/3 border-2 border-black text-2xl text-center  flex flex-col items-center justify-center font-mono font-bold gap-4 '>
                 <Player />
-                <p className='border-2 border-black p-2 rounded-lg'>Current Bid : {values.current_bid}</p>
+                <p className='border-2 border-black p-2 rounded-lg'>Current Bid : {current_bid}</p>
                 <p>{(values.sold) ? "Sold" : "Available"}</p>
-                <div className='flex w-full justify-around'>
-                    <div className='px-2' >
-                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
-                            <FaAngleLeft />
+                {(user.role === "admin") && (
+                    <div className='flex flex-col items-center gap-4'>
+                        <div className='flex w-full justify-around'>
+                            <div className='px-2' >
+                                <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
+                                    <FaAngleLeft />
+                                </button>
+                            </div>
+                            <div className='px-2' >
+                                <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
+                                    <FaAngleRight />
+                                </button>
+                            </div>
+                        </div>
+                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  " onClick={handle_Pause}>
+                            {(pause === false) ? "Resume" : "Pause"}
                         </button>
                     </div>
-                    <div className='px-2' >
-                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
-                            <FaAngleRight />
-                        </button>
-                    </div>
-                </div>
+                )
+                }
             </div>
             <div className='w-1/3  h-screen flex flex-col justify-center items-center gap-4 border-2 border-black text-2xl text-center font-mono font-bold  '>
                 <p className='p-2 border-2 border-black rounded-lg'>Last bidding Team</p>
