@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/SCscroll-area"
 function page() {
 
     let user = {
-        role: "manager",
+        role: "player",
         card: [
             {
                 team: "Argentina",
@@ -156,7 +156,7 @@ function page() {
     }
     const [bid_able, set_Bid_able] = React.useState(true);    
     const [current_bid,set_Current_bid] = React.useState(200);
-    
+
     function handle_Bid_ability(current_bid: any, bid_increase: any) {
         if (manager.maxbid < (current_bid + bid_increase)) {
             set_Bid_able(false);
@@ -170,7 +170,7 @@ function page() {
     return (
         <div className='w-screen h-screen flex justify-center'>
             {user.role === "manager" && (
-                <div className='w-1/3 bg-black bg-opacity-15 border-2 border-black flex flex-col justify-center items-center bg-grey-300'>
+                <div className='w-1/3 bg-black bg-opacity-15  flex flex-col justify-center items-center bg-grey-300'>
                     {(bid_able === false) && <div className='m-2 p-2 rounded-lg font-mono font-bold text-2xl  text-center bg-red-500 bg-opacity-75'>
                         You can't bid more then {manager.maxbid} points
                     </div>}
@@ -213,7 +213,7 @@ function page() {
                 </div>
             )}
             {user.role === "admin" && (
-                <div className='w-1/3 p-4 bg-black bg-opacity-15 border-2 border-black flex flex-col justify-center items-center bg-grey-300  font-mono font-bold text-center '>
+                <div className='w-1/3 p-4 bg-black bg-opacity-15 flex flex-col justify-center items-center bg-grey-300  font-mono font-bold text-center '>
                     <h1 className='text-3xl' >Teams Overview</h1>
                     <div className='p-4'>
                         <div className=" grid grid-rows-auto border-2 rounded-md border-black grid-cols-4 gap-x-0 gap-y-4 p-4 justify-items-center">
@@ -223,7 +223,7 @@ function page() {
                             <p>Current Balance</p>
                         </div>
                     </div>
-                    <ScrollArea className='w-full rounded-md p-4 border-2 border-black'>
+                    <ScrollArea className='w-full rounded-md px-4 '>
                         {teams_update.map((team, index) => (
                             <div key={index} className="border border-2 rounded-md border-black grid grid-rows-auto grid-cols-4 gap-x-0 gap-y-4 p-4 justify-items-center">
                                 <img src={team.link} alt="" className="h-10 rounded-lg self-center" />
@@ -236,7 +236,7 @@ function page() {
                 </div>
             )}
 
-            <div className='w-1/3 border-2 border-black text-2xl text-center  flex flex-col items-center justify-center font-mono font-bold gap-4 '>
+            <div className={`w-1/3 text-2xl text-center  flex flex-col ${(user.role==="player" ) ? ("border-l-2 border-black") : ""}  items-center justify-center font-mono font-bold gap-4`}>
                 <Player />
                 <p className='border-2 border-black p-2 rounded-lg'>Current Bid : {current_bid}</p>
                 <p>{(values.sold) ? "Sold" : "Available"}</p>
@@ -261,7 +261,7 @@ function page() {
                 )
                 }
             </div>
-            <div className='w-1/3  h-screen flex flex-col justify-center items-center gap-4 border-2 border-black text-2xl text-center font-mono font-bold  '>
+            <div className='w-1/3  h-screen flex flex-col justify-center items-center gap-4 bg-black bg-opacity-15 text-2xl text-center font-mono font-bold  '>
                 <p className='p-2 border-2 border-black rounded-lg'>Last bidding Team</p>
                 <div className='h-36 overflow-hidden rounded-lg flex justify-center w-full'>
                     <img className='object-cover rounded-lg h-full ' src={last_bidding_team.link} alt="" />
