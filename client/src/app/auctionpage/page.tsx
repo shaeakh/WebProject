@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/SCscroll-area"
 function page() {
 
     let user = {
-        role: "player",
+        role: "manager",
         card: [
             {
                 team: "Argentina",
@@ -73,7 +73,7 @@ function page() {
             sold: false
         }
     ]
-    let values = {        
+    let values = {
         sold: false
     }
     let teams_update = [
@@ -154,15 +154,15 @@ function page() {
     function handle_Pause() {
         set_Pause(!pause);
     }
-    const [bid_able, set_Bid_able] = React.useState(true);    
-    const [current_bid,set_Current_bid] = React.useState(200);
+    const [bid_able, set_Bid_able] = React.useState(true);
+    const [current_bid, set_Current_bid] = React.useState(200);
 
     function handle_Bid_ability(current_bid: any, bid_increase: any) {
         if (manager.maxbid < (current_bid + bid_increase)) {
             set_Bid_able(false);
         }
-        else{            
-            set_Current_bid(current_bid+bid_increase);            
+        else {
+            set_Current_bid(current_bid + bid_increase);
         }
     }
 
@@ -170,23 +170,20 @@ function page() {
     return (
         <div className='w-screen h-screen flex justify-center'>
             {user.role === "manager" && (
-                <div className='w-1/3 bg-black bg-opacity-15  flex flex-col justify-center items-center bg-grey-300'>
+                <div className='w-1/3 bg-black bg-opacity-15  flex flex-col justify-around items-center bg-grey-300'>
                     {(bid_able === false) && <div className='m-2 p-2 rounded-lg font-mono font-bold text-2xl  text-center bg-red-500 bg-opacity-75'>
                         You can't bid more then {manager.maxbid} points
                     </div>}
-
-                    <div className='w-44 m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Time remaining</div>
-                    <div className='flex justify-center m-2 p-2  rounded-lg font-mono font-bold text-xl  text-center '>
-                        <div className='w-12 border-2 border-black rounded-lg'>{remaining_time.min}m</div>
-                        <div className='mx-2'>:</div>
-                        <div className='w-12 border-2 border-black rounded-lg'>{remaining_time.sec}s</div>
-                    </div>
-                    <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Current Balance : {manager.current_balance}</div>
-                    <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Players Bought : {manager.players_bought}</div>
+                    <p className='p-2 border-2 border-black font-mono font-bold text-xl  rounded-lg'>Your Team</p>
+                    <div className='h-36 overflow-hidden rounded-lg flex justify-center w-full'>
+                        <img className='object-cover rounded-lg h-full ' src={last_bidding_team.link} alt="" />
+                    </div>                    
+                    <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Current Balance : {5000000}</div>
+                    <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Players Bought : {500}</div>
                     <div className='border-2 border-black rounded-lg'>
                         <div className='flex justify-around w-full' >
                             <p className='m-2 p-2 font-mono font-bold text-xl '>Place you bid</p>
-                            <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Your max bid : {manager.maxbid}</div>
+                            <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Your max bid : {-50}</div>
                         </div>
                         <div className='w-full m-2 p-2 rounded-lg h-max '>
                             <div className=' flex flex-col justify-around items-around gap-5'>
@@ -236,7 +233,7 @@ function page() {
                 </div>
             )}
 
-            <div className={`w-1/3 text-2xl text-center  flex flex-col ${(user.role==="player" ) ? ("border-l-2 border-black") : ""}  items-center justify-center font-mono font-bold gap-4`}>
+            <div className={`w-1/3 text-2xl text-center  flex flex-col ${(user.role === "player") ? ("border-l-2 border-black") : ""}  items-center justify-center font-mono font-bold gap-4`}>
                 <Player />
                 <p className='border-2 border-black p-2 rounded-lg'>Current Bid : {current_bid}</p>
                 <p>{(values.sold) ? "Sold" : "Available"}</p>
@@ -279,6 +276,12 @@ function page() {
                     {user.role === "admin" && (<p className='text-nowrap'>Players Bought</p>)}
                     {user.role === "admin" && (<p>:</p>)}
                     {user.role === "admin" && (<p>{last_bidding_team.Players_bought}</p>)}
+                </div>
+                <div className='w-44 m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Time remaining</div>
+                <div className='flex justify-center m-2 p-2  rounded-lg font-mono font-bold text-xl  text-center '>
+                    <div className='w-12 border-2 border-black rounded-lg'>{remaining_time.min}m</div>
+                    <div className='mx-2'>:</div>
+                    <div className='w-12 border-2 border-black rounded-lg'>{remaining_time.sec}s</div>
                 </div>
             </div>
         </div>
