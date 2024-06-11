@@ -76,35 +76,3 @@ exports.logoutUser = (req, res) => {
   res.status(200).json({ message: 'Logged out successfully' });
 };
 
-// Update user details
-exports.updateUser = (req, res) => {
-  const { name, phone, newPassword } = req.body;
-  const userPicUrl = req.file ? req.file.cloudinaryUrl : null;
-  const { email, password } = req.body;
-
-  User.findByEmail(email, (err, users) => {
-    if (err) throw err;
-    if (users.length === 0) {
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
-
-    const user = users[0];
-    if (bcrypt.compareSync(password, user.password)) {
-      const updatedUser = {
-        name: name || user.name,
-        phone: phone || user.phone,
-        userPicUrl: userPicUrl || user.userPicUrl,
-        password: newPassword ? bcrypt.hashSync(newPassword, 10) : user.password,
-      };
-
-      User.updateByEmail(email, updatedUser, (err, result) => {
-        if (err) {
-          return res.status(500).json({ message: 'Error updating user', error: err });
-        }
-        res.status(200).json({ message: 'User updated successfully' });
-      });
-    } else {
-      res.status(401).json({ message: 'Invalid email or password' });
-    }
-  });
-};

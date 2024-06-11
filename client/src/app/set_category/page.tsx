@@ -53,7 +53,7 @@ const PlayersPage: React.FC = () => {
         </MoviingBorderButton>
     </div>
       <div className="bg-gray-100 p-6 rounded-lg shadow-lg mt-5">
-        <table className="w-full table-auto">
+        <table className="w-full table-auto mb-5">
           <thead>
             <tr>
               <th className="px-4 py-2">Name</th>
@@ -86,12 +86,10 @@ const PlayersPage: React.FC = () => {
             ))}
           </tbody>
         </table>
-        <button
-          className="bg-green-500 text-white px-4 py-2 rounded mt-4"
-        //   onClick={handleSave}
-        >
-          Save
-        </button>
+        <MoviingBorderButton borderRadius="1rem"
+        className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
+        >Save
+        </MoviingBorderButton>
       </div>
     </div>
   );
