@@ -4,11 +4,11 @@ const bcrypt = require('bcryptjs');
 const User = {};
 
 User.create = (user, callback) => {
-  const { name, edu_mail, phone, regNo, department, userPicUrl, password } = user;
+  const { name, email, phone, regNo, department, userPicUrl, password } = user;
   const hashedPassword = bcrypt.hashSync(password, 10);
 
   const query = 'INSERT INTO users (reg_no, name, edu_mail, phone, department, user_pic_url, password) VALUES (?, ?, ?, ?, ?, ?, ?)';
-  db.query(query, [regNo, name, edu_mail, phone, department, userPicUrl, hashedPassword], callback);
+  db.query(query, [regNo, name, email, phone, department, userPicUrl, hashedPassword], callback);
 };
 
 User.findByEmail = (email, callback) => {
@@ -24,7 +24,7 @@ User.findByRegNo = (id, callback) => {
 
 User.update = (regNo, user, callback) => {
   const { name, phone, userPicUrl, password } = user;
-  const hashedPassword = password ? bcrypt.hashSync(password, 10) : null;
+  const hashedPassword = bcrypt.hashSync(password, 10);
 
   const query = `UPDATE users SET name = ?, phone = ?, user_pic_url = ?, password = ? WHERE reg_no = ?`;
   db.query(query, [name, phone, userPicUrl, hashedPassword, regNo], callback);
@@ -70,6 +70,48 @@ User.findCurrentTournamentByUser = (regNo, callback) => {
   db.query(query, [regNo, regNo], callback);
 };
 
+User.findParticipatedTournamentsByUser = (regNo, callback) => {
+  const query = 'SELECT * FROM participated_tournament WHERE reg_no = ?';
+  db.query(query, [regNo], callback);
+};
 
+User.findByJoinCode = (joinCode, callback) => {
+  const query = 'SELECT * FROM tournament WHERE join_code = ?';
+  db.query(query, [joinCode], callback);
+};
+
+
+User.createMemberRequest = (request, callback) => {
+  const { tournamentId, regNo, role, position, teamName, teamLogo } = request;
+  const query = 'INSERT INTO member_request (tournament_id, reg_no, role, position, team_name, team_logo) VALUES (?, ?, ?, ?, ?, ?)';
+  db.query(query, [tournamentId, regNo, role, position, teamName, teamLogo], callback);
+};
+
+User.getMemberRequests = (callback) => {
+  const query = `
+    SELECT mr.*, u.name 
+    FROM member_request mr
+    JOIN users u ON mr.reg_no = u.reg_no
+  `;
+  db.query(query, callback);
+};
+
+
+User.createTeam = (team, callback) => {
+  const { tournamentId, regNo, teamName, teamLogo} = team;
+  const query = 'INSERT INTO team (tournament_id, reg_no, team_name, team_logo) VALUES (?, ?, ?, ?)';
+  db.query(query, [tournamentId, regNo, teamName, teamLogo], callback);
+};
+
+User.createPlayer = (player, callback) => {
+  const { tournamentId, regNo,position} = player;
+  const query = 'INSERT INTO player (tournament_id, reg_no, position) VALUES (?, ?, ?)';
+  db.query(query, [tournamentId, regNo, position], callback);
+};
+
+User.deleteMemberRequest = (requestId, callback) => {
+  const query = 'DELETE FROM member_request WHERE request_id = ?';
+  db.query(query, [requestId], callback);
+};
 
 module.exports = User;

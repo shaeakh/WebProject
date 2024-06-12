@@ -36,9 +36,9 @@ CREATE TABLE member_request (
   tournament_id INT,
   reg_no VARCHAR(50) ,
   role VARCHAR(255) NOT NULL,
-  position VARCHAR(255) NOT NULL,
-  team_name VARCHAR(255) NOT NULL,
-  team_logo VARCHAR(300) NOT NULL,
+  position VARCHAR(255) ,
+  team_name VARCHAR(255) ,
+  team_logo VARCHAR(300) ,
   FOREIGN KEY (reg_no) REFERENCES users (reg_no),
   FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id)
 );
@@ -47,8 +47,8 @@ CREATE TABLE team (
   team_id INT PRIMARY KEY AUTO_INCREMENT,
   tournament_id INT,
   reg_no VARCHAR(50),
-  team_name VARCHAR(255) NOT NULL,
-  team_logo VARCHAR(300) NOT NULL,
+  team_name VARCHAR(255) ,
+  team_logo VARCHAR(300) ,
   coin INT(255),
   FOREIGN KEY (reg_no) REFERENCES users (reg_no),
   FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id)
@@ -59,6 +59,7 @@ CREATE TABLE player (
   tournament_id INT,
   reg_no VARCHAR(50),
   team_id INT,
+  position VARCHAR(255),
   player_price int,
   category VARCHAR(255),
   FOREIGN KEY (team_id) REFERENCES team (team_id),

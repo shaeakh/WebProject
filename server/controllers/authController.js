@@ -11,17 +11,26 @@ const isValidEmail = (email) => {
 
 // Register new user
 exports.registerUser = (req, res) => {
-  const { name, edu_mail, phone, regNo, department, password } = req.body;
+  const { name, email, phone, regNo, department, password,confirmPassword } = req.body;
   const userPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/avatar.png";
 
   // Validate email
-  if (!isValidEmail(edu_mail)) {
+  if (!isValidEmail(email)) {
     return res.status(400).json({ message: 'Invalid email domain. Only @student.sust.edu emails are allowed.' });
+  }
+
+    // Validate password and confirmation
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: 'Passwords do not match.' });
+    }
+
+  if (!name || !phone || !regNo || !department || !password) {
+    return res.status(400).json({ message: 'All fields are required' });
   }
 
   const newUser = {
     name,
-    edu_mail,
+    email,
     phone,
     regNo,
     department,
@@ -29,7 +38,7 @@ exports.registerUser = (req, res) => {
     password
   };
 
-  User.findByEmail(edu_mail, (err, users) => {
+  User.findByEmail(email, (err, users) => {
     if (err) throw err;
     if (users.length > 0) {
       return res.status(400).json({ message: 'User already exists' });

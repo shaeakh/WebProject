@@ -123,3 +123,117 @@ exports.getCurrentTournamentDetails = (req, res) => {
     res.status(200).json({ message: 'Current tournament details', tournament: tournaments[0] });
   });
 };
+
+exports.getUserParticipatedTournaments = (req, res) => {
+  const regNo = req.user.reg_no;
+
+  User.findParticipatedTournamentsByUser(regNo, (err, tournaments) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching participated tournaments', error: err });
+    }
+
+    if (tournaments.length === 0) {
+      return res.status(404).json({ message: 'No participated tournaments found' });
+    }
+
+    res.status(200).json({ message: 'Participated tournaments fetched successfully', tournaments });
+  });
+};
+
+exports.joinTournament = (req, res) => {
+  const { joinCode, role, position, teamName } = req.body;
+  const teamLogo = req.file ? req.file.cloudinaryUrl : "/uploads/team.png";
+  const regNo = req.user.reg_no;
+
+  User.findByJoinCode(joinCode, (err, tournaments) => {
+    if (err || tournaments.length === 0) {
+      return res.status(400).json({ message: 'Invalid join code' });
+    }
+
+    const tournament = tournaments[0];
+    const newMemberRequest = {
+      tournamentId: tournament.tournament_id,
+      regNo,
+      role,
+      position: role === 'player' ? position : null,
+      teamName: role === 'manager' ? teamName : null,
+      teamLogo: role === 'manager' ? teamLogo : null,
+    };
+
+    User.createMemberRequest(newMemberRequest, (err, result) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error joining tournament', error: err });
+      }
+      res.status(201).json({ message: 'Request to join tournament submitted successfully' });
+    });
+  });
+};
+
+// Get Member Requests
+exports.getMemberRequests = (req, res) => {
+  User.getMemberRequests((err, requests) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching member requests', error: err });
+    }
+    res.status(200).json(requests);
+  });
+};
+
+
+// Accept Member Request
+exports.acceptMemberRequest = (req, res) => {
+  const { requestId } = req.params;
+
+  User.getMemberRequests((err, requests) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching member request', error: err });
+    }
+
+    const request = requests.find(r => r.request_id == requestId);
+    if (!request) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    const { tournament_id, reg_no, role, position, team_name, team_logo } = request;
+
+    if (role === 'manager') {
+      User.createTeam({ tournamentId: tournament_id, regNo: reg_no, teamName: team_name, teamLogo: team_logo}, (err, result) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error creating team', error: err });
+        }
+        User.deleteMemberRequest(requestId, (err) => {
+          if (err) {
+            return res.status(500).json({ message: 'Error deleting member request', error: err });
+          }
+          res.status(201).json({ message: 'Request accepted and team created successfully' });
+        });
+      });
+    } else if (role === 'player') {
+      User.createPlayer({ tournamentId: tournament_id, regNo: reg_no, position }, (err, result) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error creating player', error: err });
+        }
+        User.deleteMemberRequest(requestId, (err) => {
+          if (err) {
+            return res.status(500).json({ message: 'Error deleting member request', error: err });
+          }
+          res.status(201).json({ message: 'Request accepted and player added successfully' });
+        });
+      });
+    } else {
+      res.status(400).json({ message: 'Invalid role specified' });
+    }
+  });
+};
+
+// Reject Member Request
+exports.rejectMemberRequest = (req, res) => {
+  const { requestId } = req.params;
+
+  User.deleteMemberRequest(requestId, (err) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error deleting member request', error: err });
+    }
+    res.status(200).json({ message: 'Request rejected successfully' });
+  });
+};
