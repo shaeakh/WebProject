@@ -237,3 +237,26 @@ exports.rejectMemberRequest = (req, res) => {
     res.status(200).json({ message: 'Request rejected successfully' });
   });
 };
+
+
+exports.getPlayersByTournament = (req, res) => {
+  const { tournamentId } = req.params;
+
+  User.getPlayersByTournament(tournamentId, (err, players) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching players', error: err });
+    }
+    res.status(200).json(players);
+  });
+};
+
+exports.updatePlayerCategories = (req, res) => {
+  const players = req.body.players;
+
+  User.updatePlayerCategories(players, (err, result) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error updating player categories', error: err });
+    }
+    res.status(200).json({ message: 'Player categories updated successfully' });
+  });
+};
