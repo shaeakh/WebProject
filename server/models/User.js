@@ -114,4 +114,35 @@ User.deleteMemberRequest = (requestId, callback) => {
   db.query(query, [requestId], callback);
 };
 
+User.getPlayersByTournament = (tournamentId, callback) => {
+  const query = `
+    SELECT p.*, u.name, t.sport_type 
+    FROM player p
+    JOIN users u ON p.reg_no = u.reg_no
+    JOIN tournament t ON p.tournament_id = t.tournament_id
+    WHERE p.tournament_id = ?
+  `;
+  db.query(query, [tournamentId], callback);
+};
+
+User.updatePlayerCategories = (players, callback) => {
+  const queries = players.map(player => {
+    return new Promise((resolve, reject) => {
+      const query = `
+        UPDATE player 
+        SET category = ? 
+        WHERE tournament_id = ? AND reg_no = ?
+      `;
+      db.query(query, [player.category, player.tournament_id, player.reg_no], (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+  });
+
+  Promise.all(queries)
+    .then(results => callback(null, results))
+    .catch(err => callback(err));
+};
+
 module.exports = User;
