@@ -65,10 +65,12 @@ exports.authUser = (req, res) => {
 
     // Validate email
     if (!isValidEmail(email)) {
+      console.log(email);
       return res.status(400).json({ message: 'Invalid email domain. Only @student.sust.edu emails are allowed.' });
     }
 
   User.findByEmail(email, (err, users) => {
+    console.log(users);
     if (err) throw err;
     if (users.length === 0) {
       return res.status(401).json({ message: 'Invalid email or password' });

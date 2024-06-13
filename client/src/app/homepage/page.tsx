@@ -41,7 +41,8 @@ function page() {
 
     return (
         <div className='w-screen flex'>
-            <div className='w-1/6 flex  flex-col  h-screen justify-center bg-gray-400 bg-opacity-50'> 
+            { }
+            <div className='w-1/6 flex  flex-col  h-screen justify-center bg-gray-400 bg-opacity-50'>
                 <div className='flex justify-center '>
                     <div className='w-56 h-56'>
                         <Aavatar />
@@ -74,23 +75,30 @@ function page() {
                             Join a tournament
                         </button>
                     </div>
-
-
                 </div>
                 <div className='flex justify-start w-full p-2 '>
                     <h1 className='text-4xl font-bold'>Participated Tournaments</h1>
                 </div>
-                <div className='flex flex-wrap w-full  '>
+                <div className='grid grid-flow-row grid-cols-4 grid-rows-auto gap-10 '>
                     {participated_tournaments.map((tournament, index) => (
-                        <div key={index} className='w-full sm:w-1/2 md:w-1/5 p-2'>
-                            <TournamentCard
+                        <TournamentCard key={index}
+                            title={tournament.title}
+                            date={tournament.date}
+                            backgroundImage={tournament.backgroundImage}
+                            link={tournament.link}
+                        />
+                    ))}
+
+                    {/* {participated_tournaments.map((tournament, index) => (
+                        <div key={index} className='w-full  sm:w-1/2 md:w-1/5 p-2'>
+                            <TournamentCard className="m-4"
                                 title={tournament.title}
                                 date={tournament.date}
                                 backgroundImage={tournament.backgroundImage}
                                 link={tournament.link}
                             />
                         </div>
-                    ))}
+                    ))} */}
                 </div>
             </div>
 
