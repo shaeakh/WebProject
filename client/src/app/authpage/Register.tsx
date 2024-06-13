@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 
 import SubmitBtn from "../components/SubmitBtn";
@@ -29,44 +29,72 @@ export default function SignupFormDemo(props: any) {
   const [password, set_password] = React.useState("");
   const [confirm_password, set_confirm_password] = React.useState("");
   const [error, setError] = useState("");
+  const [isError, setisError] = useState(false);
+
+  const isValidEmail = (email: any) => {
+    const regex = /^[a-zA-Z]+[0-9]*@student\.sust\.edu$/;
+    return regex.test(email);
+  };
+  useEffect(() => {
+    let timer: any;
+    if (isError) {
+      timer = setTimeout(() => {
+        setisError(false);
+      }, 4000);
+    }    
+    return () => clearTimeout(timer);
+  }, [isError]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
     e.preventDefault();
     if (password !== confirm_password) {
+      setisError(true);
       setError("Passwords do not match");
+      
       return;
-    }  
+    }
+    if (!isValidEmail(edu_mail)) {
+      setisError(true);
+      setError("Only @student.sust.edu emails are allowed.");      
+      return;
+    }
     try {
       const formData = new FormData();
-    formData.append("name", name);
-    formData.append("email", edu_mail);
-    formData.append("phone", phone);
-    formData.append("regNo", regNo);
-    formData.append("department", department);
-    formData.append("password", password);
-    formData.append("confirmPassword", confirm_password);
-    
-    if (userPic) {
-      formData.append("userPicUrl", userPic);
-    }
+      formData.append("name", name);
+      formData.append("email", edu_mail);
+      formData.append("phone", phone);
+      formData.append("regNo", regNo);
+      formData.append("department", department);
+      formData.append("password", password);
+      formData.append("confirmPassword", confirm_password);
 
-  
+      if (userPic) {
+        formData.append("userPicUrl", userPic);
+      }
+
+
       const response = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         body: formData,
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
+        setisError(true);
         setError(errorData.message || "Error registering user");
+        
+        console.log(setError);
       } else {
-        props.handleRegister(true);
+        props.handleRegister(true); 
       }
     } catch (err) {
+      setisError(true);
       setError("Error registering user");
+      
     }
   };
-  
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -89,7 +117,12 @@ export default function SignupFormDemo(props: any) {
           Get the best players in the tournament with our analysis tools
         </p>
 
-        <form className="my-8" onSubmit={handleSubmit}>
+        <form className="my-4" onSubmit={handleSubmit}>
+        {(isError) ?
+            <div className="border-2 border-black bg-red-400 bg-opacity-50 rounded-lg my-2 p-2">
+              {error}
+            </div> : <div></div>
+          }
           <div className="flex gap-4 justify-between">
             <div className="w-1/2 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
               <LabelInputContainer>
@@ -116,7 +149,7 @@ export default function SignupFormDemo(props: any) {
               <Label htmlFor="studentRegistrationNo">Registration Number</Label>
               <Input value={regNo} onChange={(e) => set_regNo(e.target.value)} id="studentRegistrationNo" placeholder="Enter Registration Number" type="text" />
             </LabelInputContainer>
-            <div className="mb-4 w-1/2">              
+            <div className="mb-4 w-1/2">
               <DropdownMenu >
                 <DropdownMenuTrigger asChild >
                   <button className=" w-full px-8 py-2 rounded-md text-black border border-grey outline-none">
