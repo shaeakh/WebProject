@@ -278,3 +278,27 @@ exports.updatePlayerCategories = (req, res) => {
     res.status(200).json({ message: 'Player categories updated successfully' });
   });
 };
+
+
+exports.getTeamDetailsByManager = (req, res) => {
+  const regNo = req.user.reg_no;
+
+  User.getTeamDetailsByManager(regNo, (err, teams) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching team details', error: err });
+    }
+    res.status(200).json(teams);
+  });
+};
+
+
+exports.getTournamentDetailsWithTeams = (req, res) => {
+  const regNo = req.user.reg_no;
+
+  User.getTournamentDetailsWithTeams(regNo, (err, tournaments) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching tournament details with teams', error: err });
+    }
+    res.status(200).json(tournaments);
+  });
+};
