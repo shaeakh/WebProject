@@ -35,6 +35,8 @@ export default function SignupFormDemo(props: any) {
     const regex = /^[a-zA-Z]+[0-9]*@student\.sust\.edu$/;
     return regex.test(email);
   };
+
+  
   useEffect(() => {
     let timer: any;
     if (isError) {
@@ -83,8 +85,6 @@ export default function SignupFormDemo(props: any) {
         const errorData = await response.json();
         setisError(true);
         setError(errorData.message || "Error registering user");
-        
-        console.log(setError);
       } else {
         props.handleRegister(true); 
       }
@@ -119,7 +119,7 @@ export default function SignupFormDemo(props: any) {
 
         <form className="my-4" onSubmit={handleSubmit}>
         {(isError) ?
-            <div className="border-2 border-black bg-red-400 bg-opacity-50 rounded-lg my-2 p-2">
+            <div className="font-bold bg-red-400 bg-opacity-50 rounded-lg my-2 p-2">
               {error}
             </div> : <div></div>
           }
