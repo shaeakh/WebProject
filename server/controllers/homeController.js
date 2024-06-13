@@ -12,19 +12,20 @@ exports.updateUser = (req, res) => {
   // Confirm email and password
   User.findByEmail(email, (err, users) => {
     if (err || users.length === 0) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid email' });
     }
 
     const user = users[0];
+    console.log(bcrypt.compareSync(password, user.password))
     if (!bcrypt.compareSync(password, user.password)) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid password' });
     }
 
     const updatedUser = {
       name: name || user.name,
       phone: phone || user.phone,
       userPicUrl: userPicUrl || user.userPicUrl,
-      password: newPassword ? bcrypt.hashSync(newPassword, 10) : user.password,
+      password: newPassword || user.password,
     };
 
     User.update(regNo, updatedUser, (err, result) => {
@@ -102,6 +103,7 @@ exports.getUserDetails = (req, res) => {
       phone: user.phone,
       department: user.department,
       reg_no: user.reg_no,
+      user_pic_url: user.user_pic_url,
     };
     res.status(200).json(userDetails);
   });
@@ -196,33 +198,49 @@ exports.acceptMemberRequest = (req, res) => {
 
     const { tournament_id, reg_no, role, position, team_name, team_logo } = request;
 
-    if (role === 'manager') {
-      User.createTeam({ tournamentId: tournament_id, regNo: reg_no, teamName: team_name, teamLogo: team_logo}, (err, result) => {
+    // Fetch tournament coins
+    User.getTournamentCoins(tournament_id, (err, coins) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error fetching tournament coins', error: err });
+      }
+
+      const { per_team_coin, player_base_coin } = coins[0];
+
+      // Insert into participated_tournament
+      User.createParticipatedTournament({ tournamentId: tournament_id, regNo: reg_no, role }, (err) => {
         if (err) {
-          return res.status(500).json({ message: 'Error creating team', error: err });
+          return res.status(500).json({ message: 'Error inserting into participated_tournament', error: err });
         }
-        User.deleteMemberRequest(requestId, (err) => {
-          if (err) {
-            return res.status(500).json({ message: 'Error deleting member request', error: err });
-          }
-          res.status(201).json({ message: 'Request accepted and team created successfully' });
-        });
-      });
-    } else if (role === 'player') {
-      User.createPlayer({ tournamentId: tournament_id, regNo: reg_no, position }, (err, result) => {
-        if (err) {
-          return res.status(500).json({ message: 'Error creating player', error: err });
+
+        if (role === 'manager') {
+          User.createTeam({ tournamentId: tournament_id, regNo: reg_no, teamName: team_name, teamLogo: team_logo, coin: per_team_coin }, (err) => {
+            if (err) {
+              return res.status(500).json({ message: 'Error creating team', error: err });
+            }
+            User.deleteMemberRequest(requestId, (err) => {
+              if (err) {
+                return res.status(500).json({ message: 'Error deleting member request', error: err });
+              }
+              res.status(201).json({ message: 'Request accepted and team created successfully' });
+            });
+          });
+        } else if (role === 'player') {
+          User.createPlayer({ tournamentId: tournament_id, regNo: reg_no, position, playerPrice: player_base_coin }, (err) => {
+            if (err) {
+              return res.status(500).json({ message: 'Error creating player', error: err });
+            }
+            User.deleteMemberRequest(requestId, (err) => {
+              if (err) {
+                return res.status(500).json({ message: 'Error deleting member request', error: err });
+              }
+              res.status(201).json({ message: 'Request accepted and player added successfully' });
+            });
+          });
+        } else {
+          res.status(400).json({ message: 'Invalid role specified' });
         }
-        User.deleteMemberRequest(requestId, (err) => {
-          if (err) {
-            return res.status(500).json({ message: 'Error deleting member request', error: err });
-          }
-          res.status(201).json({ message: 'Request accepted and player added successfully' });
-        });
       });
-    } else {
-      res.status(400).json({ message: 'Invalid role specified' });
-    }
+    });
   });
 };
 
@@ -258,5 +276,29 @@ exports.updatePlayerCategories = (req, res) => {
       return res.status(500).json({ message: 'Error updating player categories', error: err });
     }
     res.status(200).json({ message: 'Player categories updated successfully' });
+  });
+};
+
+
+exports.getTeamDetailsByManager = (req, res) => {
+  const regNo = req.user.reg_no;
+
+  User.getTeamDetailsByManager(regNo, (err, teams) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching team details', error: err });
+    }
+    res.status(200).json(teams);
+  });
+};
+
+
+exports.getTournamentDetailsWithTeams = (req, res) => {
+  const regNo = req.user.reg_no;
+
+  User.getTournamentDetailsWithTeams(regNo, (err, tournaments) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching tournament details with teams', error: err });
+    }
+    res.status(200).json(tournaments);
   });
 };

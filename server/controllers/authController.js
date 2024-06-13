@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const { use } = require('../routes/authRoutes');
 const generateToken = require('../utils/generateToken');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
@@ -13,7 +14,7 @@ const isValidEmail = (email) => {
 exports.registerUser = (req, res) => {
   const { name, email, phone, regNo, department, password,confirmPassword } = req.body;
   const userPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/avatar.png";
-  console.log(userPicUrl);
+  // console.log(userPicUrl);
   
   // Validate email
   if (!isValidEmail(email)) {
@@ -76,6 +77,7 @@ exports.authUser = (req, res) => {
     }
 
     const user = users[0];
+    // console.log(bcrypt.compareSync(password, user.password))
     if (bcrypt.compareSync(password, user.password)) {
       const token = generateToken(user.reg_no);
       res.cookie('token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 });

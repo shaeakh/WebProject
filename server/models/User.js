@@ -60,15 +60,14 @@ User.updateTournament = (tournamentId, tournament, regNo, callback) => {
 
 User.findCurrentTournamentByUser = (regNo, callback) => {
   const query = `
-    SELECT tournament.* FROM tournament
-    INNER JOIN player ON tournament.tournament_id = player.tournament_id
-    WHERE player.reg_no = ?
-    UNION
-    SELECT tournament.* FROM tournament
-    INNER JOIN manager ON tournament.tournament_id = manager.tournament_id
-    WHERE manager.reg_no = ?`;
+    SELECT t.*
+    FROM tournament t
+    LEFT JOIN participated_tournament pt ON t.tournament_id = pt.tournament_id
+    WHERE t.reg_no = ? OR pt.reg_no = ?
+  `;
   db.query(query, [regNo, regNo], callback);
 };
+
 
 User.findParticipatedTournamentsByUser = (regNo, callback) => {
   const query = 'SELECT * FROM participated_tournament WHERE reg_no = ?';
@@ -96,17 +95,27 @@ User.getMemberRequests = (callback) => {
   db.query(query, callback);
 };
 
+User.createParticipatedTournament = (participation, callback) => {
+  const { tournamentId, regNo, role } = participation;
+  const query = 'INSERT INTO participated_tournament (tournament_id, reg_no, role) VALUES (?, ?, ?)';
+  db.query(query, [tournamentId, regNo, role], callback);
+};
+
+User.getTournamentCoins = (tournamentId, callback) => {
+  const query = 'SELECT per_team_coin, player_base_coin FROM tournament WHERE tournament_id = ?';
+  db.query(query, [tournamentId], callback);
+};
 
 User.createTeam = (team, callback) => {
-  const { tournamentId, regNo, teamName, teamLogo} = team;
-  const query = 'INSERT INTO team (tournament_id, reg_no, team_name, team_logo) VALUES (?, ?, ?, ?)';
-  db.query(query, [tournamentId, regNo, teamName, teamLogo], callback);
+  const { tournamentId, regNo, teamName, teamLogo, coin} = team;
+  const query = 'INSERT INTO team (tournament_id, reg_no, team_name, team_logo, coin) VALUES (?, ?, ?, ?, ?)';
+  db.query(query, [tournamentId, regNo, teamName, teamLogo, coin], callback);
 };
 
 User.createPlayer = (player, callback) => {
-  const { tournamentId, regNo,position} = player;
-  const query = 'INSERT INTO player (tournament_id, reg_no, position) VALUES (?, ?, ?)';
-  db.query(query, [tournamentId, regNo, position], callback);
+  const { tournamentId, regNo,position, playerPrice} = player;
+  const query = 'INSERT INTO player (tournament_id, reg_no, position, player_price) VALUES (?, ?, ?, ?)';
+  db.query(query, [tournamentId, regNo, position, playerPrice], callback);
 };
 
 User.deleteMemberRequest = (requestId, callback) => {
@@ -143,6 +152,29 @@ User.updatePlayerCategories = (players, callback) => {
   Promise.all(queries)
     .then(results => callback(null, results))
     .catch(err => callback(err));
+};
+
+
+User.getTeamDetailsByManager = (regNo, callback) => {
+  const query = `
+    SELECT t.team_name, t.team_logo, p.reg_no, p.position, u.name
+    FROM team t
+    JOIN player p ON t.team_id = p.team_id
+    JOIN users u ON p.reg_no = u.reg_no
+    WHERE t.reg_no = ?
+  `;
+  db.query(query, [regNo], callback);
+};
+
+User.getTournamentDetailsWithTeams = (regNo, callback) => {
+  const query = `
+    SELECT t.tournament_logo_url, t.join_code, tm.team_name, u.name as user_name
+    FROM tournament t
+    JOIN team tm ON t.tournament_id = tm.tournament_id
+    JOIN users u ON tm.reg_no = u.reg_no
+    WHERE t.reg_no = ?
+  `;
+  db.query(query, [regNo], callback);
 };
 
 module.exports = User;
