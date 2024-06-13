@@ -35,26 +35,27 @@ export default function SignupFormDemo(props: any) {
     if (password !== confirm_password) {
       setError("Passwords do not match");
       return;
-    }
-
-    const formData = new FormData();
+    }  
+    try {
+      const formData = new FormData();
     formData.append("name", name);
-    formData.append("edu_mail", edu_mail);
+    formData.append("email", edu_mail);
     formData.append("phone", phone);
     formData.append("regNo", regNo);
     formData.append("department", department);
     formData.append("password", password);
     formData.append("confirmPassword", confirm_password);
+    
     if (userPic) {
       formData.append("userPicUrl", userPic);
     }
 
-    try {
+  
       const response = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         body: formData,
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         setError(errorData.message || "Error registering user");
@@ -65,6 +66,7 @@ export default function SignupFormDemo(props: any) {
       setError("Error registering user");
     }
   };
+  
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

@@ -5,7 +5,7 @@ const fs = require('fs');
 
 
 const isValidEmail = (email) => {
-  const regex = /^[a-zA-Z0-9._%+-]+@student\.sust\.edu$/;
+  const regex = /^[a-zA-Z]+[0-9]*@student\.sust\.edu$/;
   return regex.test(email);
 };
 
@@ -13,21 +13,23 @@ const isValidEmail = (email) => {
 exports.registerUser = (req, res) => {
   const { name, email, phone, regNo, department, password,confirmPassword } = req.body;
   const userPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/avatar.png";
-
+  console.log(userPicUrl);
+  
   // Validate email
   if (!isValidEmail(email)) {
-    return res.status(400).json({ message: 'Invalid email domain. Only @student.sust.edu emails are allowed.' });
+    return res.status(400).json({ message: 'Invalid email domain. Only @student.sust.edu emails are allowed.' });    
   }
-
+  
     // Validate password and confirmation
     if (password !== confirmPassword) {
       return res.status(400).json({ message: 'Passwords do not match.' });
+      
     }
 
-  if (!name || !phone || !regNo || !department || !password) {
+  if (!name || !phone || !regNo || !department || !password) {    
     return res.status(400).json({ message: 'All fields are required' });
   }
-
+  
   const newUser = {
     name,
     email,
@@ -37,17 +39,20 @@ exports.registerUser = (req, res) => {
     userPicUrl,
     password
   };
-
+  
   User.findByEmail(email, (err, users) => {
-    if (err) throw err;
+    if (err) {throw err;}
     if (users.length > 0) {
+      
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    User.create(newUser, (err, result) => {
+    
+    User.create(newUser, (err, result) => {      
       if (err) {
         return res.status(500).json({ message: 'Error registering user', error: err });
       }
+      console.log("atkaisi eikhane");
       res.status(201).json({ message: 'User registered successfully', userId: result.insertId });
     });
   });
