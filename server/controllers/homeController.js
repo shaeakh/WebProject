@@ -302,3 +302,14 @@ exports.getTournamentDetailsWithTeams = (req, res) => {
     res.status(200).json(tournaments);
   });
 };
+
+exports.getTeamsInTournament = (req, res) => {
+  const { tournamentId } = req.params;
+
+  User.getTeamsInTournament(tournamentId, (err, teams) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching teams', error: err });
+    }
+    res.status(200).json(teams);
+  });
+};
