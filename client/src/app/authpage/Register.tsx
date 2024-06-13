@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 
 
 import SubmitBtn from "../components/SubmitBtn";
@@ -19,25 +19,58 @@ import { Value } from "@radix-ui/react-select";
 import UploadIImg from "../components/UploadIImg";
 
 export default function SignupFormDemo(props: any) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Form submitted");
-  };
-
-
 
   const [name, set_name] = React.useState("");
   const [edu_mail, set_edu_mail] = React.useState("");
   const [phone, set_phone] = React.useState("");
   const [regNo, set_regNo] = React.useState("");
   const [department, set_department] = React.useState("Department");
-  const [userPic, set_userPic] = React.useState("");
+  const [userPic, setUserPic] = useState<File | null>(null);
   const [password, set_password] = React.useState("");
   const [confirm_password, set_confirm_password] = React.useState("");
+  const [error, setError] = useState("");
 
-  const handle_img = (img: any) => {
-    set_userPic(img);
-  }
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (password !== confirm_password) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("edu_mail", edu_mail);
+    formData.append("phone", phone);
+    formData.append("regNo", regNo);
+    formData.append("department", department);
+    formData.append("password", password);
+    formData.append("confirmPassword", confirm_password);
+    if (userPic) {
+      formData.append("userPicUrl", userPic);
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || "Error registering user");
+      } else {
+        props.handleRegister(true);
+      }
+    } catch (err) {
+      setError("Error registering user");
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setUserPic(e.target.files[0]);
+    }
+  };
 
   const handleRegister = () => {
     props.handleRegister(true)
@@ -76,10 +109,40 @@ export default function SignupFormDemo(props: any) {
             <Input value={edu_mail} onChange={(e) => set_edu_mail(e.target.value)} id="email" placeholder="xyz12@student.sust.edu" type="email" />
           </LabelInputContainer>
 
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="studentRegistrationNo">Student Registration Number</Label>
-            <Input value={regNo} onChange={(e) => set_regNo(e.target.value)} id="studentRegistrationNo" placeholder="Enter Registration Number" type="text" />
-          </LabelInputContainer>
+          <div className="flex gap-4 w-full items-end justify-between">
+            <LabelInputContainer className="mb-4 w-1/2">
+              <Label htmlFor="studentRegistrationNo">Registration Number</Label>
+              <Input value={regNo} onChange={(e) => set_regNo(e.target.value)} id="studentRegistrationNo" placeholder="Enter Registration Number" type="text" />
+            </LabelInputContainer>
+            <div className="mb-4 w-1/2">              
+              <DropdownMenu >
+                <DropdownMenuTrigger asChild >
+                  <button className=" w-full px-8 py-2 rounded-md text-black border border-grey outline-none">
+                    {department}
+                  </button>
+
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuLabel>Depertments</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuRadioGroup value={department} onValueChange={set_department}>
+                    <DropdownMenuRadioItem value="ARC">ARC</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="CSE">CSE</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="SWE">SWE</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="EEE">EEE</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="IPE">IPE</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="ME">ME</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="CEE">CEE</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="PME">PME</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="BMB">BMB</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="GEB">GEB</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="PSS">PSS</DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
 
           <div className="flex gap-4 justify-between">
             <LabelInputContainer className="mb-4">
@@ -94,45 +157,18 @@ export default function SignupFormDemo(props: any) {
           </div>
 
 
-          <div className="mb-4">
-            <DropdownMenu >
-              <DropdownMenuTrigger asChild >
-                <button className="px-8 py-2 rounded-md text-black border border-grey outline-none">
-                  {department}
-                </button>
-
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>Depertments</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuRadioGroup value={department} onValueChange={set_department}>
-                  <DropdownMenuRadioItem value="ARC">ARC</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="CSE">CSE</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="SWE">SWE</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="EEE">EEE</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="IPE">IPE</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="ME">ME</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="CEE">CEE</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="PME">PME</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="BMB">BMB</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="GEB">GEB</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="PSS">PSS</DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-
 
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
             <Label htmlFor="picture">Picture</Label>
-            <Input id="picture" type="file" />
+            <Input id="picture" type="file" onChange={handleFileChange} />
+          </div>
+          <div className="w-full flex justify-center mb-4">
+            <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
+              Register
+            </button>
           </div>
 
-          <SubmitBtn text={"black"} bg={"white"} borderclr={"black"} hover_bg={"black"} hover_text={"white"} hover_border={"white"}
-            value={"Register"} />
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center">
             <Label onClick={handleRegister} htmlFor="password">Already have account ? <b>Sign in</b></Label>
           </div>
         </form>
