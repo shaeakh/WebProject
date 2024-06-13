@@ -55,18 +55,21 @@ export default function SignupFormDemo(props: any) {
         </p>
 
         <form className="my-8" onSubmit={handleSubmit}>
-          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-            <LabelInputContainer>
-              <Label htmlFor="firstname">Name</Label>
-              <Input value={name} onChange={(e) => set_name(e.target.value)}
-                id="firstname" placeholder="John Doe" type="text" />
+          <div className="flex gap-4 justify-between">
+            <div className="w-1/2 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+              <LabelInputContainer>
+                <Label htmlFor="firstname">Name</Label>
+                <Input value={name} onChange={(e) => set_name(e.target.value)}
+                  id="firstname" placeholder="John Doe" type="text" />
+              </LabelInputContainer>
+            </div>
+
+            <LabelInputContainer className="w-1/2  mb-4">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input value={phone} onChange={(e) => set_phone(e.target.value)} id="phone" placeholder="Enter phone number" type="tel" />
             </LabelInputContainer>
           </div>
 
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="phone">Phone Number</Label>
-            <Input value={phone} onChange={(e) => set_phone(e.target.value)} id="phone" placeholder="Enter phone number" type="tel" />
-          </LabelInputContainer>
 
           <LabelInputContainer className="mb-4">
             <Label htmlFor="email">Educational Email Address</Label>
@@ -78,15 +81,17 @@ export default function SignupFormDemo(props: any) {
             <Input value={regNo} onChange={(e) => set_regNo(e.target.value)} id="studentRegistrationNo" placeholder="Enter Registration Number" type="text" />
           </LabelInputContainer>
 
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="password">Password</Label>
-            <Input value={password} onChange={(e) => set_password(e.target.value)} id="password" placeholder="••••••••" type="password" />
-          </LabelInputContainer>
+          <div className="flex gap-4 justify-between">
+            <LabelInputContainer className="mb-4">
+              <Label htmlFor="password">Password</Label>
+              <Input value={password} onChange={(e) => set_password(e.target.value)} id="password" placeholder="••••••••" type="password" />
+            </LabelInputContainer>
 
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="password">Confirm Password</Label>
-            <Input value={confirm_password} onChange={(e) => set_confirm_password(e.target.value)} id="password" placeholder="••••••••" type="password" />
-          </LabelInputContainer>
+            <LabelInputContainer className="mb-4">
+              <Label htmlFor="password">Confirm Password</Label>
+              <Input value={confirm_password} onChange={(e) => set_confirm_password(e.target.value)} id="password" placeholder="••••••••" type="password" />
+            </LabelInputContainer>
+          </div>
 
 
           <div className="mb-4">
