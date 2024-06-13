@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/SClabel";
 import { Input } from "@/components/ui/SCinput";
 import { cn } from "@/lib/utils";
 
+
 import {
     Select,
     SelectContent,
@@ -28,8 +29,10 @@ import {
     IconBrandOnlyfans,
 } from "@tabler/icons-react";
 
-export default function SignupFormDemo(props: any) {
+import { useRouter } from "next/navigation";
 
+export default function SignupFormDemo(props: any) {
+    const router = useRouter();
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [error, setError] = React.useState("");
@@ -43,14 +46,13 @@ export default function SignupFormDemo(props: any) {
           }, 4000);
         }    
         return () => clearTimeout(timer);
-      }, [isError]);
-
+      }, [isError]);      
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const login = {
                 email : email,
-                password : password || 'passowrd'
+                password : password || 'password'
             }
 
             const response = await fetch("http://localhost:5000/api/auth/login", {
@@ -66,12 +68,14 @@ export default function SignupFormDemo(props: any) {
                 setisError(true);
                 setError(errorData.message || "Error while logging in");
             } else {
-                console.log("successfully logged in");
-                
+                console.log("//router push to homepage");
+                router.push('/homepage')
+
                 //router push to homepage
             }
 
         } catch (error) {
+            console.log(error);            
             setisError(true);
             setError("Error while logging in");
         }
@@ -80,7 +84,7 @@ export default function SignupFormDemo(props: any) {
     const handleRegister = () => {
         props.handleRegister(false)
     }
-
+    
 
     return (
 
