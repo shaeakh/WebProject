@@ -177,4 +177,25 @@ User.getTournamentDetailsWithTeams = (regNo, callback) => {
   db.query(query, [regNo], callback);
 };
 
+
+User.getTeamsInTournament = (tournamentId, callback) => {
+  const query = `
+    SELECT 
+      t.team_id,
+      t.team_name,
+      t.team_logo,
+      t.coin,
+      COUNT(p.reg_no) as player_count
+    FROM 
+      team t
+    LEFT JOIN 
+      player p ON t.team_id = p.team_id
+    WHERE 
+      t.tournament_id = ?
+    GROUP BY 
+      t.team_id, t.team_name, t.team_logo, t.coin
+  `;
+  db.query(query, [tournamentId], callback);
+};
+
 module.exports = User;
