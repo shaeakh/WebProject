@@ -53,7 +53,6 @@ exports.registerUser = (req, res) => {
       if (err) {
         return res.status(500).json({ message: 'Error registering user', error: err });
       }
-      console.log("atkaisi eikhane");
       res.status(201).json({ message: 'User registered successfully', userId: result.insertId });
     });
   });
@@ -65,12 +64,10 @@ exports.authUser = (req, res) => {
 
     // Validate email
     if (!isValidEmail(email)) {
-      console.log(email);
       return res.status(400).json({ message: 'Invalid email domain. Only @student.sust.edu emails are allowed.' });
     }
 
   User.findByEmail(email, (err, users) => {
-    console.log(users);
     if (err) throw err;
     if (users.length === 0) {
       return res.status(401).json({ message: 'Invalid email or password' });
@@ -80,7 +77,7 @@ exports.authUser = (req, res) => {
     // console.log(bcrypt.compareSync(password, user.password))
     if (bcrypt.compareSync(password, user.password)) {
       const token = generateToken(user.reg_no);
-      res.cookie('token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 });
+      res.cookie('token', token, { maxAge: 30 * 24 * 60 * 60 * 1000 });
       res.json({ token });
     } else {
       res.status(401).json({ message: 'Invalid email or password' });

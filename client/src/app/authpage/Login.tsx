@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import SubmitBtn from "../components/SubmitBtn";
 import {
     DropdownMenu,
@@ -13,6 +13,7 @@ import {
 import { Label } from "@/components/ui/SClabel";
 import { Input } from "@/components/ui/SCinput";
 import { cn } from "@/lib/utils";
+import Cookies from 'js-cookie';
 
 
 import {
@@ -33,10 +34,10 @@ import { useRouter } from "next/navigation";
 
 export default function SignupFormDemo(props: any) {
     const router = useRouter();
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const [error, setError] = React.useState("");
-    const [isError, setisError] = React.useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [isError, setisError] = useState(false);
 
     useEffect(() => {
         let timer: any;
@@ -46,7 +47,8 @@ export default function SignupFormDemo(props: any) {
           }, 4000);
         }    
         return () => clearTimeout(timer);
-      }, [isError]);      
+      }, [isError]); 
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
@@ -60,7 +62,8 @@ export default function SignupFormDemo(props: any) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(login)
+                body: JSON.stringify(login),
+                credentials: 'include'
             });
 
             if (!response.ok) {
@@ -68,10 +71,10 @@ export default function SignupFormDemo(props: any) {
                 setisError(true);
                 setError(errorData.message || "Error while logging in");
             } else {
+                const data = await response.json();
+                Cookies.set('token', data.token);
                 console.log("//router push to homepage");
-                router.push('/homepage')
-
-                //router push to homepage
+                router.push('/homepage') //router push to homepage
             }
 
         } catch (error) {
@@ -118,7 +121,7 @@ export default function SignupFormDemo(props: any) {
                     </div>
 
                     <div className="flex justify-center w-full mb-4 ">
-                        <button onClick={() => handleSubmit} className="px-8 w-full py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
+                        <button type ="submit" onClick={() => handleSubmit} className="px-8 w-full py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
                             Login
                         </button>
                     </div>
