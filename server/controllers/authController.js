@@ -13,7 +13,7 @@ const isValidEmail = (email) => {
 // Register new user
 exports.registerUser = (req, res) => {
   const { name, email, phone, regNo, department, password,confirmPassword } = req.body;
-  const userPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/avatar.png";
+  const userPicUrl = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718475943/kxrcwdacnp1vdbrwai6k.png";
   // console.log(userPicUrl);
   
   // Validate email
