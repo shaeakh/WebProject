@@ -65,7 +65,7 @@ exports.createTournament = (req, res) => {
 
 exports.updateTournament = (req, res) => {
   const { tournamentId, tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
-  const logoPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/tournament.png";
+  const logoPicUrl = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476640/rmxa26ctdkr4m0jrgwog.png";
   const regNo = req.user.reg_no;
 
   const updatedTournament = {
@@ -144,7 +144,7 @@ exports.getUserParticipatedTournaments = (req, res) => {
 
 exports.joinTournament = (req, res) => {
   const { joinCode, role, position, teamName } = req.body;
-  const teamLogo = req.file ? req.file.cloudinaryUrl : "/uploads/team.png";
+  const teamLogo = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476614/mytqb9tcyxayeltyirpu.png";
   const regNo = req.user.reg_no;
 
   User.findByJoinCode(joinCode, (err, tournaments) => {

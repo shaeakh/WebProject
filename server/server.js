@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const cloudinary = require('cloudinary').v2;
 const cors=require("cors");
 
+
 require('dotenv').config();
 
 const corsOptions ={
@@ -26,6 +27,7 @@ const app = express();
 app.use(cors(corsOptions))
 app.use(bodyParser.json());
 app.use(cookieParser());
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/home', homeRoutes);

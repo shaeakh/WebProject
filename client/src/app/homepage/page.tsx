@@ -22,9 +22,9 @@ interface Profile {
 }
 
 interface Tournament {
-    title: string;
-    date: string;
-    backgroundImage: string;
+    tournament_name: string;
+    role: string;
+    tournament_logo_url: string;
     link: string;
 }
 
@@ -43,7 +43,6 @@ const Page: React.FC = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             const token = Cookies.get('token');
-            console.log(token);
             if (!token) {
                 router.push('/authpage'); // Redirect to login if no token is found
                 return;
@@ -72,13 +71,16 @@ const Page: React.FC = () => {
                     phone_number: data.phone,
                     user_pic_url: data.user_pic_url
                 });
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                router.push('/authpage'); // Redirect to login if an error occurs
+            }
 
 
-
-                // Fetch participated tournaments
+            try{
                 const tournamentsResponse = await fetch('http://localhost:5000/api/home/participated-tournaments', {
                     method: 'GET',
-                    credentials: 'include', // Include cookies in the request
+                    credentials: 'include', 
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
@@ -91,13 +93,13 @@ const Page: React.FC = () => {
                 if (!tournamentsResponse.ok) {
                     throw new Error('Failed to fetch participated tournaments');
                 }
-
+                else{
                 const tournamentsData = await tournamentsResponse.json();
                 setParticipatedTournaments(tournamentsData.tournaments);
-
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-                router.push('/authpage'); // Redirect to login if an error occurs
+                }
+            }
+            catch(error){
+                console.error('Error fetching participated tournament data:', error);
             }
         };
 
@@ -145,9 +147,9 @@ const Page: React.FC = () => {
                 <div className='grid grid-flow-row grid-cols-4 grid-rows-auto gap-10'>
                     {participatedTournaments?.map((tournament, index) => (
                         <TournamentCard key={index}
-                            title={tournament.title}
-                            date={tournament.date}
-                            backgroundImage={tournament.backgroundImage}
+                            tournament_name={tournament.tournament_name}
+                            role={tournament.role}
+                            tournament_logo_url={tournament.tournament_logo_url}
                             link={tournament.link}
                         />
                     ))}
