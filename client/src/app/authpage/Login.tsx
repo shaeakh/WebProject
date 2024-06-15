@@ -73,8 +73,9 @@ export default function SignupFormDemo(props: any) {
             } else {
                 const data = await response.json();
                 Cookies.set('token', data.token);
-                console.log("//router push to homepage");
+                
                 router.push('/homepage') //router push to homepage
+                console.log("//router push to homepage");
             }
 
         } catch (error) {

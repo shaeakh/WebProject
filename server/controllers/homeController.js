@@ -135,7 +135,7 @@ exports.getUserParticipatedTournaments = (req, res) => {
     }
 
     if (tournaments.length === 0) {
-      return res.status(404).json({ message: 'No participated tournaments found' });
+      return res.status(200).json({ message: 'No participated tournaments found' });
     }
 
     res.status(200).json({ message: 'Participated tournaments fetched successfully', tournaments });

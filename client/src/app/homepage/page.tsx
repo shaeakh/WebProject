@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -73,6 +73,8 @@ const Page: React.FC = () => {
                     user_pic_url: data.user_pic_url
                 });
 
+
+
                 // Fetch participated tournaments
                 const tournamentsResponse = await fetch('http://localhost:5000/api/home/participated-tournaments', {
                     method: 'GET',
@@ -82,6 +84,9 @@ const Page: React.FC = () => {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+
+
+
 
                 if (!tournamentsResponse.ok) {
                     throw new Error('Failed to fetch participated tournaments');
@@ -102,17 +107,13 @@ const Page: React.FC = () => {
     return (
         <div className='w-screen flex'>
             <div className='w-1/6 flex flex-col h-screen justify-center bg-gray-400 bg-opacity-50'>
-                <div className='flex justify-center'>
-                    <div className='w-56 h-56'>
-                        <Avatar>
-                            <AvatarImage src={profile.user_pic_url} alt={profile.name} />
-                            <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
+                <div className='flex justify-center items-center'>
+                    <div className='w-56 h-56 rounded-full border-2 border-black overflow-hidden flex justify-center items-center'>
+                        <img src={profile.user_pic_url} alt="" className='object-cover w-full h-full rounded-full' />
                     </div>
                 </div>
                 <div className='flex flex-col items-start justify-center m-5'>
-                    <p className='font-mono font-bold text-2xl'>{profile.name}</p>
-                    <p className='font-mono text-lg'>{profile.email}</p>
+                    <p className='font-mono text-wrap font-bold text-2xl'>{profile.name}</p>                    
                     <p className='font-mono text-lg'>{profile.reg_no}</p>
                     <p className='font-mono text-lg'>{profile.department}</p>
                     <p className='font-mono text-lg'>{profile.phone_number}</p>
@@ -142,7 +143,7 @@ const Page: React.FC = () => {
                     <h1 className='text-4xl font-bold'>Participated Tournaments</h1>
                 </div>
                 <div className='grid grid-flow-row grid-cols-4 grid-rows-auto gap-10'>
-                    {participatedTournaments.map((tournament, index) => (
+                    {participatedTournaments?.map((tournament, index) => (
                         <TournamentCard key={index}
                             title={tournament.title}
                             date={tournament.date}
