@@ -130,7 +130,7 @@ const Page: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div className='w-5/6 p-4 flex flex-col justify-between'>
+            <div className='w-5/6 p-4 flex flex-col justify-start'>
                 <div className='flex justify-end w-full'>
                     <div className='px-2'>
                         <a href="/create_tournament">
@@ -161,7 +161,7 @@ const Page: React.FC = () => {
                     ))}
                 </div>
 
-                <div className='flex justify-end w-full px-2'>
+                <div className='flex flex-col h-full items-end justify-end w-full px-2'>
                     <a href="/create_tournament">
                         <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">
                             Log Out
