@@ -77,10 +77,10 @@ const Page: React.FC = () => {
             }
 
 
-            try{
+            try {
                 const tournamentsResponse = await fetch('http://localhost:5000/api/home/participated-tournaments', {
                     method: 'GET',
-                    credentials: 'include', 
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
@@ -93,12 +93,12 @@ const Page: React.FC = () => {
                 if (!tournamentsResponse.ok) {
                     throw new Error('Failed to fetch participated tournaments');
                 }
-                else{
-                const tournamentsData = await tournamentsResponse.json();
-                setParticipatedTournaments(tournamentsData.tournaments);
+                else {
+                    const tournamentsData = await tournamentsResponse.json();
+                    setParticipatedTournaments(tournamentsData.tournaments);
                 }
             }
-            catch(error){
+            catch (error) {
                 console.error('Error fetching participated tournament data:', error);
             }
         };
@@ -115,7 +115,7 @@ const Page: React.FC = () => {
                     </div>
                 </div>
                 <div className='flex flex-col items-start justify-center m-5'>
-                    <p className='font-mono text-wrap font-bold text-2xl'>{profile.name}</p>                    
+                    <p className='font-mono text-wrap font-bold text-2xl'>{profile.name}</p>
                     <p className='font-mono text-lg'>{profile.reg_no}</p>
                     <p className='font-mono text-lg'>{profile.department}</p>
                     <p className='font-mono text-lg'>{profile.phone_number}</p>
@@ -131,9 +131,11 @@ const Page: React.FC = () => {
             <div className='w-5/6 p-4'>
                 <div className='flex justify-end w-full'>
                     <div className='px-2'>
-                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">
-                            Organise a tournament
-                        </button>
+                        <a href="/create_tournament">
+                            <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">
+                                Organise a tournament
+                            </button>
+                        </a>
                     </div>
                     <div className='px-2'>
                         <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">
