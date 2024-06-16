@@ -122,9 +122,11 @@ const Page: React.FC = () => {
                 </div>
                 <div className='flex justify-center'>
                     <div className='w-7/12'>
-                        <button className="px-8 py-2 rounded-md bg-white text-black font-bold transition duration-200 hover:bg-black hover:text-white border-2 border-black">
-                            Update Profile
-                        </button>
+                        <a href="/update_profile">
+                            <button className="px-8 py-2 rounded-md bg-white text-black font-bold transition duration-200 hover:bg-black hover:text-white border-2 border-black">
+                                Update Profile
+                            </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -138,9 +140,11 @@ const Page: React.FC = () => {
                         </a>
                     </div>
                     <div className='px-2'>
-                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">
-                            Join a tournament
-                        </button>
+                        <a href="/join_tournament">
+                            <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">
+                                Join a tournament
+                            </button>
+                        </a>
                     </div>
                 </div>
                 <div className='flex justify-start w-full p-2'>

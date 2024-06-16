@@ -53,7 +53,7 @@ const JoinTournament: React.FC = () => {
       <div className="bg-gray-100 p-8 rounded-lg shadow-lg w-96">
       <div className="flex justify-center items-center pt-5 mb-5">
         <MoviingBorderButton borderRadius="1rem"
-        className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
+        className=" bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
         >Join Tournament
         </MoviingBorderButton>
     </div>
