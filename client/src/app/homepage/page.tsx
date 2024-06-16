@@ -131,12 +131,12 @@ const Page: React.FC = () => {
             <div className='w-5/6 p-4'>
                 <div className='flex justify-end w-full'>
                     <div className='px-2'>
-                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover-border-black border-2 border-white">
+                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">
                             Organise a tournament
                         </button>
                     </div>
                     <div className='px-2'>
-                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover-border-2 hover-border-black border-2 border-white">
+                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">
                             Join a tournament
                         </button>
                     </div>
