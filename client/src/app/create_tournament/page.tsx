@@ -36,15 +36,20 @@ const Page: React.FC = () => {
     const [error, setError] = useState("");
     const [isError, setisError] = useState(true);
 
-    // useEffect(() => {
-    //     let timer: any;
-    //     if (isError) {
-    //         timer = setTimeout(() => {
-    //             setisError(false);
-    //         }, 4000);
-    //     }
-    //     return () => clearTimeout(timer);
-    // }, [isError]);
+    const formatdate = (date: Date) => {
+        const Fdate = date.getDate + "-" + date.getMonth + "-" + date.getFullYear
+        return Fdate;
+    }
+
+    useEffect(() => {
+        let timer: any;
+        if (isError) {
+            timer = setTimeout(() => {
+                setisError(false);
+            }, 4000);
+        }
+        return () => clearTimeout(timer);
+    }, [isError]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -64,51 +69,54 @@ const Page: React.FC = () => {
         }
     }
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const token = Cookies.get('token');
+        if (!token) {
+            router.push('/authpage');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("tournamentName", tournament_name);
+        formData.append("sportType", tournament_type);
+        formData.append("tournamentDate", date?.toISOString());
+        formData.append("playerBaseCoin", base_player_point !== undefined ? base_player_point.toString() : "");
+        formData.append("perTeamCoin", initial_team_points !== undefined ? initial_team_points.toString() : "");
+
+        if (coverpic) {
+            formData.append("logoPicUrl", coverpic);
+        }
+
         try {
-            const formData = new FormData();
-            formData.append("tournamentName", tournament_name);
-            formData.append("sportType", tournament_type);
-            formData.append("tournamentDate", date ? date.toISOString() : "");
-            formData.append("playerBaseCoin", base_player_point !== undefined ? base_player_point.toString() : "");
-            formData.append("perTeamCoin", initial_team_points !== undefined ? initial_team_points.toString() : "");
 
-            if (coverpic) {
-                formData.append("logoPicUrl", coverpic);
-            }
+            console.log(tournament_name, tournament_type, date?.getDate() + "-" + date?.getMonth() + "-" + date?.getFullYear(), base_player_point, initial_team_points);
 
-            const fdata = {
-                tournamentName : tournament_name,
-                sportType : tournament_type,
-                tournamentDate : date,
-                playerBaseCoin : base_player_point,
-                perTeamCoin : initial_team_points,
-                logoPicUrl : coverpic ?? "/nullfile"
-            }
-
-            const token = Cookies.get('token');
             const response = await fetch("http://localhost:5000/api/home/create-tournament", {
                 method: "POST",
-                body: formData,
+                credentials: 'include',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
-                }
+                },
+                body: formData,
             })
-                
+
             if (!response.ok) {
                 const errorData = await response.json();
+                console.log(errorData);
                 setisError(true);
-                setError(errorData.message || "Error registering user" ); 
-                console.log(formData);
-                
+                setError(errorData.message || "Error creating tournament");
             } else {
                 console.log(formData);
                 router.push('/homepage')
             }
+
+
         } catch (error) {
             setisError(true);
-            setError("Error registering user");
+            setError("Error tournament");
         }
     }
 
