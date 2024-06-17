@@ -124,8 +124,8 @@ const Page: React.FC = () => {
         <div className='w-screen flex'>
             <div className='w-1/6 flex flex-col h-screen justify-center bg-gray-400 bg-opacity-50'>
                 <div className='flex justify-center'>
-                    <div className='w-56 h-56'>
-                        <Avatar>
+                    <div className='w-full h-full justify-center flex items-center'>
+                        <Avatar className='h-40 w-40'>
                             <AvatarImage src={profile.user_pic_url} alt={profile.name} />
                             <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
                         </Avatar>
