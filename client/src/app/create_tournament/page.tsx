@@ -29,17 +29,18 @@ const Page: React.FC = () => {
     const router = useRouter();
     const [tournament_name, set_tournament_name] = useState("");
     const [tournament_type, set_tournament_type] = React.useState("Tournament type");
-    const [date, setDate] = React.useState<Date>();
+    const [date, setDate] = useState<Date>(new Date());
     const [coverpic, set_coverpic] = useState<File | undefined>(undefined);
     const [initial_team_points, set_initial_team_point] = useState<number | undefined>(undefined);
     const [base_player_point, set_base_player_point] = useState<number | undefined>(undefined);
     const [error, setError] = useState("");
     const [isError, setisError] = useState(true);
 
-    const formatdate = (date: Date) => {
-        const Fdate = date.getDate + "-" + date.getMonth + "-" + date.getFullYear
-        return Fdate;
-    }
+    useEffect(() => {
+        const today = new Date();
+        setDate(today);
+    }, []);
+
 
     useEffect(() => {
         let timer: any;
@@ -69,6 +70,11 @@ const Page: React.FC = () => {
         }
     }
 
+    const handleDateSelect = (day: Date | undefined) => {
+        if (day) {
+          setDate(day);
+        }
+      };
 
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -82,9 +88,12 @@ const Page: React.FC = () => {
         const formData = new FormData();
         formData.append("tournamentName", tournament_name);
         formData.append("sportType", tournament_type);
-        formData.append("tournamentDate", date?.toISOString());
         formData.append("playerBaseCoin", base_player_point !== undefined ? base_player_point.toString() : "");
         formData.append("perTeamCoin", initial_team_points !== undefined ? initial_team_points.toString() : "");
+
+        if (date) {
+            formData.append("tournamentDate", date.toISOString());
+          }
 
         if (coverpic) {
             formData.append("logoPicUrl", coverpic);
@@ -190,7 +199,7 @@ const Page: React.FC = () => {
                                     </SelectContent>
                                 </Select>
                                 <div className="rounded-md border">
-                                    <Calendar mode="single" selected={date} onSelect={setDate} />
+                                    <Calendar mode="single" selected={date} onSelect={handleDateSelect} />
                                 </div>
                             </PopoverContent>
                         </Popover>

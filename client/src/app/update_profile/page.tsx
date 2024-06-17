@@ -133,7 +133,6 @@ const Page: React.FC = () => {
                 </div>
                 <div className='flex flex-col items-start justify-center m-5'>
                     <p className='font-mono font-bold text-2xl'>{profile.name}</p>
-                    <p className='font-mono text-lg'>{profile.email}</p>
                     <p className='font-mono text-lg'>{profile.reg_no}</p>
                     <p className='font-mono text-lg'>{profile.department}</p>
                     <p className='font-mono text-lg'>{profile.phone_number}</p>
