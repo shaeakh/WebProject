@@ -15,7 +15,7 @@ function Page() {
         joincode: "#asdksadsa"
     }
     let user = {
-        role: "admin",
+        role: "manager",
         card: [
             {
                 team: "Argentina",

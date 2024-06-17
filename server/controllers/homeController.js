@@ -6,7 +6,7 @@ const fs = require('fs');
 
 exports.updateUser = (req, res) => {
   const { email, password, name, phone, newPassword } = req.body;
-  const userPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/avatar.png";
+  const userPicUrl = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718475943/kxrcwdacnp1vdbrwai6k.png";
   const regNo = req.user.reg_no;
 
   // Confirm email and password
@@ -16,7 +16,6 @@ exports.updateUser = (req, res) => {
     }
 
     const user = users[0];
-    console.log(bcrypt.compareSync(password, user.password))
     if (!bcrypt.compareSync(password, user.password)) {
       return res.status(401).json({ message: 'Invalid password' });
     }
@@ -39,7 +38,7 @@ exports.updateUser = (req, res) => {
 
 exports.createTournament = (req, res) => {
   const { tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
-  const logoPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/tournament.png";
+  const logoPicUrl = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476640/rmxa26ctdkr4m0jrgwog.png";
   const regNo = req.user.reg_no;
   const joinCode = Math.random().toString(36).substr(2, 9); // Generate a random join code
 

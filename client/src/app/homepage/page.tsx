@@ -87,24 +87,48 @@ const Page: React.FC = () => {
                     }
                 });
 
-
-
-
                 if (!tournamentsResponse.ok) {
                     throw new Error('Failed to fetch participated tournaments');
-                }
-                else {
+                } else {
                     const tournamentsData = await tournamentsResponse.json();
                     setParticipatedTournaments(tournamentsData.tournaments);
                 }
-            }
-            catch (error) {
+            } catch (error) {
                 console.error('Error fetching participated tournament data:', error);
             }
         };
 
         fetchUserData();
     }, [router]);
+
+    const handleLogout = async () => {
+        const token = Cookies.get('token');
+        if (!token) {
+            router.push('/authpage');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:5000/api/auth/logout', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                Cookies.remove('token');
+                alert('Logged out successfully');
+                router.push('/authpage');
+            } else {
+                throw new Error('Failed to log out');
+            }
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
 
     return (
         <div className='w-screen flex'>
@@ -160,13 +184,10 @@ const Page: React.FC = () => {
                         />
                     ))}
                 </div>
-
                 <div className='flex flex-col h-full items-end justify-end w-full px-2'>
-                    <a href="/create_tournament">
-                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">
-                            Log Out
-                        </button>
-                    </a>
+                    <button onClick={handleLogout} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">
+                        Log Out
+                    </button>
                 </div>
             </div>
         </div>
