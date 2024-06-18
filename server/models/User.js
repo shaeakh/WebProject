@@ -74,7 +74,7 @@ User.findParticipatedTournamentsByUser = (regNo, callback) => {
    `SELECT pt.*, t.tournament_name, t.tournament_logo_url, pt.role
     FROM participated_tournament pt
     JOIN tournament t ON pt.tournament_id = t.tournament_id
-    JOIN team u ON t.tournament_id = u.tournament_id
+    JOIN team u ON pt.reg_no = u.reg_no
     WHERE pt.reg_no = ? AND u.reg_no = ?`;
   db.query(query, [regNo,regNo], callback);
 };
