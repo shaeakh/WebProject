@@ -57,7 +57,22 @@ exports.createTournament = (req, res) => {
     if (err) {
       return res.status(500).json({ message: 'Error creating tournament', error: err });
     }
-    res.status(201).json({ message: 'Tournament created successfully', tournamentId: result.insertId });
+    
+    const tournamentId = result.insertId;
+    
+    // Add the creator to the participated_tournament table as admin
+    const participationData = {
+      tournamentId: tournamentId,
+      regNo: regNo,
+      role: 'admin'
+    };
+
+    User.createParticipatedTournament(participationData, (err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error adding creator to participated_tournament', error: err });
+      }
+      res.status(201).json({ message: 'Tournament created successfully', tournamentId: tournamentId });
+    });
   });
 };
 
