@@ -1,5 +1,5 @@
 const express = require('express');
-const { updateUser, createTournament, updateTournament, getUserDetails, getCurrentTournamentDetails, getUserParticipatedTournaments, joinTournament, getMemberRequests, acceptMemberRequest, rejectMemberRequest, getPlayersByTournament, updatePlayerCategories, getTeamDetailsByManager, getTournamentDetailsWithTeams, getTeamsInTournament  } = require('../controllers/homeController');
+const { updateUser, createTournament, updateTournament, getUserDetails, getCurrentTournamentDetails, getUserParticipatedTournaments, joinTournament, getMemberRequests, acceptMemberRequest, rejectMemberRequest, getPlayersByTournament, updatePlayerCategories, getTeamDetailsByManager, getTournamentDetailsWithTeams, getTeamsInTournament,findTournamentRoleByUser,getTournamentInfo  } = require('../controllers/homeController');
 const {protect} = require('../middlewares/authMiddleware');
 const { upload, uploadToCloudinary } = require('../middlewares/cloudinaryMiddleware');
 const router = express.Router();
@@ -19,6 +19,10 @@ router.get('/tournament-details', protect, getCurrentTournamentDetails);
 
 // join tournament routes
 router.post('/join-tournament', protect, upload.single('teamLogo'), uploadToCloudinary, joinTournament);
+
+//tournament page routes
+router.post('/tournament-role', protect, findTournamentRoleByUser);
+
 
 // member requests routes
 router.get('/member-requests', protect, getMemberRequests);
@@ -40,7 +44,8 @@ router.post('/players/categories', protect, updatePlayerCategories); /*{
 router.get('/team-details', protect, getTeamDetailsByManager);
 
 // tournament details page
-router.get('/tournament-details', protect, getTournamentDetailsWithTeams);
+router.post('/tournament-info', protect, getTournamentInfo);
+// router.get('/tournament-details', protect, getTournamentDetailsWithTeams);
 
 // admin auction page
 router.get('/tournament/:tournamentId/teams', protect, getTeamsInTournament);

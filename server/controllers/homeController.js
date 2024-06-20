@@ -57,9 +57,9 @@ exports.createTournament = (req, res) => {
     if (err) {
       return res.status(500).json({ message: 'Error creating tournament', error: err });
     }
-    
+
     const tournamentId = result.insertId;
-    
+
     // Add the creator to the participated_tournament table as admin
     const participationData = {
       tournamentId: tournamentId,
@@ -155,6 +155,34 @@ exports.getUserParticipatedTournaments = (req, res) => {
     res.status(200).json({ message: 'Participated tournaments fetched successfully', tournaments });
   });
 };
+
+exports.findTournamentRoleByUser = (req, res) => {
+  const regNo = req.user.reg_no;
+  const { tournament_id } = req.body;
+  if (!tournament_id || !regNo) {
+    return res.status(400).json({ message: 'tournament_id and regNo are required' });
+  }
+
+  User.findTournamentRoleByUser(tournament_id, regNo, (err, role) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching tournament role', error: err });
+    }
+    if (role.length === 0) {
+      return res.status(404).json({ role: 'unauthorized' });
+    }
+    res.status(200).json(role[0]);
+  });
+};
+
+exports.getTournamentInfo = (req, res) => {
+  const { tournament_id } = req.body;
+  User.getTournamentInfo(tournament_id,(err, info) => {
+    if(err){
+      res.status(500).json({ message: 'Error fetching tournament info', error: err });
+    }
+    res.status(200).send(info[0]);
+  })
+}
 
 exports.joinTournament = (req, res) => {
   const { joinCode, role, position, teamName } = req.body;

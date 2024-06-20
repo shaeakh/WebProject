@@ -1,41 +1,6 @@
 import { MoviingBorderButton } from '@/components/ui/SCmoving-border'
 import React from 'react'
 function Teamheader() {
-    let players = [
-        {
-            name : "Sawon",
-            position : "Forward"
-        },
-        {
-            name : "Yasin",
-            position : "Goal Keeper"
-        },
-        {
-            name : "Arnob",
-            position : "Forward"
-        },
-        {
-            name : "Emran",
-            position : "Mid Fielder"
-        },
-        {
-            name : "Niloy",
-            position : "Mid Fielder"
-        },
-        {
-            name : "Hasin",
-            position : "Defense"
-        },
-        {
-            name : "Saikot",
-            position : "Defense"
-        },
-        {
-            name : "Rahik",
-            position : "Forword"
-        }
-    ]
-
     return (
         <div className=" w-full bg-black bg-opacity-50 p-4 rounded-lg flex justify-between gap-4 my-4">
             <div className='flex w-full justify-start gap-4'>

@@ -1,4 +1,4 @@
-import { HoverEffect } from "@/app/tournament/SCcard-hover-effect";
+import { HoverEffect } from "@/app/tournament/[tournament]/SCcard-hover-effect";
 
 export default function Teams(props:any) {
   let obj = props.obj;

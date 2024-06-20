@@ -79,6 +79,18 @@ User.findParticipatedTournamentsByUser = (regNo, callback) => {
   db.query(query, [regNo,regNo], callback);
 };
 
+User.findTournamentRoleByUser = (tournament_id,regNo, callback) => {
+  const query = 
+   `SELECT role FROM participated_tournament WHERE tournament_id = ? AND reg_no = ?`;
+  db.query(query, [tournament_id,regNo], callback);
+};  
+
+User.getTournamentInfo = (tournament_id,callback) => {
+  const query = 
+   `SELECT tournament_name,join_code,tournament_logo_url FROM tournament WHERE tournament_id = ?`;
+  db.query(query, [tournament_id], callback);
+};  
+
 User.findByJoinCode = (joinCode, callback) => {
   const query = 'SELECT * FROM tournament WHERE join_code = ?';
   db.query(query, [joinCode], callback);
