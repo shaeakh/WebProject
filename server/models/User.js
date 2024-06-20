@@ -184,34 +184,12 @@ User.getTeamDetailsByManager = (regNo, callback) => {
   db.query(query, [regNo], callback);
 };
 
-User.getTournamentDetailsWithTeams = (regNo, callback) => {
-  const query = `
-    SELECT t.tournament_logo_url, t.join_code, tm.team_name, u.name as user_name
-    FROM tournament t
-    JOIN team tm ON t.tournament_id = tm.tournament_id
-    JOIN users u ON tm.reg_no = u.reg_no
-    WHERE t.reg_no = ?
-  `;
-  db.query(query, [regNo], callback);
-};
-
-
 User.getTeamsInTournament = (tournamentId, callback) => {
   const query = `
-    SELECT 
-      t.team_id,
-      t.team_name,
-      t.team_logo,
-      t.coin,
-      COUNT(p.reg_no) as player_count
-    FROM 
-      team t
-    LEFT JOIN 
-      player p ON t.team_id = p.team_id
-    WHERE 
-      t.tournament_id = ?
-    GROUP BY 
-      t.team_id, t.team_name, t.team_logo, t.coin
+    SELECT t.team_name,t.team_logo,u.name 
+    FROM team as t 
+    JOIN users as u on t.reg_no = u.reg_no 
+    WHERE t.tournament_id = ?;
   `;
   db.query(query, [tournamentId], callback);
 };

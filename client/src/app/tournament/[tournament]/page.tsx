@@ -18,13 +18,14 @@ function Page({ params }: {
 
     const router = useRouter();
     const [user_role, setUserRole] = React.useState("");
-    const [tournament,set_tournament] = React.useState(
+    const [tournament, set_tournament] = React.useState(
         {
-            tournament_name : "",
-            join_code : "",
-            tournament_logo_url : ""
+            tournament_name: "",
+            join_code: "",
+            tournament_logo_url: ""
         }
     );
+    const [teams, set_teams] = React.useState([]);
 
 
     useEffect(() => {
@@ -64,8 +65,18 @@ function Page({ params }: {
                     });
                     const data2 = await t_info_res.json();
                     set_tournament(data2);
-                    console.log(tournament);
-                    
+
+                    const teams_res = await fetch('http://localhost:5000/api/home/tournament-teams', {
+                        method: 'POST',
+                        credentials: 'include', // Include cookies in the request
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ tournament_id })
+                    });
+                    const data3 = await teams_res.json();
+                    set_teams(data3);
                 }
             } catch (error) {
 
@@ -75,27 +86,9 @@ function Page({ params }: {
     },
         [router]
     )
-    
-    
-    let user = {
-        card: [
-            {
-                team: "Argentina",
-                manager: "Shaeakh",
-                link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg"
-            },
-            {
-                team: "Brazil",
-                manager: "Shaeakh",
-                link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg"
-            },
-            {
-                team: "China",
-                manager: "Shaeakh",
-                link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg"
-            }
-        ]
-    }
+
+
+
     let team = {
         manager: "Shaeakh",
         Players: [
@@ -157,14 +150,12 @@ function Page({ params }: {
                             </div>
                         </div>
                         <div className='flex flex-col justify-center'>
-                            <div>
-                                <MoviingBorderButton
-                                    borderRadius="1.75rem"
-                                    className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
-                                >
-                                    Start Auction
-                                </MoviingBorderButton>
-                            </div>
+                            <a href="/auctionpage"><MoviingBorderButton
+                                borderRadius="1.75rem"
+                                className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
+                            >
+                                Start Auction
+                            </MoviingBorderButton></a>
                         </div>
                         <div className='flex flex-col gap-2'>
                             <button className="px-8 py-2 rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
@@ -179,10 +170,10 @@ function Page({ params }: {
                         </div>
                     </div>
                     <hr className='border border-grey w-full my-2' />
-                    <Teams obj={user.card} />
+                    <Teams obj={teams} />
                 </div>
             )}
-            {(user_role === "manager" ||user_role=== "player") && (
+            {(user_role === "manager" || user_role === "player") && (
                 <div className='w-8/12 border-red-600 flex flex-col'>
 
                     <div className='flex w-full '>

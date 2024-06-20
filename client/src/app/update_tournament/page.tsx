@@ -1,10 +1,12 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MoviingBorderButton } from "@/components/ui/SCmoving-border";
 // import { useRouter } from 'next/router';
 // import axios from 'axios';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 const UpdateTournament: React.FC = () => {
   const [tournamentName, setTournamentName] = useState('');
@@ -13,6 +15,21 @@ const UpdateTournament: React.FC = () => {
   const [logo, setLogo] = useState<File | null>(null);
   const [playerBaseCoin, setPlayerBaseCoin] = useState<number | string>('');
   const [perTeamCoin, setPerTeamCoin] = useState<number | string>('');
+
+  const router = useRouter();
+    
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = Cookies.get('token');
+            if (!token) {
+                router.push('/authpage'); // Redirect to login if no token is found
+                return;
+            }
+        }
+        fetchUserData()
+    },
+        [router]
+    )
 //   const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

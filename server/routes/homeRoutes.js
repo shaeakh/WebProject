@@ -45,11 +45,9 @@ router.get('/team-details', protect, getTeamDetailsByManager);
 
 // tournament details page
 router.post('/tournament-info', protect, getTournamentInfo);
-// router.get('/tournament-details', protect, getTournamentDetailsWithTeams);
 
 // admin auction page
-router.get('/tournament/:tournamentId/teams', protect, getTeamsInTournament);
-
+router.post('/tournament-teams', protect, getTeamsInTournament);
 
 // manager auction page
 

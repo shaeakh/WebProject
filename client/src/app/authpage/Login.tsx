@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import SubmitBtn from "../components/SubmitBtn";
 import {
     DropdownMenu,
@@ -42,19 +42,34 @@ export default function SignupFormDemo(props: any) {
     useEffect(() => {
         let timer: any;
         if (isError) {
-          timer = setTimeout(() => {
-            setisError(false);
-          }, 4000);
-        }    
+            timer = setTimeout(() => {
+                setisError(false);
+            }, 4000);
+        }
         return () => clearTimeout(timer);
-      }, [isError]); 
+    }, [isError]);
+
+
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = Cookies.get('token');
+            if (token) {
+                router.push('/homepage'); // Redirect to login if no token is found
+                return;
+            }
+        }
+        fetchUserData()
+    },
+        [router]
+    )
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const login = {
-                email : email,
-                password : password || 'password'
+                email: email,
+                password: password || 'password'
             }
 
             const response = await fetch("http://localhost:5000/api/auth/login", {
@@ -73,13 +88,13 @@ export default function SignupFormDemo(props: any) {
             } else {
                 const data = await response.json();
                 Cookies.set('token', data.token);
-                
+
                 router.push('/homepage') //router push to homepage
                 console.log("//router push to homepage");
             }
 
         } catch (error) {
-            console.log(error);            
+            console.log(error);
             setisError(true);
             setError("Error while logging in");
         }
@@ -88,7 +103,7 @@ export default function SignupFormDemo(props: any) {
     const handleRegister = () => {
         props.handleRegister(false)
     }
-    
+
 
     return (
 
@@ -122,7 +137,7 @@ export default function SignupFormDemo(props: any) {
                     </div>
 
                     <div className="flex justify-center w-full mb-4 ">
-                        <button type ="submit" onClick={() => handleSubmit} className="px-8 w-full py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
+                        <button type="submit" onClick={() => handleSubmit} className="px-8 w-full py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
                             Login
                         </button>
                     </div>

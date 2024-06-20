@@ -333,22 +333,10 @@ exports.getTeamDetailsByManager = (req, res) => {
   });
 };
 
-
-exports.getTournamentDetailsWithTeams = (req, res) => {
-  const regNo = req.user.reg_no;
-
-  User.getTournamentDetailsWithTeams(regNo, (err, tournaments) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error fetching tournament details with teams', error: err });
-    }
-    res.status(200).json(tournaments);
-  });
-};
-
 exports.getTeamsInTournament = (req, res) => {
-  const { tournamentId } = req.params;
+  const { tournament_id } = req.body;
 
-  User.getTeamsInTournament(tournamentId, (err, teams) => {
+  User.getTeamsInTournament(tournament_id, (err, teams) => {
     if (err) {
       return res.status(500).json({ message: 'Error fetching teams', error: err });
     }

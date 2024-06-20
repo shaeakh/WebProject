@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MoviingBorderButton } from "@/components/ui/SCmoving-border";
 import Cookies from 'js-cookie';
@@ -14,6 +14,20 @@ const JoinTournament: React.FC = () => {
   const [teamName, setTeamName] = useState('');
   const [teamLogo, setTeamLogo] = useState<File | null>(null);
   const router = useRouter();
+
+    
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = Cookies.get('token');
+            if (!token) {
+                router.push('/authpage'); // Redirect to login if no token is found
+                return;
+            }
+        }
+        fetchUserData()
+    },
+        [router]
+    )
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

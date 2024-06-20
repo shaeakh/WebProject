@@ -1,13 +1,27 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Player from './Player'
 import { FaAngleRight } from "react-icons/fa6";
 import { FaAngleLeft } from "react-icons/fa6";
 import { ScrollArea } from "@/components/ui/SCscroll-area"
-
-
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 function page() {
+    const router = useRouter();
+    
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = Cookies.get('token');
+            if (!token) {
+                router.push('/authpage'); // Redirect to login if no token is found
+                return;
+            }
+        }
+        fetchUserData()
+    },
+        [router]
+    )
 
     let user = {
         role: "admin",
