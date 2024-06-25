@@ -13,9 +13,9 @@ router.get('/user-details', protect, getUserDetails);
 router.post('/create-tournament', protect, upload.single('logoPicUrl'), uploadToCloudinary, createTournament);
 
 // update tournament routes
-router.put('/update-tournament', protect, upload.single('logoPicUrl'), uploadToCloudinary, updateTournament);
+router.put('/update-tournament/:tournamentId', protect, upload.single('logoPicUrl'), uploadToCloudinary, updateTournament);
 
-router.get('/tournament-details', protect, getCurrentTournamentDetails);
+router.get('/tournament-details/:tournamentId', protect, getCurrentTournamentDetails);
 
 // join tournament routes
 router.post('/join-tournament', protect, upload.single('teamLogo'), uploadToCloudinary, joinTournament);
