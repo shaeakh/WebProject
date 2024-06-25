@@ -16,9 +16,20 @@ interface Player {
   category: string;
 }
 
+interface SetCategoriesProps {
+  searchParams: {
+    tournament: any;
+  };
+}
+
+
 const categories = ['Platinum', 'Gold', 'Silver', 'Bronze'];
 
-const SetCategoriesPage: React.FC = () => {
+const SetCategoriesPage: React.FC<SetCategoriesProps> = ({ searchParams }: {
+  searchParams: {
+    tournament: any;
+  }
+}) => {
   const router = useRouter();
   const [players, setPlayers] = useState<Player[]>([]);
   const [tournamentId, setTournamentId] = useState<number>(1); // Assuming a tournament ID for now
@@ -95,6 +106,7 @@ const SetCategoriesPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
+      <h1>this is tournament no {searchParams.tournament}</h1>
       <div className="flex justify-center items-center pt-5 mt-5">
         <MoviingBorderButton borderRadius="1rem"
           className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200">

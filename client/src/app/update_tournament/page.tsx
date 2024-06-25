@@ -8,7 +8,18 @@ import { MoviingBorderButton } from "@/components/ui/SCmoving-border";
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
-const UpdateTournament: React.FC = () => {
+
+interface UpdateTournamentProps {
+  searchParams: {
+    tournament: any;
+  };
+}
+
+const UpdateTournament: React.FC<UpdateTournamentProps> = ({ searchParams }: {
+  searchParams: {
+    tournament: any;
+  }
+}) => {
   const [tournamentName, setTournamentName] = useState('');
   const [sportType, setSportType] = useState('');
   const [tournamentDate, setTournamentDate] = useState('');
@@ -17,20 +28,20 @@ const UpdateTournament: React.FC = () => {
   const [perTeamCoin, setPerTeamCoin] = useState<number | string>('');
 
   const router = useRouter();
-    
-    useEffect(() => {
-        const fetchUserData = async () => {
-            const token = Cookies.get('token');
-            if (!token) {
-                router.push('/authpage'); // Redirect to login if no token is found
-                return;
-            }
-        }
-        fetchUserData()
-    },
-        [router]
-    )
-//   const router = useRouter();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = Cookies.get('token');
+      if (!token) {
+        router.push('/authpage'); // Redirect to login if no token is found
+        return;
+      }
+    }
+    fetchUserData()
+  },
+    [router]
+  )
+  //   const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -69,12 +80,13 @@ const UpdateTournament: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center h-screen">
+      <h1>this is tournament no {searchParams.tournament}</h1>
       <div className="bg-gray-200 p-8 rounded-lg shadow-lg w-96">
-      <div className="flex justify-center items-center pt-5 mb-10">
-        <MoviingBorderButton borderRadius="1rem"
-        className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
-        >Update Tournament
-        </MoviingBorderButton>
+        <div className="flex justify-center items-center pt-5 mb-10">
+          <MoviingBorderButton borderRadius="1rem"
+            className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
+          >Update Tournament
+          </MoviingBorderButton>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

@@ -12,11 +12,11 @@ import Teamheader from './Teamheader'
 import { DataTableDemo } from './DataTable'
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-
-function Page({ params }: {params: { tournament: string }}) {
+import Link from "next/link";
+function Page({ params }: { params: { tournament: string } }) {
 
     const router = useRouter();
-    
+
     const [user_role, setUserRole] = React.useState("");
     const [tournament, set_tournament] = React.useState(
         {
@@ -30,7 +30,7 @@ function Page({ params }: {params: { tournament: string }}) {
         team_id: 0,
         team_name: "",
         team_logo: "",
-        name : ""
+        name: ""
     });
 
     useEffect(() => {
@@ -58,7 +58,7 @@ function Page({ params }: {params: { tournament: string }}) {
                     router.push('/tournament');
                 }
                 else {
-                    setUserRole(data.role); 
+                    setUserRole(data.role);
                     console.log(user_role);
                     const t_info_res = await fetch('http://localhost:5000/api/home/tournament-info', {
                         method: 'POST',
@@ -108,9 +108,9 @@ function Page({ params }: {params: { tournament: string }}) {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`
                         },
-                        body: JSON.stringify({ 
-                            tournament_id : tournament_id,
-                            team_id : team.team_id
+                        body: JSON.stringify({
+                            tournament_id: tournament_id,
+                            team_id: team.team_id
                         })
                     });
                     const data5 = await players_res.json();
@@ -195,21 +195,31 @@ function Page({ params }: {params: { tournament: string }}) {
                             </MoviingBorderButton></a>
                         </div>
                         <div className='flex flex-col gap-2'>
-                            <a href="/member_request">
+
+                            <Link href={{
+                                pathname: '/member_request',
+                                query: { tournament: params.tournament }
+                            }}>
                                 <button className="px-8 py-2 rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
                                     Member Request
                                 </button>
-                            </a>
-                            <a href="/set_category">
+                            </Link>
+                            <Link href={{
+                                pathname: '/set_category',
+                                query: { tournament: params.tournament }
+                            }}>
                                 <button className="px-8 py-2 rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
                                     Set Players Category
                                 </button>
-                            </a>
-                            <a href="/update_tournament">
+                            </Link>
+                            <Link href={{
+                                pathname: '/update_tournament',
+                                query: { tournament: params.tournament }
+                            }}>
                                 <button className="px-8 py-2 rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
                                     Update Tournament
                                 </button>
-                            </a>
+                                </Link>
                         </div>
                     </div>
                     <hr className='border border-grey w-full my-2' />

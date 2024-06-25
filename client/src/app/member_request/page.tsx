@@ -15,7 +15,18 @@ interface Member {
   request_id: number;
 }
 
-const MemberRequest: React.FC = () => {
+interface MemberRequestProps {
+  searchParams: {
+    tournament: any;
+  };
+}
+
+
+const MemberRequest: React.FC<MemberRequestProps> = ({searchParams} : {
+  searchParams: {
+    tournament : any;
+  }
+}) => { 
   const router = useRouter();
   const [members, setMembers] = useState<Member[]>([]);
 
@@ -107,6 +118,7 @@ const MemberRequest: React.FC = () => {
 
   return (
     <div className="container mx-auto p-5">
+      <h1>this is tournament no {searchParams.tournament}</h1>
       <div className="flex justify-center items-center pt-5">
         <MoviingBorderButton borderRadius="1rem"
           className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
