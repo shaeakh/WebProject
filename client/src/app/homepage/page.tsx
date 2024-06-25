@@ -22,6 +22,7 @@ interface Profile {
 }
 
 interface Tournament {
+    tournament_id: any;
     tournament_name: string;
     role: string;
     tournament_logo_url: string;
@@ -84,12 +85,18 @@ const Page: React.FC = () => {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-
+                
+                
                 if (!tournamentsResponse.ok) {
                     throw new Error('Failed to fetch participated tournaments');
                 } else {
-                    const tournamentsData = await tournamentsResponse.json();
+                    console.log("eikhane aschi");
+                    const tournamentsData = await tournamentsResponse.json(); 
+                     
+                    
                     setParticipatedTournaments(tournamentsData.tournaments);
+                    console.log(tournamentsData.tournaments);
+                    
                 }
             } catch (error) {
                 console.error('Error fetching participated tournament data:', error);
@@ -173,17 +180,18 @@ const Page: React.FC = () => {
                     <h1 className='text-4xl font-bold'>Participated Tournaments</h1>
                 </div>
                 <div className='grid grid-flow-row grid-cols-4 grid-rows-auto gap-10'>
+            
                     {participatedTournaments?.map((tournament, index) => (
-
-                        <a href="/tournament/">
-                            <TournamentCard key={index}
+                        <a href={`/tournament/${tournament.tournament_id}`} key={index}>
+                            <TournamentCard
                                 tournament_name={tournament.tournament_name}
                                 role={tournament.role}
                                 tournament_logo_url={tournament.tournament_logo_url}
-                                link={tournament.link}
+                                 
                             />
                         </a>
                     ))}
+
                 </div>
                 <div className='flex flex-col h-full items-end justify-end w-full px-2'>
                     <button onClick={handleLogout} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">

@@ -152,7 +152,7 @@ exports.getUserParticipatedTournaments = (req, res) => {
       return res.status(200).json({ message: 'No participated tournaments found' });
     }
 
-    res.status(200).json({ message: 'Participated tournaments fetched successfully', tournaments });
+    res.status(200).json({tournaments : tournaments});
   });
 };
 
