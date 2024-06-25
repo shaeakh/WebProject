@@ -215,7 +215,9 @@ exports.joinTournament = (req, res) => {
 
 // Get Member Requests
 exports.getMemberRequests = (req, res) => {
-  User.getMemberRequests((err, requests) => {
+  const { tournamentId } = req.params;
+
+  User.getMemberRequests(tournamentId, (err, requests) => {
     if (err) {
       return res.status(500).json({ message: 'Error fetching member requests', error: err });
     }
@@ -226,11 +228,11 @@ exports.getMemberRequests = (req, res) => {
 
 // Accept Member Request
 exports.acceptMemberRequest = (req, res) => {
-  const { requestId } = req.params;
-
-  User.getMemberRequests((err, requests) => {
+  const { tournamentId,requestId } = req.params;
+  
+  User.getMemberRequests(tournamentId, (err, requests) => {
     if (err) {
-      return res.status(500).json({ message: 'Error fetching member request', error: err });
+      return res.status(500).json({ message: 'Error fetching member requests', error: err });
     }
 
     const request = requests.find(r => r.request_id == requestId);
