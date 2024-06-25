@@ -99,14 +99,22 @@ User.createMemberRequest = (request, callback) => {
   db.query(query, [tournamentId, regNo, role, position, teamName, teamLogo], callback);
 };
 
-User.getMemberRequests = (callback) => {
+User.getMemberRequests = (tournamentId, callback) => {
   const query = `
-    SELECT mr.*, u.name, t.tournament_name
-    FROM member_request mr
-    JOIN users u ON mr.reg_no = u.reg_no
-    JOIN tournament t ON mr.tournament_id = t.tournament_id
+    SELECT 
+      mr.*,
+      t.tournament_name,
+      u.name AS name
+    FROM 
+      member_request mr
+    JOIN 
+      tournament t ON mr.tournament_id = t.tournament_id
+    JOIN 
+      users u ON mr.reg_no = u.reg_no
+    WHERE 
+      mr.tournament_id = ?;
   `;
-  db.query(query, callback);
+  db.query(query, [tournamentId], callback);
 };
 
 User.createParticipatedTournament = (participation, callback) => {
