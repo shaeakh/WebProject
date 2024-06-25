@@ -324,14 +324,21 @@ exports.updatePlayerCategories = (req, res) => {
 
 exports.getTeamDetailsByManager = (req, res) => {
   const regNo = req.user.reg_no;
+  const { tournament_id } = req.body;
+  if (!tournament_id || !regNo) {
+    return res.status(400).json({ message: 'tournament_id and regNo are required' });
+  }
+  console.log("sdjfhbvasf",regNo,tournament_id);
 
-  User.getTeamDetailsByManager(regNo, (err, teams) => {
+  User.getTeamDetailsByManager(regNo,tournament_id, (err, team) => {
     if (err) {
       return res.status(500).json({ message: 'Error fetching team details', error: err });
     }
-    res.status(200).json(teams);
+    res.status(200).json(team[0]);
   });
 };
+
+
 
 exports.getTeamsInTournament = (req, res) => {
   const { tournament_id } = req.body;
@@ -343,3 +350,13 @@ exports.getTeamsInTournament = (req, res) => {
     res.status(200).json(teams);
   });
 };
+
+exports.getPlayersInTeam = (req, res) => {
+  const { tournament_id,team_id } = req.body;
+  User.getPlayersInTeam(team_id,tournament_id,(err, team) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching team', error: err });
+    }
+    res.status(200).json(team);
+  });
+}

@@ -12,11 +12,11 @@ import Teamheader from './Teamheader'
 import { DataTableDemo } from './DataTable'
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-function Page({ params }: {
-    params: { tournament: string }
-}) {
+
+function Page({ params }: {params: { tournament: string }}) {
 
     const router = useRouter();
+    
     const [user_role, setUserRole] = React.useState("");
     const [tournament, set_tournament] = React.useState(
         {
@@ -26,7 +26,12 @@ function Page({ params }: {
         }
     );
     const [teams, set_teams] = React.useState([]);
-
+    const [team, set_team] = React.useState({
+        team_id: 0,
+        team_name: "",
+        team_logo: "",
+        name : ""
+    });
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -53,7 +58,8 @@ function Page({ params }: {
                     router.push('/tournament');
                 }
                 else {
-                    setUserRole(data.role);
+                    setUserRole(data.role); 
+                    console.log(user_role);
                     const t_info_res = await fetch('http://localhost:5000/api/home/tournament-info', {
                         method: 'POST',
                         credentials: 'include', // Include cookies in the request
@@ -77,6 +83,37 @@ function Page({ params }: {
                     });
                     const data3 = await teams_res.json();
                     set_teams(data3);
+
+                    if (data.role == "manager") {
+                        const team_res = await fetch('http://localhost:5000/api/home/team-details-managerview', {
+                            method: 'POST',
+                            credentials: 'include', // Include cookies in the request
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ tournament_id })
+                        });
+                        const data4 = await team_res.json();
+                        set_team(data4);
+                    }
+                    if (user_role === "player") {
+
+                    }
+
+                    const players_res = await fetch('http://localhost:5000/api/home/team-players', {
+                        method: 'POST',
+                        credentials: 'include', // Include cookies in the request
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ 
+                            tournament_id : tournament_id,
+                            team_id : team.team_id
+                        })
+                    });
+                    const data5 = await players_res.json();
                 }
             } catch (error) {
 
@@ -89,7 +126,7 @@ function Page({ params }: {
 
 
 
-    let team = {
+    let player = {
         manager: "Shaeakh",
         Players: [
             {
@@ -158,15 +195,21 @@ function Page({ params }: {
                             </MoviingBorderButton></a>
                         </div>
                         <div className='flex flex-col gap-2'>
-                            <button className="px-8 py-2 rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
-                                Member Request
-                            </button>
-                            <button className="px-8 py-2 rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
-                                Set Players Category
-                            </button>
-                            <button className="px-8 py-2 rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
-                                Update Tournament
-                            </button>
+                            <a href="/member_request">
+                                <button className="px-8 py-2 rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                                    Member Request
+                                </button>
+                            </a>
+                            <a href="/set_category">
+                                <button className="px-8 py-2 rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                                    Set Players Category
+                                </button>
+                            </a>
+                            <a href="/update_tournament">
+                                <button className="px-8 py-2 rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                                    Update Tournament
+                                </button>
+                            </a>
                         </div>
                     </div>
                     <hr className='border border-grey w-full my-2' />
@@ -177,13 +220,13 @@ function Page({ params }: {
                 <div className='w-8/12 border-red-600 flex flex-col'>
 
                     <div className='flex w-full '>
-                        <Teamheader />
+                        <Teamheader team_name={team.team_name} team_logo={team.team_logo} name={team.name} />
                     </div>
                     <div className=' '>
                         <div className='font-mono font-bold text-2xl text-center'>
                             Player List
                         </div>
-                        <DataTableDemo Players={team.Players} />
+                        <DataTableDemo Players={player.Players} />
                     </div>
                 </div>
             )}

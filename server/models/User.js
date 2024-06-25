@@ -70,26 +70,26 @@ User.findCurrentTournamentByUser = (regNo, callback) => {
 
 
 User.findParticipatedTournamentsByUser = (regNo, callback) => {
-  const query = 
-   `SELECT pt.*, t.tournament_name, t.tournament_logo_url, pt.role
+  const query =
+    `SELECT pt.*, t.tournament_name, t.tournament_logo_url, pt.role
     FROM participated_tournament pt
     JOIN tournament t ON pt.tournament_id = t.tournament_id
     JOIN team u ON pt.reg_no = u.reg_no
     WHERE pt.reg_no = ? AND u.reg_no = ?`;
-  db.query(query, [regNo,regNo], callback);
+  db.query(query, [regNo, regNo], callback);
 };
 
-User.findTournamentRoleByUser = (tournament_id,regNo, callback) => {
-  const query = 
-   `SELECT role FROM participated_tournament WHERE tournament_id = ? AND reg_no = ?`;
-  db.query(query, [tournament_id,regNo], callback);
-};  
+User.findTournamentRoleByUser = (tournament_id, regNo, callback) => {
+  const query =
+    `SELECT role FROM participated_tournament WHERE tournament_id = ? AND reg_no = ?`;
+  db.query(query, [tournament_id, regNo], callback);
+};
 
-User.getTournamentInfo = (tournament_id,callback) => {
-  const query = 
-   `SELECT tournament_name,join_code,tournament_logo_url FROM tournament WHERE tournament_id = ?`;
+User.getTournamentInfo = (tournament_id, callback) => {
+  const query =
+    `SELECT tournament_name,join_code,tournament_logo_url FROM tournament WHERE tournament_id = ?`;
   db.query(query, [tournament_id], callback);
-};  
+};
 
 User.findByJoinCode = (joinCode, callback) => {
   const query = 'SELECT * FROM tournament WHERE join_code = ?';
@@ -125,13 +125,13 @@ User.getTournamentCoins = (tournamentId, callback) => {
 };
 
 User.createTeam = (team, callback) => {
-  const { tournamentId, regNo, teamName, teamLogo, coin} = team;
+  const { tournamentId, regNo, teamName, teamLogo, coin } = team;
   const query = 'INSERT INTO team (tournament_id, reg_no, team_name, team_logo, coin) VALUES (?, ?, ?, ?, ?)';
   db.query(query, [tournamentId, regNo, teamName, teamLogo, coin], callback);
 };
 
 User.createPlayer = (player, callback) => {
-  const { tournamentId, regNo,position, playerPrice} = player;
+  const { tournamentId, regNo, position, playerPrice } = player;
   const query = 'INSERT INTO player (tournament_id, reg_no, position, player_price) VALUES (?, ?, ?, ?)';
   db.query(query, [tournamentId, regNo, position, playerPrice], callback);
 };
@@ -173,16 +173,26 @@ User.updatePlayerCategories = (players, callback) => {
 };
 
 
-User.getTeamDetailsByManager = (regNo, callback) => {
+User.getTeamDetailsByManager = (regNo, tournament_id, callback) => {
   const query = `
-    SELECT t.team_name, t.team_logo, p.reg_no, p.position, u.name
-    FROM team t
-    JOIN player p ON t.team_id = p.team_id
-    JOIN users u ON p.reg_no = u.reg_no
-    WHERE t.reg_no = ?
+    SELECT t.team_id,t.team_name,t.team_logo, u.name 
+    FROM team as t 
+    JOIN users as u on t.reg_no = u.reg_no 
+    WHERE t.tournament_id = ? AND t.reg_no = ?;
   `;
-  db.query(query, [regNo], callback);
+  db.query(query, [tournament_id, regNo], callback);
 };
+
+User.getPlayersInTeam = (team_id, tournament_id, callback) => {
+  const query = `
+    SELECT u.name, p.position ,p.category , p.player_price as value
+    FROM player as p 
+    JOIN users as u on p.reg_no = u.reg_no
+    WHERE tournament_id = ? AND team_id = ?
+  `;
+  db.query(query, [tournament_id, team_id], callback);
+};
+
 
 User.getTeamsInTournament = (tournamentId, callback) => {
   const query = `

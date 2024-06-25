@@ -75,8 +75,6 @@ const Page: React.FC = () => {
                 console.error('Error fetching user data:', error);
                 router.push('/authpage'); // Redirect to login if an error occurs
             }
-
-
             try {
                 const tournamentsResponse = await fetch('http://localhost:5000/api/home/participated-tournaments', {
                     method: 'GET',
@@ -176,12 +174,15 @@ const Page: React.FC = () => {
                 </div>
                 <div className='grid grid-flow-row grid-cols-4 grid-rows-auto gap-10'>
                     {participatedTournaments?.map((tournament, index) => (
-                        <TournamentCard key={index}
-                            tournament_name={tournament.tournament_name}
-                            role={tournament.role}
-                            tournament_logo_url={tournament.tournament_logo_url}
-                            link={tournament.link}
-                        />
+
+                        <a href="/tournament/">
+                            <TournamentCard key={index}
+                                tournament_name={tournament.tournament_name}
+                                role={tournament.role}
+                                tournament_logo_url={tournament.tournament_logo_url}
+                                link={tournament.link}
+                            />
+                        </a>
                     ))}
                 </div>
                 <div className='flex flex-col h-full items-end justify-end w-full px-2'>

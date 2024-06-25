@@ -1,5 +1,5 @@
 const express = require('express');
-const { updateUser, createTournament, updateTournament, getUserDetails, getCurrentTournamentDetails, getUserParticipatedTournaments, joinTournament, getMemberRequests, acceptMemberRequest, rejectMemberRequest, getPlayersByTournament, updatePlayerCategories, getTeamDetailsByManager, getTournamentDetailsWithTeams, getTeamsInTournament,findTournamentRoleByUser,getTournamentInfo  } = require('../controllers/homeController');
+const { updateUser, createTournament, updateTournament, getUserDetails, getCurrentTournamentDetails, getUserParticipatedTournaments, joinTournament, getMemberRequests, acceptMemberRequest, rejectMemberRequest, getPlayersByTournament, updatePlayerCategories, getTeamDetailsByManager, getTournamentDetailsWithTeams, getTeamsInTournament,findTournamentRoleByUser,getTournamentInfo,getPlayersInTeam  } = require('../controllers/homeController');
 const {protect} = require('../middlewares/authMiddleware');
 const { upload, uploadToCloudinary } = require('../middlewares/cloudinaryMiddleware');
 const router = express.Router();
@@ -41,7 +41,8 @@ router.post('/players/categories', protect, updatePlayerCategories); /*{
 }*/
 
 // manager view page
-router.get('/team-details', protect, getTeamDetailsByManager);
+router.post('/team-details-managerview', protect, getTeamDetailsByManager);
+router.post('/team-players', protect,getPlayersInTeam);
 
 // tournament details page
 router.post('/tournament-info', protect, getTournamentInfo);
