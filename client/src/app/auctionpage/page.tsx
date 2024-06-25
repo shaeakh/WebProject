@@ -290,7 +290,13 @@ function page() {
                     <div className='flex flex-col items-center gap-4'>
                         <div className='flex w-full justify-around'>
                             <div className='px-2' >
-                                <button onClick={()=>setIndex((index-1)%1)} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
+                                <button onClick={()=>{
+                                    if(index === 0){
+                                        setIndex(players.length-1)
+                                    }
+                                    else 
+                                    setIndex((index-1))
+                                }} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
                                     <FaAngleLeft />
                                 </button>
                             </div>
