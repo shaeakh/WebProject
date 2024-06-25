@@ -66,3 +66,14 @@ CREATE TABLE player (
   FOREIGN KEY (reg_no) REFERENCES users (reg_no) ,
   FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) 
 );
+
+CREATE TABLE AuctionPage (
+  tournament_id INT,
+  team_id INT,
+  reg_no VARCHAR(50),
+  current_bid int,
+  sold boolean,
+  FOREIGN KEY (team_id) REFERENCES team (team_id),
+  FOREIGN KEY (reg_no) REFERENCES users (reg_no) ,
+  FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id)
+);

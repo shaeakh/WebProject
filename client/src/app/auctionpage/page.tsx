@@ -290,18 +290,18 @@ function page() {
                     <div className='flex flex-col items-center gap-4'>
                         <div className='flex w-full justify-around'>
                             <div className='px-2' >
-                                <button onClick={()=>{
-                                    if(index === 0){
-                                        setIndex(players.length-1)
+                                <button onClick={() => {
+                                    if (index === 0) {
+                                        setIndex(players.length - 1)
                                     }
-                                    else 
-                                    setIndex((index-1))
+                                    else
+                                        setIndex((index - 1))
                                 }} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
                                     <FaAngleLeft />
                                 </button>
                             </div>
                             <div className='px-2' >
-                                <button onClick={()=>setIndex((index+1)%players.length)} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
+                                <button onClick={() => setIndex((index + 1) % players.length)} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  ">
                                     <FaAngleRight />
                                 </button>
                             </div>
@@ -338,6 +338,13 @@ function page() {
                     <div className='mx-2'>:</div>
                     <div className='w-12 border-2 border-black rounded-lg'>{remaining_time.sec}s</div>
                 </div>
+                {(user.role === "admin") && (
+                    <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  "  >
+                        Assign
+                    </button>
+                )
+                }
+
             </div>
         </div>
 
