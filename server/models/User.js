@@ -71,11 +71,7 @@ User.findCurrentTournamentByUser = (regNo, callback) => {
 
 User.findParticipatedTournamentsByUser = (regNo, callback) => {
   const query =
-    `SELECT t.tournament_id, t.tournament_name, u.name AS role,  t.tournament_logo_url
-    FROM participated_tournament AS pt
-    JOIN users AS u ON pt.reg_no = u.reg_no
-    JOIN tournament AS t ON pt.tournament_id = t.tournament_id
-    WHERE pt.reg_no = ?;`;
+      `SELECT t.tournament_id, t.tournament_name, pt.role, t.tournament_logo_url FROM participated_tournament AS pt JOIN users AS u ON pt.reg_no = u.reg_no JOIN tournament AS t ON pt.tournament_id = t.tournament_id WHERE pt.reg_no = ?`;
   db.query(query, [regNo], callback);
 };
 

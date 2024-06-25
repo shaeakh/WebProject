@@ -191,7 +191,6 @@ const Page: React.FC = () => {
                             />
                         </a>
                     ))}
-
                 </div>
                 <div className='flex flex-col h-full items-end justify-end w-full px-2'>
                     <button onClick={handleLogout} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">
