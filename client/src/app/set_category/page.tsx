@@ -43,7 +43,7 @@ const SetCategoriesPage: React.FC<SetCategoriesProps> = ({ searchParams }: {
       }
 
       try {
-        const response = await fetch(`http://localhost:5000/api/home/players/${tournamentId}`, {
+        const response = await fetch(`http://localhost:5000/api/home/players/${searchParams.tournament}`, {
           method: 'GET',
           credentials: 'include',
           headers: {
