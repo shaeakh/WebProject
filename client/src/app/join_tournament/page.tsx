@@ -70,10 +70,9 @@ const JoinTournament: React.FC = () => {
         throw new Error('Failed to join tournament');
       }
 
-      // Navigate to tournament page upon successful join
-      const data = await response.json();
-      // router.push(`/tournament/${data.tournamentId}`);
-      router.push(`/tournament`);
+      // Navigate to homepage upon successful join
+      router.push('/homepage');
+      alert('Joined request sent Successfully ');
     } catch (error) {
       console.error('Error joining tournament:', error);
     }

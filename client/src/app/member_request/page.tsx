@@ -39,7 +39,7 @@ const MemberRequest: React.FC<MemberRequestProps> = ({searchParams} : {
       }
 
       try {
-        const response = await fetch('http://localhost:5000/api/home/member-requests', {
+        const response = await fetch(`http://localhost:5000/api/home/member-requests/${searchParams.tournament}`, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -53,6 +53,7 @@ const MemberRequest: React.FC<MemberRequestProps> = ({searchParams} : {
         }
 
         const data = await response.json();
+        console.log(data);
         setMembers(data);
       } catch (error) {
         console.error('Error fetching member requests:', error);
@@ -70,7 +71,7 @@ const MemberRequest: React.FC<MemberRequestProps> = ({searchParams} : {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/home/member-requests/${request_id}/accept`, {
+      const response = await fetch(`http://localhost:5000/api/home/member-requests/${searchParams.tournament}/${request_id}/accept`, {
         method: 'POST',
         credentials: 'include',
         headers: {

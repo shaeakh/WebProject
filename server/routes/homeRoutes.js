@@ -25,8 +25,8 @@ router.post('/tournament-role', protect, findTournamentRoleByUser);
 
 
 // member requests routes
-router.get('/member-requests', protect, getMemberRequests);
-router.post('/member-requests/:requestId/accept', protect, acceptMemberRequest);
+router.get('/member-requests/:tournamentId', protect, getMemberRequests);
+router.post('/member-requests/:tournamentId/:requestId/accept', protect, acceptMemberRequest);
 router.delete('/member-requests/:requestId/reject', protect, rejectMemberRequest);
 
 // set player categories routes
