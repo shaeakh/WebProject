@@ -58,14 +58,10 @@ User.updateTournament = (tournamentId, tournament, regNo, callback) => {
 };
 
 
-User.findCurrentTournamentByUser = (regNo, callback) => {
+User.findCurrentTournamentByUser = (tournamentId, callback) => {
   const query = `
-    SELECT t.*
-    FROM tournament t
-    LEFT JOIN participated_tournament pt ON t.tournament_id = pt.tournament_id
-    WHERE t.reg_no = ? OR pt.reg_no = ?
-  `;
-  db.query(query, [regNo, regNo], callback);
+    SELECT * FROM tournament WHERE tournament_id = ?`;
+  db.query(query, [tournamentId], callback);
 };
 
 

@@ -78,9 +78,10 @@ exports.createTournament = (req, res) => {
 
 
 exports.updateTournament = (req, res) => {
-  const { tournamentId, tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
+  const { tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
   const logoPicUrl = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476640/rmxa26ctdkr4m0jrgwog.png";
   const regNo = req.user.reg_no;
+  const {tournamentId} = req.params;
 
   const updatedTournament = {
     tournamentName,
@@ -125,9 +126,9 @@ exports.getUserDetails = (req, res) => {
 
 
 exports.getCurrentTournamentDetails = (req, res) => {
-  const regNo = req.user.reg_no;
+  const {tournamentId} = req.params;
 
-  User.findCurrentTournamentByUser(regNo, (err, tournaments) => {
+  User.findCurrentTournamentByUser(tournamentId, (err, tournaments) => {
     if (err) {
       return res.status(500).json({ message: 'Error fetching current tournament', error: err });
     }

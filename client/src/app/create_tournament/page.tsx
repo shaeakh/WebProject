@@ -101,7 +101,6 @@ const Page: React.FC = () => {
 
         try {
 
-            console.log(tournament_name, tournament_type, date?.getDate() + "-" + date?.getMonth() + "-" + date?.getFullYear(), base_player_point, initial_team_points);
 
             const response = await fetch("http://localhost:5000/api/home/create-tournament", {
                 method: "POST",
