@@ -21,14 +21,40 @@ User.findByRegNo = (id, callback) => {
   db.query(query, [id], callback);
 };
 
+User.update = (regNo, updatedUser, callback) => {
+  const fields = [];
+  const values = [];
 
-User.update = (regNo, user, callback) => {
-  const { name, phone, userPicUrl, password } = user;
-  const hashedPassword = bcrypt.hashSync(password, 10);
+  if (updatedUser.name) {
+    fields.push('name = ?');
+    values.push(updatedUser.name);
+  }
 
-  const query = `UPDATE users SET name = ?, phone = ?, user_pic_url = ?, password = ? WHERE reg_no = ?`;
-  db.query(query, [name, phone, userPicUrl, hashedPassword, regNo], callback);
+  if (updatedUser.phone) {
+    fields.push('phone = ?');
+    values.push(updatedUser.phone);
+  }
+
+  if (updatedUser.userPicUrl) {
+    fields.push('user_pic_url = ?');
+    values.push(updatedUser.userPicUrl);
+  }
+
+  if (updatedUser.password) {
+    fields.push('password = ?');
+    values.push(updatedUser.password);
+  }
+
+  if (fields.length === 0) {
+    return callback(null, { message: 'No fields to update' });
+  }
+
+  const query = `UPDATE users SET ${fields.join(', ')} WHERE reg_no = ?`;
+  values.push(regNo);
+
+  db.query(query, values, callback);
 };
+
 
 
 User.findTournamentsByUser = (regNo, callback) => {
@@ -47,14 +73,48 @@ User.createTournament = (tournament, callback) => {
 };
 
 
-User.updateTournament = (tournamentId, tournament, regNo, callback) => {
-  const { tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin, logoPicUrl } = tournament;
+User.updateTournament = (tournamentId, updatedTournament, regNo, callback) => {
+  const fields = [];
+  const values = [];
 
-  const query = `
-    UPDATE tournament 
-    SET tournament_name = ?, sport_type = ?, tournament_date = ?, player_base_coin = ?, per_team_coin = ?, tournament_logo_url = ? 
-    WHERE tournament_id = ? AND reg_no = ?`;
-  db.query(query, [tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin, logoPicUrl, tournamentId, regNo], callback);
+  if (updatedTournament.tournamentName) {
+    fields.push('tournament_name = ?');
+    values.push(updatedTournament.tournamentName);
+  }
+
+  if (updatedTournament.sportType) {
+    fields.push('sport_type = ?');
+    values.push(updatedTournament.sportType);
+  }
+
+  if (updatedTournament.tournamentDate) {
+    fields.push('tournament_date = ?');
+    values.push(updatedTournament.tournamentDate);
+  }
+
+  if (updatedTournament.playerBaseCoin) {
+    fields.push('player_base_coin = ?');
+    values.push(updatedTournament.playerBaseCoin);
+  }
+
+  if (updatedTournament.perTeamCoin) {
+    fields.push('per_team_coin = ?');
+    values.push(updatedTournament.perTeamCoin);
+  }
+
+  if (updatedTournament.logoPicUrl) {
+    fields.push('tournament_logo_url = ?');
+    values.push(updatedTournament.logoPicUrl);
+  }
+
+  if (fields.length === 0) {
+    return callback(null, { message: 'No fields to update' });
+  }
+
+  const query = `UPDATE tournament SET ${fields.join(', ')} WHERE tournament_id = ? AND reg_no = ?`;
+  values.push(tournamentId, regNo);
+
+  db.query(query, values, callback);
 };
 
 

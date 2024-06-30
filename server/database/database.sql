@@ -68,11 +68,13 @@ CREATE TABLE player (
 );
 
 CREATE TABLE AuctionPage (
-  tournament_id INT,
-  team_id INT,
-  reg_no VARCHAR(50),
-  current_bid int,
-  sold boolean,
+  tournament_id INT,      //tournament_id
+  team_id INT,            //NULL
+  
+  reg_no VARCHAR(50),     //NULL
+  current_bid int,        //NULL
+  sold boolean,           //null
+  start boolean,          //false
   FOREIGN KEY (team_id) REFERENCES team (team_id),
   FOREIGN KEY (reg_no) REFERENCES users (reg_no) ,
   FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id)
