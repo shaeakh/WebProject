@@ -25,7 +25,7 @@ CREATE TABLE tournament (
 
 CREATE TABLE participated_tournament(
   tournament_id INT,
-  reg_no VARCHAR(255) NOT NULL,
+  reg_no VARCHAR(255) ,
   role VARCHAR(255) NOT NULL,
   FOREIGN KEY (reg_no) REFERENCES users (reg_no),
   FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id)
@@ -33,10 +33,10 @@ CREATE TABLE participated_tournament(
 
 CREATE TABLE member_request (
   request_id INT PRIMARY KEY AUTO_INCREMENT,
-  tournament_id INT NOT NULL,
-  reg_no VARCHAR(50) NOT NULL,
+  tournament_id INT,
+  reg_no VARCHAR(50) ,
   role VARCHAR(255) NOT NULL,
-  position VARCHAR(255),
+  position VARCHAR(255) ,
   team_name VARCHAR(255) ,
   team_logo VARCHAR(300) ,
   FOREIGN KEY (reg_no) REFERENCES users (reg_no),
@@ -45,11 +45,11 @@ CREATE TABLE member_request (
 
 CREATE TABLE team (
   team_id INT PRIMARY KEY AUTO_INCREMENT,
-  tournament_id INT NOT NULL,
-  reg_no VARCHAR(50) NOT NULL,
-  team_name VARCHAR(255),
-  team_logo VARCHAR(300),
-  coin VARCHAR(255),
+  tournament_id INT,
+  reg_no VARCHAR(50),
+  team_name VARCHAR(255) ,
+  team_logo VARCHAR(300) ,
+  coin INT(255),
   FOREIGN KEY (reg_no) REFERENCES users (reg_no),
   FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id)
 );
@@ -59,10 +59,21 @@ CREATE TABLE player (
   tournament_id INT,
   reg_no VARCHAR(50),
   team_id INT,
+  position VARCHAR(255),
   player_price int,
   category VARCHAR(255),
-  PRIMARY KEY (reg_no),
   FOREIGN KEY (team_id) REFERENCES team (team_id),
   FOREIGN KEY (reg_no) REFERENCES users (reg_no) ,
   FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id) 
+);
+
+CREATE TABLE AuctionPage (
+  tournament_id INT,
+  team_id INT,
+  reg_no VARCHAR(50),
+  current_bid int,
+  sold boolean,
+  FOREIGN KEY (team_id) REFERENCES team (team_id),
+  FOREIGN KEY (reg_no) REFERENCES users (reg_no) ,
+  FOREIGN KEY (tournament_id) REFERENCES tournament (tournament_id)
 );

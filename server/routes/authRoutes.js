@@ -1,5 +1,4 @@
 // routes/authRoutes.js
-
 const express = require('express');
 const { registerUser, authUser, logoutUser } = require('../controllers/authController');
 const { upload, uploadToCloudinary } = require('../middlewares/cloudinaryMiddleware');
