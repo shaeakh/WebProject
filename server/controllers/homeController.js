@@ -6,7 +6,7 @@ const fs = require('fs');
 
 exports.updateUser = (req, res) => {
   const { email, password, name, phone, newPassword } = req.body;
-  const userPicUrl = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718475943/kxrcwdacnp1vdbrwai6k.png";
+  const userPicUrl = req.file ? req.file.cloudinaryUrl : null;
   const regNo = req.user.reg_no;
 
   // Confirm email and password
@@ -20,12 +20,15 @@ exports.updateUser = (req, res) => {
       return res.status(401).json({ message: 'Invalid password' });
     }
 
-    const updatedUser = {
-      name: name || user.name,
-      phone: phone || user.phone,
-      userPicUrl: userPicUrl || user.userPicUrl,
-      password: newPassword || user.password,
-    };
+    const updatedUser = {};
+
+    if (name) updatedUser.name = name;
+    if (phone) updatedUser.phone = phone;
+    if (userPicUrl) updatedUser.userPicUrl = userPicUrl;
+    if (newPassword) {
+      updatedUser.password = bcrypt.hashSync(newPassword, 10);
+    }
+    
 
     User.update(regNo, updatedUser, (err, result) => {
       if (err) {
@@ -79,18 +82,18 @@ exports.createTournament = (req, res) => {
 
 exports.updateTournament = (req, res) => {
   const { tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
-  const logoPicUrl = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476640/rmxa26ctdkr4m0jrgwog.png";
+  const logoPicUrl = req.file ? req.file.cloudinaryUrl : null;
   const regNo = req.user.reg_no;
   const {tournamentId} = req.params;
 
-  const updatedTournament = {
-    tournamentName,
-    sportType,
-    tournamentDate,
-    playerBaseCoin,
-    perTeamCoin,
-    logoPicUrl,
-  };
+  const updatedTournament = {};
+  
+  if (tournamentName) updatedTournament.tournamentName = tournamentName;
+  if (sportType) updatedTournament.sportType = sportType;
+  if (tournamentDate) updatedTournament.tournamentDate = tournamentDate;
+  if (playerBaseCoin) updatedTournament.playerBaseCoin = playerBaseCoin;
+  if (perTeamCoin) updatedTournament.perTeamCoin = perTeamCoin;
+  if (logoPicUrl) updatedTournament.logoPicUrl = logoPicUrl;
 
   User.updateTournament(tournamentId, updatedTournament, regNo, (err, result) => {
     if (err) {
