@@ -2,10 +2,10 @@
 
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { MoviingBorderButton } from "@/components/ui/SCmoving-border";
-import Cookies from 'js-cookie';
+// import { useRouter } from 'next/router';
+// import axios from 'axios';
 
 const JoinTournament: React.FC = () => {
   const [joinCode, setJoinCode] = useState('');
@@ -13,21 +13,7 @@ const JoinTournament: React.FC = () => {
   const [position, setPosition] = useState('');
   const [teamName, setTeamName] = useState('');
   const [teamLogo, setTeamLogo] = useState<File | null>(null);
-  const router = useRouter();
-
-    
-    useEffect(() => {
-        const fetchUserData = async () => {
-            const token = Cookies.get('token');
-            if (!token) {
-                router.push('/authpage'); // Redirect to login if no token is found
-                return;
-            }
-        }
-        fetchUserData()
-    },
-        [router]
-    )
+//   const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -37,12 +23,6 @@ const JoinTournament: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const token = Cookies.get('token');
-    if (!token) {
-      router.push('/authpage');
-      return;
-    }
 
     const formData = new FormData();
     formData.append('joinCode', joinCode);
@@ -56,38 +36,27 @@ const JoinTournament: React.FC = () => {
       }
     }
 
-    try {
-      const response = await fetch('http://localhost:5000/api/home/join-tournament', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to join tournament');
-      }
-
-      // Navigate to homepage upon successful join
-      router.push('/homepage');
-      alert('Joined request sent Successfully ');
-    } catch (error) {
-      console.error('Error joining tournament:', error);
-    }
+    // try {
+    //   await axios.post('/api/join-tournament', formData, {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data',
+    //     },
+    //   });
+    //   router.push('/previous-page'); // replace with your previous page path
+    // } catch (error) {
+    //   console.error('Error joining tournament:', error);
+    // }
   };
 
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="bg-gray-100 p-8 rounded-lg shadow-lg w-96">
-        <div className="flex justify-center items-center pt-5 mb-5">
-          <MoviingBorderButton borderRadius="1rem"
-            className=" bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
-          >
-            Join Tournament
-          </MoviingBorderButton>
-        </div>
+      <div className="flex justify-center items-center pt-5 mb-5">
+        <MoviingBorderButton borderRadius="1rem"
+        className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
+        >Join Tournament
+        </MoviingBorderButton>
+    </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block mb-2">Join Code:</label>
@@ -157,7 +126,7 @@ const JoinTournament: React.FC = () => {
             <button
               type="button"
               className="bg-red-500 text-white px-4 py-2 rounded"
-              onClick={() => router.push('/homepage')}
+            //   onClick={() => router.push('/previous-page')}
             >
               Cancel
             </button>

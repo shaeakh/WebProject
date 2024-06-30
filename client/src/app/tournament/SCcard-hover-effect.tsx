@@ -9,9 +9,9 @@ export const HoverEffect = ({
   className,
 }: {
   items: {
-    team_name: string;
-    name: string;
-    team_logo: string;
+    team: string;
+    manager: string;
+    link: string;
   }[];
   className?: string;
 }) => {
@@ -25,35 +25,40 @@ export const HoverEffect = ({
       )}
     >
       {items.map((item, idx) => (
-        <div className="relative group  block p-2 h-full w-full">
-        <AnimatePresence>
-          {hoveredIndex === idx && (
-            <motion.span
-              className="absolute inset-0 h-auto w-auto bg-neutral-200 dark:bg-slate-800/[0.8] block  rounded-3xl"
-              layoutId="hoverBackground"
-              initial={{ opacity: 0 }}
-              animate={{
-                opacity: 1,
-                transition: { duration: 0.15 },
-              }}
-              exit={{
-                opacity: 0,
-                transition: { duration: 0.15, delay: 0.2 },
-              }}
-            />
-          )}
-        </AnimatePresence>
-        <Card>
-          <div className='h-36 overflow-hidden rounded-lg flex justify-center w-full'>
-            <img className='object-cover h-full w-full' src={item.team_logo} alt="" />
-          </div>
-          <div className='flex flex-col justify-center items-start'>
-            <p className='font-mono text-white font-bold text-2xl'>{item.team_name}</p>
-            <p className='font-mono text-white text-lg'>{item.name}</p>
-          </div>
-        </Card>
-      </div>
-
+        <Link
+          href={item?.link}
+          key={item?.link}
+          className="relative group  block p-2 h-full w-full"
+          onMouseEnter={() => setHoveredIndex(idx)}
+          onMouseLeave={() => setHoveredIndex(null)}
+        >
+          <AnimatePresence>
+            {hoveredIndex === idx && (
+              <motion.span
+                className="absolute inset-0 h-auto w-auto bg-neutral-200 dark:bg-slate-800/[0.8] block  rounded-3xl"
+                layoutId="hoverBackground"
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  transition: { duration: 0.15 },
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: { duration: 0.15, delay: 0.2 },
+                }}
+              />
+            )}
+          </AnimatePresence>
+          <Card>
+            <div className='h-36 overflow-hidden rounded-lg flex justify-center w-full'>
+              <img className='object-cover h-full w-full' src={item.link} alt="" />
+            </div>
+            <div className='flex flex-col justify-center items-start'>
+              <p className='font-mono text-white font-bold text-2xl'>{item.team}</p>
+              <p className='font-mono text-white text-lg'>{item.manager}</p>
+            </div>
+          </Card>
+        </Link>
       ))}
     </div>
   );

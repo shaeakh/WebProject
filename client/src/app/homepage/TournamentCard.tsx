@@ -1,31 +1,30 @@
-import React from 'react';
+import React from 'react'
 
-interface TournamentCardProps {
-  tournament_name: string;
-  role: string;
-  tournament_logo_url: string; 
-}
-
-const TournamentCard: React.FC<TournamentCardProps> = ({ tournament_name, role, tournament_logo_url }) => {
+function TournamentCard(props: any) {
   return (
     <div
-      className='border-2 border-black rounded-lg hover:font-bold'
+      className='rounded-lg'
       style={{
-        backgroundImage: `url(${tournament_logo_url})`,
+        backgroundImage: `url( ${props.backgroundImage} )`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        height: '150px', // Adjust height as needed
-        width: '250px'
+        height: '250px', // Adjust height as needed
+        width: '300px'
       }}
     >
-      <div className='h-full flex flex-col justify-end rounded-lg'>
-          <div className='h-min bg-black rounded-lg bg-opacity-50'>
-            <p className='font-mono text-2xl text-white mx-2 mt-2'>{tournament_name}</p>
-            <p className='font-mono text-lg text-white mx-2 mb-2'>{role}</p>
+      <a href={props.link}>
+
+        <div className='h-full flex flex-col justify-end rounded-lg'>
+          <div className=' h-min  bg-black rounded-lg bg-opacity-50 '>
+
+            <p className='font-mono font-bold text-xl text-white mx-2 mt-2' >{props.title}</p>
+            <p className='font-mono text-lg text-white mx-2 mb-2' >{props.date}</p>
           </div>
         </div>
+      </a>
     </div>
-  );
-};
 
-export default TournamentCard;
+  )
+}
+
+export default TournamentCard

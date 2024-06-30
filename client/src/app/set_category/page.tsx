@@ -1,70 +1,32 @@
-// pages/set_categories.tsx
+
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+// import axios from 'axios';
 import { MoviingBorderButton } from "@/components/ui/SCmoving-border";
-import Cookies from 'js-cookie';
 
 interface Player {
   name: string;
-  reg_no: string;
-  tournament_id: number;
-  sport_type: string;
+  sport: string;
   position: string;
   category: string;
 }
 
-interface SetCategoriesProps {
-  searchParams: {
-    tournament: any;
-  };
-}
-
+const initialPlayers: Player[] = [
+  { name: 'Farzine', sport: 'Football', position: 'Goal Keeper', category: '' },
+  { name: 'Emran', sport: 'Football', position: 'Defender', category: '' },
+  { name: 'Gilman', sport: 'Football', position: 'Midfielder', category: '' },
+  { name: 'Meraj', sport: 'Football', position: 'Forward', category: '' },
+  { name: 'Hasin', sport: 'Football', position: 'Midfielder', category: '' },
+  { name: 'Niloy', sport: 'Football', position: 'Defender', category: '' },
+  { name: 'Arnob', sport: 'Football', position: 'Forward', category: '' },
+];
 
 const categories = ['Platinum', 'Gold', 'Silver', 'Bronze'];
 
-const SetCategoriesPage: React.FC<SetCategoriesProps> = ({ searchParams }: {
-  searchParams: {
-    tournament: any;
-  }
-}) => {
-  const router = useRouter();
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [tournamentId, setTournamentId] = useState<number>(1); // Assuming a tournament ID for now
-
-  useEffect(() => {
-    const fetchPlayers = async () => {
-      const token = Cookies.get('token');
-      if (!token) {
-        router.push('/authpage'); // Redirect to login if no token is found
-        return;
-      }
-
-      try {
-        const response = await fetch(`http://localhost:5000/api/home/players/${searchParams.tournament}`, {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch players');
-        }
-
-        const data = await response.json();
-        setPlayers(data);
-      } catch (error) {
-        console.error('Error fetching players:', error);
-      }
-    };
-
-    fetchPlayers();
-  }, [router, tournamentId]);
+const PlayersPage: React.FC = () => {
+  const [players, setPlayers] = useState<Player[]>(initialPlayers);
 
   const handleCategoryChange = (index: number, newCategory: string) => {
     const updatedPlayers = players.map((player, i) =>
@@ -73,48 +35,25 @@ const SetCategoriesPage: React.FC<SetCategoriesProps> = ({ searchParams }: {
     setPlayers(updatedPlayers);
   };
 
-  const handleSave = async () => {
-    const token = Cookies.get('token');
-    if (!token) {
-      router.push('/authpage'); // Redirect to login if no token is found
-      return;
-    }
-
-    try {
-      const response = await fetch('http://localhost:5000/api/home/players/categories', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ players })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save categories');
-      }
-
-      const data = await response.json();
-      console.log('Categories saved successfully:', data);
-      alert('Categories saved successfully');
-    } catch (error) {
-      console.error('Error saving categories:', error);
-      alert('Error saving categories');
-    }
-  };
+//   const handleSave = async () => {
+//     try {
+//       const response = await axios.post('/api/save-categories', { players });
+//       console.log('Categories saved successfully:', response.data);
+//     } catch (error) {
+//       console.error('Error saving categories:', error);
+//     }
+//   };
 
   return (
     <div className="container mx-auto p-4">
-      <h1>this is tournament no {searchParams.tournament}</h1>
       <div className="flex justify-center items-center pt-5 mt-5">
         <MoviingBorderButton borderRadius="1rem"
-          className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200">
-          Set Category
+        className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
+        >Set Category
         </MoviingBorderButton>
-      </div>
+    </div>
       <div className="bg-gray-100 p-6 rounded-lg shadow-lg mt-5">
-        <table className="w-full table-auto mb-5">
+        <table className="w-full table-auto">
           <thead>
             <tr>
               <th className="px-4 py-2">Name</th>
@@ -127,7 +66,7 @@ const SetCategoriesPage: React.FC<SetCategoriesProps> = ({ searchParams }: {
             {players.map((player, index) => (
               <tr key={index} className="text-center">
                 <td className="border-2 px-4 py-2">{player.name}</td>
-                <td className="border-2 px-4 py-2">{player.sport_type}</td>
+                <td className="border-2 px-4 py-2">{player.sport}</td>
                 <td className="border-2 px-4 py-2">{player.position}</td>
                 <td className="border-2 px-4 py-2">
                   <select
@@ -147,16 +86,15 @@ const SetCategoriesPage: React.FC<SetCategoriesProps> = ({ searchParams }: {
             ))}
           </tbody>
         </table>
-        <div className="flex justify-center">
-          <MoviingBorderButton borderRadius="1rem"
-            className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
-            onClick={handleSave}>
-            Save
-          </MoviingBorderButton>
-        </div>
+        <button
+          className="bg-green-500 text-white px-4 py-2 rounded mt-4"
+        //   onClick={handleSave}
+        >
+          Save
+        </button>
       </div>
     </div>
   );
 };
 
-export default SetCategoriesPage;
+export default PlayersPage;
