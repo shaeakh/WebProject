@@ -3,39 +3,28 @@ const bcrypt = require('bcryptjs');
 const fs = require('fs');
 
 
-exports.getHomePage = (req, res) => {
-  const regNo = req.user.reg_no;
-
-  User.findTournamentsByUser(regNo, (err, tournaments) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error fetching tournaments', error: err });
-    }
-
-    res.status(200).json({ message: 'User home page', tournaments });
-  });
-};
 
 exports.updateUser = (req, res) => {
   const { email, password, name, phone, newPassword } = req.body;
-  const userPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/avatar.png";
+  const userPicUrl = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718475943/kxrcwdacnp1vdbrwai6k.png";
   const regNo = req.user.reg_no;
 
   // Confirm email and password
   User.findByEmail(email, (err, users) => {
     if (err || users.length === 0) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid email' });
     }
 
     const user = users[0];
     if (!bcrypt.compareSync(password, user.password)) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid password' });
     }
 
     const updatedUser = {
       name: name || user.name,
       phone: phone || user.phone,
       userPicUrl: userPicUrl || user.userPicUrl,
-      password: newPassword ? bcrypt.hashSync(newPassword, 10) : user.password,
+      password: newPassword || user.password,
     };
 
     User.update(regNo, updatedUser, (err, result) => {
@@ -49,7 +38,7 @@ exports.updateUser = (req, res) => {
 
 exports.createTournament = (req, res) => {
   const { tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
-  const logoPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/tournament.png";
+  const logoPicUrl = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476640/rmxa26ctdkr4m0jrgwog.png";
   const regNo = req.user.reg_no;
   const joinCode = Math.random().toString(36).substr(2, 9); // Generate a random join code
 
@@ -68,71 +57,31 @@ exports.createTournament = (req, res) => {
     if (err) {
       return res.status(500).json({ message: 'Error creating tournament', error: err });
     }
-    res.status(201).json({ message: 'Tournament created successfully', tournamentId: result.insertId });
-  });
-};
 
-exports.joinTournament = (req, res) => {
-  const { joinCode, role, position, teamName } = req.body;
-  const regNo = req.user.reg_no;
-  const teamLogo = req.file ? req.file.cloudinaryUrl : "/uploads/team.png";
+    const tournamentId = result.insertId;
 
-  User.findTournamentByJoinCode(joinCode, (err, tournaments) => {
-    if (err || tournaments.length === 0) {
-      return res.status(400).json({ message: 'Invalid join code' });
-    }
-
-    const tournament = tournaments[0];
-    const newMemberRequest = {
-      tournamentId: tournament.tournament_id,
-      regNo,
-      role
+    // Add the creator to the participated_tournament table as admin
+    const participationData = {
+      tournamentId: tournamentId,
+      regNo: regNo,
+      role: 'admin'
     };
 
-    User.createMemberRequest(newMemberRequest, (err, result) => {
+    User.createParticipatedTournament(participationData, (err) => {
       if (err) {
-        return res.status(500).json({ message: 'Error joining tournament', error: err });
+        return res.status(500).json({ message: 'Error adding creator to participated_tournament', error: err });
       }
-
-      if (role === 'player') {
-        const newPlayer = {
-          tournamentId: tournament.tournament_id,
-          regNo,
-          position
-        };
-
-        User.createPlayer(newPlayer, (err, result) => {
-          if (err) {
-            return res.status(500).json({ message: 'Error adding player to tournament', error: err });
-          }
-          res.status(201).json({ message: 'Player joined tournament successfully' });
-        });
-      } else if (role === 'manager') {
-        const newManager = {
-          tournamentId: tournament.tournament_id,
-          regNo,
-          teamName,
-          teamLogo, 
-        };
-
-        User.createManager(newManager, (err, result) => {
-          if (err) {
-            return res.status(500).json({ message: 'Error adding manager to tournament', error: err });
-          }
-          res.status(201).json({ message: 'Manager joined tournament successfully' });
-        });
-      } else {
-        res.status(400).json({ message: 'Invalid role specified' });
-      }
+      res.status(201).json({ message: 'Tournament created successfully', tournamentId: tournamentId });
     });
   });
 };
 
 
 exports.updateTournament = (req, res) => {
-  const { tournamentId, tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
-  const logoPicUrl = req.file ? req.file.cloudinaryUrl : "/uploads/tournament.png";
+  const { tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
+  const logoPicUrl = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476640/rmxa26ctdkr4m0jrgwog.png";
   const regNo = req.user.reg_no;
+  const {tournamentId} = req.params;
 
   const updatedTournament = {
     tournamentName,
@@ -169,6 +118,7 @@ exports.getUserDetails = (req, res) => {
       phone: user.phone,
       department: user.department,
       reg_no: user.reg_no,
+      user_pic_url: user.user_pic_url,
     };
     res.status(200).json(userDetails);
   });
@@ -176,9 +126,9 @@ exports.getUserDetails = (req, res) => {
 
 
 exports.getCurrentTournamentDetails = (req, res) => {
-  const regNo = req.user.reg_no;
+  const {tournamentId} = req.params;
 
-  User.findCurrentTournamentByUser(regNo, (err, tournaments) => {
+  User.findCurrentTournamentByUser(tournamentId, (err, tournaments) => {
     if (err) {
       return res.status(500).json({ message: 'Error fetching current tournament', error: err });
     }
@@ -190,3 +140,226 @@ exports.getCurrentTournamentDetails = (req, res) => {
     res.status(200).json({ message: 'Current tournament details', tournament: tournaments[0] });
   });
 };
+
+exports.getUserParticipatedTournaments = (req, res) => {
+  const regNo = req.user.reg_no;
+
+  User.findParticipatedTournamentsByUser(regNo, (err, tournaments) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching participated tournaments', error: err });
+    }
+
+    if (tournaments.length === 0) {
+      return res.status(200).json({ message: 'No participated tournaments found' });
+    }
+
+    res.status(200).json({tournaments : tournaments});
+  });
+};
+
+exports.findTournamentRoleByUser = (req, res) => {
+  const regNo = req.user.reg_no;
+  const { tournament_id } = req.body;
+  if (!tournament_id || !regNo) {
+    return res.status(400).json({ message: 'tournament_id and regNo are required' });
+  }
+
+  User.findTournamentRoleByUser(tournament_id, regNo, (err, role) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching tournament role', error: err });
+    }
+    if (role.length === 0) {
+      return res.status(404).json({ role: 'unauthorized' });
+    }
+    res.status(200).json(role[0]);
+  });
+};
+
+exports.getTournamentInfo = (req, res) => {
+  const { tournament_id } = req.body;
+  User.getTournamentInfo(tournament_id,(err, info) => {
+    if(err){
+      res.status(500).json({ message: 'Error fetching tournament info', error: err });
+    }
+    res.status(200).send(info[0]);
+  })
+}
+
+exports.joinTournament = (req, res) => {
+  const { joinCode, role, position, teamName } = req.body;
+  const teamLogo = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476614/mytqb9tcyxayeltyirpu.png";
+  const regNo = req.user.reg_no;
+
+  User.findByJoinCode(joinCode, (err, tournaments) => {
+    if (err || tournaments.length === 0) {
+      return res.status(400).json({ message: 'Invalid join code' });
+    }
+
+    const tournament = tournaments[0];
+    const newMemberRequest = {
+      tournamentId: tournament.tournament_id,
+      regNo,
+      role,
+      position: role === 'player' ? position : null,
+      teamName: role === 'manager' ? teamName : null,
+      teamLogo: role === 'manager' ? teamLogo : null,
+    };
+
+    User.createMemberRequest(newMemberRequest, (err, result) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error joining tournament', error: err });
+      }
+      res.status(201).json({ message: 'Request to join tournament submitted successfully' });
+    });
+  });
+};
+
+// Get Member Requests
+exports.getMemberRequests = (req, res) => {
+  const { tournamentId } = req.params;
+
+  User.getMemberRequests(tournamentId, (err, requests) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching member requests', error: err });
+    }
+    res.status(200).json(requests);
+  });
+};
+
+
+// Accept Member Request
+exports.acceptMemberRequest = (req, res) => {
+  const { tournamentId,requestId } = req.params;
+  
+  User.getMemberRequests(tournamentId, (err, requests) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching member requests', error: err });
+    }
+
+    const request = requests.find(r => r.request_id == requestId);
+    if (!request) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    const { tournament_id, reg_no, role, position, team_name, team_logo } = request;
+
+    // Fetch tournament coins
+    User.getTournamentCoins(tournament_id, (err, coins) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error fetching tournament coins', error: err });
+      }
+
+      const { per_team_coin, player_base_coin } = coins[0];
+
+      // Insert into participated_tournament
+      User.createParticipatedTournament({ tournamentId: tournament_id, regNo: reg_no, role }, (err) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error inserting into participated_tournament', error: err });
+        }
+
+        if (role === 'manager') {
+          User.createTeam({ tournamentId: tournament_id, regNo: reg_no, teamName: team_name, teamLogo: team_logo, coin: per_team_coin }, (err) => {
+            if (err) {
+              return res.status(500).json({ message: 'Error creating team', error: err });
+            }
+            User.deleteMemberRequest(requestId, (err) => {
+              if (err) {
+                return res.status(500).json({ message: 'Error deleting member request', error: err });
+              }
+              res.status(201).json({ message: 'Request accepted and team created successfully' });
+            });
+          });
+        } else if (role === 'player') {
+          User.createPlayer({ tournamentId: tournament_id, regNo: reg_no, position, playerPrice: player_base_coin }, (err) => {
+            if (err) {
+              return res.status(500).json({ message: 'Error creating player', error: err });
+            }
+            User.deleteMemberRequest(requestId, (err) => {
+              if (err) {
+                return res.status(500).json({ message: 'Error deleting member request', error: err });
+              }
+              res.status(201).json({ message: 'Request accepted and player added successfully' });
+            });
+          });
+        } else {
+          res.status(400).json({ message: 'Invalid role specified' });
+        }
+      });
+    });
+  });
+};
+
+// Reject Member Request
+exports.rejectMemberRequest = (req, res) => {
+  const { requestId } = req.params;
+
+  User.deleteMemberRequest(requestId, (err) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error deleting member request', error: err });
+    }
+    res.status(200).json({ message: 'Request rejected successfully' });
+  });
+};
+
+
+exports.getPlayersByTournament = (req, res) => {
+  const { tournamentId } = req.params;
+
+  User.getPlayersByTournament(tournamentId, (err, players) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching players', error: err });
+    }
+    res.status(200).json(players);
+  });
+};
+
+exports.updatePlayerCategories = (req, res) => {
+  const players = req.body.players;
+
+  User.updatePlayerCategories(players, (err, result) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error updating player categories', error: err });
+    }
+    res.status(200).json({ message: 'Player categories updated successfully' });
+  });
+};
+
+
+exports.getTeamDetailsByManager = (req, res) => {
+  const regNo = req.user.reg_no;
+  const { tournament_id } = req.body;
+  if (!tournament_id || !regNo) {
+    return res.status(400).json({ message: 'tournament_id and regNo are required' });
+  }
+  console.log("sdjfhbvasf",regNo,tournament_id);
+
+  User.getTeamDetailsByManager(regNo,tournament_id, (err, team) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching team details', error: err });
+    }
+    res.status(200).json(team[0]);
+  });
+};
+
+
+
+exports.getTeamsInTournament = (req, res) => {
+  const { tournament_id } = req.body;
+
+  User.getTeamsInTournament(tournament_id, (err, teams) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching teams', error: err });
+    }
+    res.status(200).json(teams);
+  });
+};
+
+exports.getPlayersInTeam = (req, res) => {
+  const { tournament_id,team_id } = req.body;
+  User.getPlayersInTeam(team_id,tournament_id,(err, team) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching team', error: err });
+    }
+    res.status(200).json(team);
+  });
+}

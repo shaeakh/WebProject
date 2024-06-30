@@ -4,7 +4,18 @@ const authRoutes = require('./routes/authRoutes');
 const homeRoutes = require('./routes/homeRoutes');
 const cookieParser = require('cookie-parser');
 const cloudinary = require('cloudinary').v2;
+const cors=require("cors");
+
+
 require('dotenv').config();
+
+const corsOptions ={
+   origin:'http://localhost:3000', 
+   credentials:true,            //access-control-allow-credentials:true
+   optionSuccessStatus:200,
+}
+
+
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -13,9 +24,10 @@ cloudinary.config({
 });
 
 const app = express();
-
+app.use(cors(corsOptions))
 app.use(bodyParser.json());
 app.use(cookieParser());
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/home', homeRoutes);
