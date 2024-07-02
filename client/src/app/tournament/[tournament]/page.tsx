@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/SCinput'
 import { Label } from '@/components/ui/SClabel'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/SCselect'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaRegCopy } from "react-icons/fa6";
 import { MoviingBorderButton } from "@/components/ui/SCmoving-border";
 import Teams from './Teams'
@@ -17,7 +17,7 @@ function Page({ params }: { params: { tournament: string } }) {
 
     const router = useRouter();
 
-    const [user_role, setUserRole] = React.useState("");
+    const [user_role, setUserRole] = useState("undefined");
     const [tournament, set_tournament] = React.useState(
         {
             tournament_name: "",
@@ -59,7 +59,7 @@ function Page({ params }: { params: { tournament: string } }) {
                 }
                 else {
                     setUserRole(data.role);
-                    console.log(user_role);
+                    console.log("user role",user_role);
                     const t_info_res = await fetch('http://localhost:5000/api/home/tournament-info', {
                         method: 'POST',
                         credentials: 'include', // Include cookies in the request
@@ -162,6 +162,9 @@ function Page({ params }: { params: { tournament: string } }) {
         ]
     }
 
+    const Start_auction = () =>{
+
+    }
 
 
     return (
@@ -187,7 +190,9 @@ function Page({ params }: { params: { tournament: string } }) {
                             </div>
                         </div>
                         <div className='flex flex-col justify-center'>
-                            <a href="/auctionpage"><MoviingBorderButton
+                            <a href="/auctionpage">
+                            <MoviingBorderButton
+                                onclick={Start_auction}
                                 borderRadius="1.75rem"
                                 className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
                             >
