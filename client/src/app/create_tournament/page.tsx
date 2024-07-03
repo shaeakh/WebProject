@@ -56,7 +56,7 @@ const Page: React.FC = () => {
         const fetchUserData = async () => {
             const token = Cookies.get('token');
             if (!token) {
-                router.push('/authpage'); // Redirect to login if no token is found
+                router.push('/authpage'); 
                 return;
             }
         }

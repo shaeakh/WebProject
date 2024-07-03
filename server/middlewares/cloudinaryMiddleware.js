@@ -1,4 +1,4 @@
-// middlewares/cloudinaryMiddleware.js
+
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const path = require('path');
