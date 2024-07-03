@@ -26,7 +26,8 @@ function Page({ params }: { params: { tournament: string } }) {
             tournament_logo_url: ""
         }
     );
-    
+    const token = Cookies.get('token');
+
     const [teams, set_teams] = React.useState([]);
 
     const [Players, set_Players] = React.useState([]);
@@ -64,7 +65,7 @@ function Page({ params }: { params: { tournament: string } }) {
                 }
                 else {
                     setUserRole(data.role);
-                    
+
                     const t_info_res = await fetch('http://localhost:5000/api/home/tournament-info', {
                         method: 'POST',
                         credentials: 'include', // Include cookies in the request
@@ -75,11 +76,11 @@ function Page({ params }: { params: { tournament: string } }) {
                         body: JSON.stringify({ tournament_id })
                     });
                     const data2 = await t_info_res.json();
-                    
-                    set_tournament(data2);
-                    
 
-                    if(data.role === "admin"){
+                    set_tournament(data2);
+
+
+                    if (data.role === "admin") {
                         const teams_res = await fetch('http://localhost:5000/api/home/tournament-teams', {
                             method: 'POST',
                             credentials: 'include', // Include cookies in the request
@@ -92,8 +93,8 @@ function Page({ params }: { params: { tournament: string } }) {
                         const data3 = await teams_res.json();
                         set_teams(data3);
                     }
-                    if (data.role == "manager"   ) {
-                        
+                    if (data.role == "manager") {
+
                         const team_res = await fetch('http://localhost:5000/api/home/team-details-managerview', {
                             method: 'POST',
                             credentials: 'include', // Include cookies in the request
@@ -101,9 +102,9 @@ function Page({ params }: { params: { tournament: string } }) {
                                 'Content-Type': 'application/json',
                                 'Authorization': `Bearer ${token}`
                             },
-                            body: JSON.stringify({ tournament_id }) 
+                            body: JSON.stringify({ tournament_id })
                         });
-                        
+
                         const data4 = await team_res.json();
                         set_team(data4);
 
@@ -122,7 +123,7 @@ function Page({ params }: { params: { tournament: string } }) {
                         const data5 = await players_res.json();
                         set_Players(data5);
                     }
-                    if(data.role == "player"){
+                    if (data.role == "player") {
                         const team_res = await fetch('http://localhost:5000/api/home/team-details-playerview', {
                             method: 'POST',
                             credentials: 'include', // Include cookies in the request
@@ -130,9 +131,9 @@ function Page({ params }: { params: { tournament: string } }) {
                                 'Content-Type': 'application/json',
                                 'Authorization': `Bearer ${token}`
                             },
-                            body: JSON.stringify({ tournament_id }) 
+                            body: JSON.stringify({ tournament_id })
                         });
-                        
+
                         const data4 = await team_res.json();
                         set_team(data4);
 
@@ -151,7 +152,7 @@ function Page({ params }: { params: { tournament: string } }) {
                         const data5 = await players_res.json();
                         set_Players(data5);
                     }
-                    
+
                 }
             } catch (error) {
 
@@ -161,8 +162,19 @@ function Page({ params }: { params: { tournament: string } }) {
     },
         [router]
     )
-    const Start_auction = () =>{
+
+    const Start_auction = async () => {
         
+        const team_res = await fetch('http://localhost:5000/api/home/start-auction', {
+            method: 'POST',
+            credentials: 'include', // Include cookies in the request
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ tournament_id : params.tournament }) 
+        });
+        const data4 = await team_res.json();
     }
 
 
@@ -190,13 +202,14 @@ function Page({ params }: { params: { tournament: string } }) {
                         </div>
                         <div className='flex flex-col justify-center'>
                             <a href="/auctionpage">
-                            <MoviingBorderButton
-                                onclick={Start_auction}
-                                borderRadius="1.75rem"
-                                className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
-                            >
-                                Start Auction
-                            </MoviingBorderButton></a>
+                                <MoviingBorderButton
+                                    onClick={Start_auction}
+                                    borderRadius="1.75rem"
+                                    className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
+                                >
+                                    Start Auction
+                                </MoviingBorderButton>
+                            </a>
                         </div>
                         <div className='flex flex-col gap-2'>
 
@@ -223,7 +236,7 @@ function Page({ params }: { params: { tournament: string } }) {
                                 <button className="px-8 py-2 rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
                                     Update Tournament
                                 </button>
-                                </Link>
+                            </Link>
                         </div>
                     </div>
                     <hr className='border border-grey w-full my-2' />
