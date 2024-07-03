@@ -79,6 +79,16 @@ exports.createTournament = (req, res) => {
   });
 };
 
+exports.startAuction = (req, res) => {
+  const { tournament_id} = req.body;
+  User.startAuction(tournament_id,(err, result) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error starting auction', error: err });
+    }
+    res.status(201).json({ message: 'Auction started successfully',result: result});
+  });
+}
+
 
 exports.updateTournament = (req, res) => {
   const { tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
@@ -334,8 +344,6 @@ exports.getTeamDetailsByManager = (req, res) => {
   if (!tournament_id || !regNo) {
     return res.status(400).json({ message: 'tournament_id and regNo are required' });
   }
-  console.log("sdjfhbvasf",regNo,tournament_id);
-
   User.getTeamDetailsByManager(regNo,tournament_id, (err, team) => {
     if (err) {
       return res.status(500).json({ message: 'Error fetching team details', error: err });
@@ -344,6 +352,36 @@ exports.getTeamDetailsByManager = (req, res) => {
   });
 };
 
+exports.getTeamDetailsByPlayer = (req, res) => {
+  const regNo = req.user.reg_no;
+  const { tournament_id } = req.body;
+  if (!tournament_id || !regNo) {
+    return res.status(400).json({ message: 'tournament_id and regNo are required' });
+  }
+
+  User.getTeamDetailsByPlayer(regNo,tournament_id, (err, team) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching team details', error: err });
+    }
+    res.status(200).json(team[0]);
+  });
+};
+
+exports.getTeamPlayersByPlayer = (req, res) => {
+  const regNo = req.user.reg_no;
+  const { tournament_id } = req.body;
+  if (!tournament_id || !regNo) {
+    return res.status(400).json({ message: 'tournament_id and regNo are required' });
+  }
+
+  User.getTeamPlayersByPlayer(regNo,tournament_id, (err, team) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching team details', error: err });
+    }
+    res.status(200).json(team);
+  });
+  
+};
 
 
 exports.getTeamsInTournament = (req, res) => {
@@ -366,3 +404,4 @@ exports.getPlayersInTeam = (req, res) => {
     res.status(200).json(team);
   });
 }
+

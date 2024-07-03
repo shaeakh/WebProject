@@ -1,5 +1,5 @@
 const express = require('express');
-const { updateUser, createTournament, updateTournament, getUserDetails, getCurrentTournamentDetails, getUserParticipatedTournaments, joinTournament, getMemberRequests, acceptMemberRequest, rejectMemberRequest, getPlayersByTournament, updatePlayerCategories, getTeamDetailsByManager, getTournamentDetailsWithTeams, getTeamsInTournament,findTournamentRoleByUser,getTournamentInfo,getPlayersInTeam  } = require('../controllers/homeController');
+const { updateUser, createTournament,startAuction, updateTournament, getUserDetails, getCurrentTournamentDetails, getUserParticipatedTournaments, joinTournament, getMemberRequests, acceptMemberRequest, rejectMemberRequest, getPlayersByTournament, updatePlayerCategories, getTeamDetailsByManager,getTeamDetailsByPlayer,getTeamPlayersByPlayer, getTournamentDetailsWithTeams, getTeamsInTournament,findTournamentRoleByUser,getTournamentInfo,getPlayersInTeam  } = require('../controllers/homeController');
 const {protect} = require('../middlewares/authMiddleware');
 const { upload, uploadToCloudinary } = require('../middlewares/cloudinaryMiddleware');
 const router = express.Router();
@@ -11,6 +11,9 @@ router.get('/user-details', protect, getUserDetails);
 
 // create tournament routes
 router.post('/create-tournament', protect, upload.single('logoPicUrl'), uploadToCloudinary, createTournament);
+
+//start-auction
+router.post('/start-auction', protect, startAuction);
 
 // update tournament routes
 router.put('/update-tournament/:tournamentId', protect, upload.single('logoPicUrl'), uploadToCloudinary, updateTournament);
@@ -42,7 +45,9 @@ router.post('/players/categories', protect, updatePlayerCategories); /*{
 
 // manager view page
 router.post('/team-details-managerview', protect, getTeamDetailsByManager);
-router.post('/team-players', protect,getPlayersInTeam);
+router.post('/team-details-playerview', protect, getTeamDetailsByPlayer);
+router.post('/team-players-playerview', protect, getTeamPlayersByPlayer);
+router.post('/team-players-managerview', protect,getPlayersInTeam);
 
 // tournament details page
 router.post('/tournament-info', protect, getTournamentInfo);

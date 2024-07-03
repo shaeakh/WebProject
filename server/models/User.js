@@ -68,9 +68,48 @@ User.findTournamentsByUser = (regNo, callback) => {
 
 User.createTournament = (tournament, callback) => {
   const { tournamentName, sportType, tournamentDate, logoPicUrl, joinCode, regNo, playerBaseCoin, perTeamCoin } = tournament;
-  const query = 'INSERT INTO tournament (tournament_name, sport_type, tournament_date, tournament_logo_url, join_code, reg_no, player_base_coin, per_team_coin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-  db.query(query, [tournamentName, sportType, tournamentDate, logoPicUrl, joinCode, regNo, playerBaseCoin, perTeamCoin], callback);
+
+  // Start a transaction
+  db.beginTransaction((err) => {
+    if (err) {
+      return callback(err);
+    }
+
+    const query = 'INSERT INTO tournament (tournament_name, sport_type, tournament_date, tournament_logo_url, join_code, reg_no, player_base_coin, per_team_coin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    
+    db.query(query, [tournamentName, sportType, tournamentDate, logoPicUrl, joinCode, regNo, playerBaseCoin, perTeamCoin], (err, result) => {
+      if (err) {
+        return db.rollback(() => {
+          callback(err);
+        });
+      }
+
+      const tournamentId = result.insertId;
+
+      const auctionQuery = 'INSERT INTO auction_page (tournament_id, team_id, current_player_index, current_bid, sold, start, pause) VALUES (?, null, null, null, false, null, null)';
+      
+      db.query(auctionQuery, [tournamentId], (err) => {
+        if (err) {
+          return db.rollback(() => {
+            callback(err);
+          });
+        }
+
+        db.commit((err) => {
+          if (err) {
+            return db.rollback(() => {
+              callback(err);
+            });
+          }
+
+          callback(null, result);
+        });
+      });
+    });
+  });
 };
+
+
 
 
 User.updateTournament = (tournamentId, updatedTournament, regNo, callback) => {
@@ -127,7 +166,7 @@ User.findCurrentTournamentByUser = (tournamentId, callback) => {
 
 User.findParticipatedTournamentsByUser = (regNo, callback) => {
   const query =
-      `SELECT t.tournament_id, t.tournament_name, pt.role, t.tournament_logo_url FROM participated_tournament AS pt JOIN users AS u ON pt.reg_no = u.reg_no JOIN tournament AS t ON pt.tournament_id = t.tournament_id WHERE pt.reg_no = ?`;
+    `SELECT t.tournament_id, t.tournament_name, pt.role, t.tournament_logo_url FROM participated_tournament AS pt JOIN users AS u ON pt.reg_no = u.reg_no JOIN tournament AS t ON pt.tournament_id = t.tournament_id WHERE pt.reg_no = ?`;
   db.query(query, [regNo], callback);
 };
 
@@ -243,6 +282,28 @@ User.getTeamDetailsByManager = (regNo, tournament_id, callback) => {
   db.query(query, [tournament_id, regNo], callback);
 };
 
+User.getTeamDetailsByPlayer = (regNo, tournament_id, callback) => {
+  const query = `
+    SELECT T.team_id,T.team_name,T.team_logo, U.name
+    FROM team as T 
+    JOIN users as U ON T.reg_no = U.reg_no 
+    WHERE T.team_id = 
+      (SELECT team_id FROM player WHERE tournament_id = ? AND reg_no = ?);
+  `;
+  db.query(query, [tournament_id, regNo], callback);
+};
+
+User.getTeamPlayersByPlayer = (regNo, tournament_id, callback) => {
+  const query = `
+    SELECT U.name , P.position , p.category , p.player_price as value 
+    FROM player as P 
+    JOIN users as U ON P.reg_no = U.reg_no 
+    WHERE team_id =  
+      (SELECT team_id FROM player WHERE reg_no = ? AND tournament_id = ?);
+    `;
+  db.query(query, [regNo, tournament_id], callback);
+};
+
 User.getPlayersInTeam = (team_id, tournament_id, callback) => {
   const query = `
     SELECT u.name, p.position ,p.category , p.player_price as value
@@ -262,6 +323,11 @@ User.getTeamsInTournament = (tournamentId, callback) => {
     WHERE t.tournament_id = ?;
   `;
   db.query(query, [tournamentId], callback);
+};
+
+User.startAuction = (tournament_id, callback) => {
+  const query = 'UPDATE auction_page SET start = true WHERE tournament_id = ?';
+  db.query(query, [tournament_id], callback);
 };
 
 module.exports = User;
