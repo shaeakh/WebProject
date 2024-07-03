@@ -164,7 +164,7 @@ function Page({ params }: { params: { tournament: string } }) {
     )
 
     const Start_auction = async () => {
-        
+
         const team_res = await fetch('http://localhost:5000/api/home/start-auction', {
             method: 'POST',
             credentials: 'include', // Include cookies in the request
@@ -172,7 +172,7 @@ function Page({ params }: { params: { tournament: string } }) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ tournament_id : params.tournament }) 
+            body: JSON.stringify({ tournament_id: params.tournament })
         });
         const data4 = await team_res.json();
     }
@@ -201,7 +201,11 @@ function Page({ params }: { params: { tournament: string } }) {
                             </div>
                         </div>
                         <div className='flex flex-col justify-center'>
-                            <a href="/auctionpage">
+
+                            <Link href={{
+                                pathname: '/auctionpage',
+                                query: { tournament: params.tournament }
+                            }}>
                                 <MoviingBorderButton
                                     onClick={Start_auction}
                                     borderRadius="1.75rem"
@@ -209,7 +213,8 @@ function Page({ params }: { params: { tournament: string } }) {
                                 >
                                     Start Auction
                                 </MoviingBorderButton>
-                            </a>
+                            </Link>
+
                         </div>
                         <div className='flex flex-col gap-2'>
 

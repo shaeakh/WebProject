@@ -6,7 +6,19 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { ScrollArea } from "@/components/ui/SCscroll-area"
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
-function page() {
+
+interface auctionpage_Props {
+    searchParams: {
+      tournament: any;
+    };
+  }
+  
+  const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
+    searchParams: {
+      tournament: any;
+    }
+  }) => {
+// function page() {
     const router = useRouter();
 
     useEffect(() => {
@@ -353,4 +365,4 @@ function page() {
     )
 }
 
-export default page
+export default auctionpage
