@@ -18,6 +18,7 @@ function Page({ params }: { params: { tournament: string } }) {
     const router = useRouter();
 
     const [user_role, setUserRole] = useState("undefined");
+
     const [tournament, set_tournament] = React.useState(
         {
             tournament_name: "",
@@ -25,7 +26,11 @@ function Page({ params }: { params: { tournament: string } }) {
             tournament_logo_url: ""
         }
     );
+    
     const [teams, set_teams] = React.useState([]);
+
+    const [Players, set_Players] = React.useState([]);
+
     const [team, set_team] = React.useState({
         team_id: 0,
         team_name: "",
@@ -59,7 +64,7 @@ function Page({ params }: { params: { tournament: string } }) {
                 }
                 else {
                     setUserRole(data.role);
-                    console.log("user role",user_role);
+                    
                     const t_info_res = await fetch('http://localhost:5000/api/home/tournament-info', {
                         method: 'POST',
                         credentials: 'include', // Include cookies in the request
@@ -70,21 +75,24 @@ function Page({ params }: { params: { tournament: string } }) {
                         body: JSON.stringify({ tournament_id })
                     });
                     const data2 = await t_info_res.json();
+                    
                     set_tournament(data2);
+                    
 
-                    const teams_res = await fetch('http://localhost:5000/api/home/tournament-teams', {
-                        method: 'POST',
-                        credentials: 'include', // Include cookies in the request
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ tournament_id })
-                    });
-                    const data3 = await teams_res.json();
-                    set_teams(data3);
-
-                    if (data.role == "manager") {
+                    if(data.role === "admin"){
+                        const teams_res = await fetch('http://localhost:5000/api/home/tournament-teams', {
+                            method: 'POST',
+                            credentials: 'include', // Include cookies in the request
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ tournament_id })
+                        });
+                        const data3 = await teams_res.json();
+                        set_teams(data3);
+                    }
+                    if (data.role == "manager" ) {
                         const team_res = await fetch('http://localhost:5000/api/home/team-details-managerview', {
                             method: 'POST',
                             credentials: 'include', // Include cookies in the request
@@ -94,26 +102,30 @@ function Page({ params }: { params: { tournament: string } }) {
                             },
                             body: JSON.stringify({ tournament_id })
                         });
+                        
                         const data4 = await team_res.json();
                         set_team(data4);
+
+                        const players_res = await fetch('http://localhost:5000/api/home/team-players', {
+                            method: 'POST',
+                            credentials: 'include', // Include cookies in the request
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                tournament_id: tournament_id,
+                                team_id: data4.team_id
+                            })
+                        });
+                        const data5 = await players_res.json();
+                        set_Players(data5);
                     }
                     if (user_role === "player") {
 
                     }
 
-                    const players_res = await fetch('http://localhost:5000/api/home/team-players', {
-                        method: 'POST',
-                        credentials: 'include', // Include cookies in the request
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            tournament_id: tournament_id,
-                            team_id: team.team_id
-                        })
-                    });
-                    const data5 = await players_res.json();
+                    
                 }
             } catch (error) {
 
@@ -126,41 +138,6 @@ function Page({ params }: { params: { tournament: string } }) {
 
 
 
-    let player = {
-        manager: "Shaeakh",
-        Players: [
-            {
-                name: "Sawon",
-                position: "Mid fielder",
-                category: "Platinum",
-                value: 1000
-            },
-            {
-                name: "Amit",
-                position: "Striker",
-                category: "Gold",
-                value: 900
-            },
-            {
-                name: "Niloy",
-                position: "Defense",
-                category: "Bronze",
-                value: 400
-            },
-            {
-                name: "Farzine",
-                position: "Forword",
-                category: "Silver",
-                value: 600
-            },
-            {
-                name: "Meraj",
-                position: "Goal Keeper",
-                category: "Platinum",
-                value: 500
-            }
-        ]
-    }
 
     const Start_auction = () =>{
 
@@ -241,7 +218,7 @@ function Page({ params }: { params: { tournament: string } }) {
                         <div className='font-mono font-bold text-2xl text-center'>
                             Player List
                         </div>
-                        <DataTableDemo Players={player.Players} />
+                        <DataTableDemo Players={Players} />
                     </div>
                 </div>
             )}

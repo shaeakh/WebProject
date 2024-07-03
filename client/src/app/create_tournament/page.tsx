@@ -34,7 +34,7 @@ const Page: React.FC = () => {
     const [initial_team_points, set_initial_team_point] = useState<number | undefined>(undefined);
     const [base_player_point, set_base_player_point] = useState<number | undefined>(undefined);
     const [error, setError] = useState("");
-    const [isError, setisError] = useState(true);
+    const [isError, setisError] = useState(false);
 
     useEffect(() => {
         const today = new Date();
