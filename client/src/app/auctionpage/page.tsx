@@ -50,6 +50,8 @@ function page() {
     }
     let player = [
         {
+
+            reg_no :"",
             name: "Neimar",
             position: "Defense",
             category: "Gold",
