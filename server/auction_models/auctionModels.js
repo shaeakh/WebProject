@@ -48,5 +48,32 @@ AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
   };
 
 
+  AuctionModels.getTeamsDetailsByTournamentId = (tournamentId, callback) => {
+    const query = `
+      SELECT 
+        t.team_name,
+        t.team_logo,
+        u.name AS manager_name,
+        t.coin AS current_balance,
+        COUNT(p.reg_no) AS total_players
+      FROM 
+        team t
+      JOIN 
+        users u ON t.reg_no = u.reg_no
+      LEFT JOIN 
+        player p ON t.team_id = p.team_id
+      JOIN 
+        auction_page a ON t.team_id = a.team_id
+      WHERE 
+        t.tournament_id = ?
+      GROUP BY 
+        t.team_id
+    `;
+  
+    db.query(query, [tournamentId], callback);
+  };
+  
+
+
 
   module.exports = AuctionModels;
