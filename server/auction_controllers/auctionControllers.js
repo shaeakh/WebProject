@@ -12,3 +12,17 @@ exports.getTeamsByTournamentId = (req, res) => {
       res.status(200).json(teams);
     });
   };
+
+
+  exports.getPlayersByTournamentId = (req, res) => {
+    const { tournamentId } = req.params;
+  
+    AuctionModels.getPlayersByTournamentId(tournamentId, (err, players) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error fetching players', error: err });
+      }
+      res.status(200).json(players);
+    });
+  };
+
+
