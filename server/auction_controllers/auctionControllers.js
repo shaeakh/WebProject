@@ -25,4 +25,15 @@ exports.getTeamsByTournamentId = (req, res) => {
     });
   };
 
+  exports.getTeamsDetailsByTournamentId = (req, res) => {
+      const { tournamentId } = req.params;
+    
+      AuctionModels.getTeamsDetailsByTournamentId(tournamentId, (err, teams) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error fetching teams', error: err });
+        }
+        res.status(200).json(teams);
+      });
+    };
+
 
