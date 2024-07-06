@@ -23,6 +23,29 @@ AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
     db.query(query, [tournamentId], callback);
   };
 
+  AuctionModels.getPlayersByTournamentId = (tournamentId, callback) => {
+    const query = `
+      SELECT 
+        p.reg_no,
+        u.name,
+        p.position,
+        p.category,
+        u.user_pic_url AS img_link,
+        p.player_price AS base_value,
+        a.current_bid AS current_value,
+        a.sold
+      FROM 
+        player p
+      JOIN 
+        users u ON p.reg_no = u.reg_no
+      LEFT JOIN 
+        auction_page a ON p.team_id = a.team_id AND p.tournament_id = a.tournament_id
+      WHERE 
+        p.tournament_id = ?
+    `;
+  
+    db.query(query, [tournamentId], callback);
+  };
 
 
 
