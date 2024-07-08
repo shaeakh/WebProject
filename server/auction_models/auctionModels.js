@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const AuctionModels = {};
 
 AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
-    const query = `
+  const query = `
       SELECT 
         t.team_name, 
         t.team_logo, 
@@ -19,12 +19,12 @@ AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
       GROUP BY 
         t.team_id
     `;
-  
-    db.query(query, [tournamentId], callback);
-  };
 
-  AuctionModels.getPlayersByTournamentId = (tournamentId, callback) => {
-    const query = `
+  db.query(query, [tournamentId], callback);
+};
+
+AuctionModels.getPlayersByTournamentId = (tournamentId, callback) => {
+  const query = `
       SELECT 
         p.reg_no,
         u.name,
@@ -43,13 +43,13 @@ AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
       WHERE 
         p.tournament_id = ?
     `;
-  
-    db.query(query, [tournamentId], callback);
-  };
+
+  db.query(query, [tournamentId], callback);
+};
 
 
-  AuctionModels.getTeamsDetailsByTournamentId = (tournamentId, callback) => {
-    const query = `
+AuctionModels.getTeamsDetailsByTournamentId = (tournamentId, callback) => {
+  const query = `
       SELECT 
         t.team_name,
         t.team_logo,
@@ -69,11 +69,36 @@ AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
       GROUP BY 
         t.team_id
     `;
+
+  db.query(query, [tournamentId], callback);
+};
+
+AuctionModels.start_Auction = (tournamentId, callback) => {
+  const query = `
+    UPDATE auction_page 
+    SET start = true        
+    WHERE tournament_id = ? 
+    `;
+  db.query(query, [tournamentId], callback);
+}
+
+AuctionModels.update_pause = (tournamentId,pause, callback) => {
+  const query = `
+    UPDATE auction_page 
+    SET pause = ?        
+    WHERE tournament_id = ? 
+    `;
+  db.query(query, [pause,tournamentId], callback);
+}
+
+AuctionModels.update_player_index = (tournamentId,current_player_index, callback) => {
   
-    db.query(query, [tournamentId], callback);
-  };
-  
+  const query = `
+      UPDATE auction_page
+      SET current_player_index = ?
+      WHERE tournament_id = ?;
+    `;
+  db.query(query, [current_player_index,tournamentId], callback);
+}
 
-
-
-  module.exports = AuctionModels;
+module.exports = AuctionModels;

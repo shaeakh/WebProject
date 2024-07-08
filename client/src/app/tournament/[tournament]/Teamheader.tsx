@@ -1,5 +1,6 @@
 import { MoviingBorderButton } from '@/components/ui/SCmoving-border'
-import React from 'react'
+import React from 'react';
+import Link from "next/link";
 function Teamheader(props: any) {
     const team_logo = props.team_logo || "https://smallimg.pngkey.com/png/small/81-810923_flag-clipart-plain-blank-flag-transparent.png";
     return (
@@ -14,14 +15,17 @@ function Teamheader(props: any) {
                 </div>
             </div>
             <div className='flex flex-col justify-center items-end '>
-                <a href="/auctionpage">
+                <Link href={{
+                    pathname: '/auctionpage',
+                    query: { tournament: props.tournament }
+                }}>
                     <MoviingBorderButton
                         borderRadius="1.75rem"
-                        className="bg-white transition transition-colors duration-500 hover:bg-black hover:border-black hover:text-white font-bold text-xl text-black border-2 border-neutral-200"
+                        className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200"
                     >
                         Goto Auction
                     </MoviingBorderButton>
-                </a>
+                </Link>
             </div>
         </div>
     )

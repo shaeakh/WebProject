@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/SCinput'
 import { Label } from '@/components/ui/SClabel'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/SCselect'
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { FaRegCopy } from "react-icons/fa6";
 import { MoviingBorderButton } from "@/components/ui/SCmoving-border";
 import Teams from './Teams'
@@ -164,17 +164,17 @@ function Page({ params }: { params: { tournament: string } }) {
     )
 
     const Start_auction = async () => {
-
-        const team_res = await fetch('http://localhost:5000/api/home/start-auction', {
+        const team_res = await fetch('http://localhost:5000/api/auction/start', {
             method: 'POST',
             credentials: 'include', // Include cookies in the request
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ tournament_id: params.tournament })
+            body: JSON.stringify({ tournamentId: params.tournament })
         });
-        const data4 = await team_res.json();
+        const data = await team_res.json();
+        console.log(data.body);
     }
 
 
@@ -201,10 +201,9 @@ function Page({ params }: { params: { tournament: string } }) {
                             </div>
                         </div>
                         <div className='flex flex-col justify-center'>
-
                             <Link href={{
                                 pathname: '/auctionpage',
-                                query: { tournament: params.tournament }
+                                query: {tournament: params.tournament}
                             }}>
                                 <MoviingBorderButton
                                     onClick={Start_auction}
@@ -252,7 +251,7 @@ function Page({ params }: { params: { tournament: string } }) {
                 <div className='w-8/12 border-red-600 flex flex-col'>
 
                     <div className='flex w-full '>
-                        <Teamheader team_name={team.team_name} team_logo={team.team_logo} name={team.name} />
+                        <Teamheader tournament={params.tournament} role={user_role} team_name={team.team_name} team_logo={team.team_logo} name={team.name} />
                     </div>
                     <div className=' '>
                         <div className='font-mono font-bold text-2xl text-center'>
