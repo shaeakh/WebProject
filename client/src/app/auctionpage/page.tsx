@@ -14,6 +14,14 @@ type Team = {
     current_balance: number;
 };
 
+type Last_biding_Team = {
+    team_name: string;
+    manager_name: string;
+    team_logo: string;
+    total_players: number;
+    current_balance: number;
+};
+
 type Player = {
     reg_no: any,
     name: any,
@@ -45,9 +53,9 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
     const [players, set_players] = useState<Player[]>([]);
     const [index, setIndex] = useState(0);
     const [token, setToken] = useState<string | undefined>(undefined);
+    const [last_bidding_team,set_last_bidding_team] = useState<Last_biding_Team | undefined>(undefined);
     const [pause, set_Pause] = React.useState(false);
-    async function handle_Pause() {
-
+    async function handle_Pause(a_pause :any) {
         const update_pause_state = await fetch('http://localhost:5000/api/auction/update_pause', {
             method: 'POST',
             credentials: 'include', // Include cookies in the request
@@ -55,9 +63,9 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ tournamentId: searchParams.tournament , pause: !pause})
+            body: JSON.stringify({ tournamentId: searchParams.tournament , pause: a_pause})
         });
-        set_Pause(!pause);
+        set_Pause(a_pause);
         const data = await update_pause_state.json();
         console.log(data.body);
     }
@@ -77,6 +85,19 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
         console.log(data.body);
     }
 
+    const last_bidding_team_fetch = async () => {
+        const last_bidding_team_response = await fetch('http://localhost:5000/api/auction/team_details', {
+            method: 'POST',
+            credentials: 'include', // Include cookies in the request
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ tournamentId: searchParams.tournament })
+        });
+        data = await last_bidding_team_response.json();
+        set_last_bidding_team(data);
+    }
 
 
     useEffect(() => {
@@ -138,6 +159,8 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
             }
         }
         fetchUserData()
+        handle_Pause(false)
+        last_bidding_team_fetch()
     },
         [router]
     )
@@ -151,22 +174,9 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
         min: 2,
         sec: 30
     }
-    let last_bidding_team = {
-        team: "China",
-        manager: "Shaeakh",
-        link: "https://images2.alphacoders.com/980/thumb-1920-980120.jpg",
-        Players_bought: 5,
-        Current_balance: 600
-    }
     let values = {
         sold: false
     }
-
-
-
-
-
-
     const [bid_able, set_Bid_able] = React.useState(true);
     const [current_bid, set_Current_bid] = React.useState(200);
 
@@ -189,7 +199,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                     </div>}
                     <p className='p-2 border-2 border-black font-mono font-bold text-xl  rounded-lg'>Your Team</p>
                     <div className='h-36 overflow-hidden rounded-lg flex justify-center w-full'>
-                        <img className='object-cover rounded-lg h-full ' src={last_bidding_team.link} alt="" />
+                        <img className='object-cover rounded-lg h-full ' src={last_bidding_team?.team_logo} alt="" />
                     </div>
                     <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Current Balance : {5000000}</div>
                     <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Players Bought : {500}</div>
@@ -286,8 +296,8 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                                 </button>
                             </div>
                         </div>
-                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  " onClick={handle_Pause}>
-                            {(pause === false) ? "Resume" : "Pause"}
+                        <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  " onClick={()=>handle_Pause(!pause)}>
+                            {(pause === true) ? "Resume" :  "Pause"  }
                         </button>
                     </div>
                 )
@@ -296,21 +306,21 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
             <div className='w-1/3  h-screen flex flex-col justify-center items-center gap-4 bg-black bg-opacity-15 text-2xl text-center font-mono font-bold  '>
                 <p className='p-2 border-2 border-black rounded-lg'>Last bidding Team</p>
                 <div className='h-36 overflow-hidden rounded-lg flex justify-center w-full'>
-                    <img className='object-cover rounded-lg h-full ' src={last_bidding_team.link} alt="" />
+                    <img className='object-cover rounded-lg h-full ' src={last_bidding_team?.team_logo || "https://static.vecteezy.com/system/resources/previews/000/552/791/non_2x/flag-waving-vector-icon.jpg"} alt="" />
                 </div>
                 <div className=' grid grid-cols-3 grid-rows-auto gap-x-0 gap-y-4 p-4'>
                     <p>Team</p>
                     <p>:</p>
-                    <p>{last_bidding_team.team}</p>
+                    <p>{last_bidding_team?.team_name || "Null"}</p>
                     <p>Manager</p>
                     <p>:</p>
-                    <p>{last_bidding_team.manager}</p>
+                    <p>{last_bidding_team?.manager_name || "Null"}</p>
                     {user_role === "admin" && (<p className='text-nowrap '>Current Balance</p>)}
                     {user_role === "admin" && (<p>:</p>)}
-                    {user_role === "admin" && (<p>{last_bidding_team.Current_balance}</p>)}
+                    {user_role === "admin" && (<p>{last_bidding_team?.current_balance || "Null"}</p>)}
                     {user_role === "admin" && (<p className='text-nowrap'>Players Bought</p>)}
                     {user_role === "admin" && (<p>:</p>)}
-                    {user_role === "admin" && (<p>{last_bidding_team.Players_bought}</p>)}
+                    {user_role === "admin" && (<p>{last_bidding_team?.total_players || "Null"}</p>)}
                 </div>
                 <div className='w-44 m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Time remaining</div>
                 <div className='flex justify-center m-2 p-2  rounded-lg font-mono font-bold text-xl  text-center '>
