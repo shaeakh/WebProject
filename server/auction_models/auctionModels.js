@@ -6,7 +6,8 @@ const AuctionModels = {};
 AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
   const query = `
       SELECT 
-        t.team_name, 
+        t.team_name,
+        u.name as manager_name,
         t.team_logo, 
         COUNT(p.reg_no) AS total_players,
         t.coin AS current_balance
@@ -14,8 +15,10 @@ AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
         team t
       LEFT JOIN 
         player p ON t.team_id = p.team_id
+      JOIN 
+      	users as u on u.reg_no = t.reg_no
       WHERE 
-        t.tournament_id = ?
+        t.tournament_id = 7
       GROUP BY 
         t.team_id
     `;

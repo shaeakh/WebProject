@@ -9,13 +9,6 @@ import { useRouter } from 'next/navigation';
 
 type Team = {
     team_name: string;
-    team_logo: string;
-    total_players: number;
-    current_balance: number;
-};
-
-type Last_biding_Team = {
-    team_name: string;
     manager_name: string;
     team_logo: string;
     total_players: number;
@@ -53,7 +46,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
     const [players, set_players] = useState<Player[]>([]);
     const [index, setIndex] = useState(0);
     const [token, setToken] = useState<string | undefined>(undefined);
-    const [last_bidding_team,set_last_bidding_team] = useState<Last_biding_Team | undefined>(undefined);
+    const [last_bidding_team,set_last_bidding_team] = useState<Team | undefined>(undefined);
     const [pause, set_Pause] = React.useState(false);
     async function handle_Pause(a_pause :any) {
         const update_pause_state = await fetch('http://localhost:5000/api/auction/update_pause', {
