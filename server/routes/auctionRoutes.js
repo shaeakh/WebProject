@@ -1,5 +1,5 @@
 const express = require('express');
-const {getTeamsByTournamentId, getPlayersByTournamentId, getTeamsDetailsByTournamentId,startAuction,update_pause,update_player_index} = require('../auction_controllers/auctionControllers');
+const {getTeamsByTournamentId, getPlayersByTournamentId, getTeamsDetailsByTournamentId,startAuction,update_pause,update_player_index} = require('../controllers/auctionControllers');
 const {protect} = require('../middlewares/authMiddleware');
 const { upload, uploadToCloudinary } = require('../middlewares/cloudinaryMiddleware');
 const auctionRouter = express.Router();
