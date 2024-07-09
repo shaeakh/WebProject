@@ -71,7 +71,6 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
     }
 
     const handle_player_index = async (index: any) => {
-        setIndex(index);
         const player_response = await fetch('http://localhost:5000/api/auction/update_player_index', {
             method: 'POST',
             credentials: 'include', // Include cookies in the request
@@ -83,6 +82,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
         });
         data = await player_response.json();
         console.log(data.body);
+        setIndex(index);
     }
 
     const last_bidding_team_fetch = async () => {
