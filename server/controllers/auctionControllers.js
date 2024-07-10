@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
-const AuctionModels = require('../auction_models/auctionModels');
+const AuctionModels = require('../models/auctionModels');
 
 exports.getTeamsByTournamentId = (req, res) => {
     const { tournamentId } = req.body;
