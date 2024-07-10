@@ -40,7 +40,7 @@ exports.updateUser = (req, res) => {
 };
 
 exports.createTournament = (req, res) => {
-  const { tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
+  const { tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin,num_of_player } = req.body;  
   const logoPicUrl = req.file ? req.file.cloudinaryUrl : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476640/rmxa26ctdkr4m0jrgwog.png";
   const regNo = req.user.reg_no;
   const joinCode = Math.random().toString(36).substr(2, 9); // Generate a random join code
@@ -53,7 +53,8 @@ exports.createTournament = (req, res) => {
     perTeamCoin,
     logoPicUrl,
     regNo,
-    joinCode
+    joinCode,
+    num_of_player
   };
 
   User.createTournament(newTournament, (err, result) => {
@@ -91,7 +92,7 @@ exports.startAuction = (req, res) => {
 
 
 exports.updateTournament = (req, res) => {
-  const { tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin } = req.body;
+  const { tournamentName, sportType, tournamentDate, playerBaseCoin, perTeamCoin,num_of_player } = req.body;
   const logoPicUrl = req.file ? req.file.cloudinaryUrl : null;
   const regNo = req.user.reg_no;
   const {tournamentId} = req.params;
@@ -104,7 +105,8 @@ exports.updateTournament = (req, res) => {
   if (playerBaseCoin) updatedTournament.playerBaseCoin = playerBaseCoin;
   if (perTeamCoin) updatedTournament.perTeamCoin = perTeamCoin;
   if (logoPicUrl) updatedTournament.logoPicUrl = logoPicUrl;
-
+  if (num_of_player) updatedTournament.num_of_player = num_of_player;
+  
   User.updateTournament(tournamentId, updatedTournament, regNo, (err, result) => {
     if (err) {
       return res.status(500).json({ message: 'Error updating tournament', error: err });

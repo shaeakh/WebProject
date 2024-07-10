@@ -67,7 +67,7 @@ User.findTournamentsByUser = (regNo, callback) => {
 
 
 User.createTournament = (tournament, callback) => {
-  const { tournamentName, sportType, tournamentDate, logoPicUrl, joinCode, regNo, playerBaseCoin, perTeamCoin } = tournament;
+  const { tournamentName, sportType, tournamentDate, logoPicUrl, joinCode, regNo, playerBaseCoin, perTeamCoin,num_of_player } = tournament;
 
   // Start a transaction
   db.beginTransaction((err) => {
@@ -75,9 +75,9 @@ User.createTournament = (tournament, callback) => {
       return callback(err);
     }
 
-    const query = 'INSERT INTO tournament (tournament_name, sport_type, tournament_date, tournament_logo_url, join_code, reg_no, player_base_coin, per_team_coin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-    
-    db.query(query, [tournamentName, sportType, tournamentDate, logoPicUrl, joinCode, regNo, playerBaseCoin, perTeamCoin], (err, result) => {
+    const query = 'INSERT INTO tournament (tournament_name, sport_type, tournament_date, tournament_logo_url, join_code, reg_no, player_base_coin, per_team_coin,num_of_player) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    console.log(num_of_player);
+    db.query(query, [tournamentName, sportType, tournamentDate, logoPicUrl, joinCode, regNo, playerBaseCoin, perTeamCoin,num_of_player], (err, result) => {
       if (err) {
         return db.rollback(() => {
           callback(err);
@@ -144,6 +144,11 @@ User.updateTournament = (tournamentId, updatedTournament, regNo, callback) => {
   if (updatedTournament.logoPicUrl) {
     fields.push('tournament_logo_url = ?');
     values.push(updatedTournament.logoPicUrl);
+  }
+
+  if (updatedTournament.num_of_player) {
+    fields.push('num_of_player = ?');
+    values.push(updatedTournament.num_of_player);
   }
 
   if (fields.length === 0) {

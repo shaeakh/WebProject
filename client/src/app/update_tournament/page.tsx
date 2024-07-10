@@ -15,6 +15,7 @@ interface Tournament {
   playerBaseCoin: string;
   tournamentDate: string;
   logoPicUrl: string;
+  num_of_player: any;
 }
 
 interface UpdateTournamentProps {
@@ -31,7 +32,8 @@ const UpdateTournament: React.FC<UpdateTournamentProps> = ({ searchParams }) => 
     perTeamCoin: "",
     playerBaseCoin: "",
     tournamentDate: "",
-    logoPicUrl: ""
+    logoPicUrl: "",
+    num_of_player: null
   });
 
   const [newTournamentLogo, setNewTournamentLogo] = useState<File | null>(null);
@@ -65,7 +67,8 @@ const UpdateTournament: React.FC<UpdateTournamentProps> = ({ searchParams }) => 
           perTeamCoin: data.tournament.per_team_coin,
           playerBaseCoin: data.tournament.player_base_coin,
           tournamentDate: data.tournament.tournament_date,
-          logoPicUrl: data.tournament.tournament_logo_url
+          logoPicUrl: data.tournament.tournament_logo_url,
+          num_of_player: data.tournament.num_of_player
         });
 
       } catch (error) {
@@ -90,6 +93,7 @@ const UpdateTournament: React.FC<UpdateTournamentProps> = ({ searchParams }) => 
     formData.append('tournamentDate', tournament.tournamentDate);
     formData.append('perTeamCoin', tournament.perTeamCoin);
     formData.append('playerBaseCoin', tournament.playerBaseCoin);
+    formData.append('num_of_player', tournament.num_of_player);
     if (newTournamentLogo) {
       formData.append('logoPicUrl', newTournamentLogo);
     }
@@ -139,16 +143,17 @@ const UpdateTournament: React.FC<UpdateTournamentProps> = ({ searchParams }) => 
           <p className='font-mono text-lg'>Tournament Date: {tournament.tournamentDate}</p>
           <p className='font-mono text-lg'>Per Team Coins: {tournament.perTeamCoin}</p>
           <p className='font-mono text-lg'>Player Base Coin: {tournament.playerBaseCoin}</p>
+          <p className='font-mono text-lg'>Players per team : {tournament.num_of_player}</p>
         </div>
       </div>
       <div className='w-5/6 flex flex-col justify-center items-center'>
         <div className='w-1/3 p-4'>
-        <div className="flex justify-center items-center pt-5 mt-5">
-        <MoviingBorderButton borderRadius="1rem"
-          className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200">
-          Tournament Update
-        </MoviingBorderButton>
-      </div>
+          <div className="flex justify-center items-center pt-5 mt-5">
+            <MoviingBorderButton borderRadius="1rem"
+              className="bg-white hover:bg-black hover:text-white transition transition-colors duration-500 font-bold text-xl text-black border-2 border-neutral-200">
+              Tournament Update
+            </MoviingBorderButton>
+          </div>
           <form className="my-8" onSubmit={handleSubmit}>
             <LabelInputContainer className="mb-4">
               <Label htmlFor="tournamentName">Update Tournament Name</Label>
@@ -160,55 +165,71 @@ const UpdateTournament: React.FC<UpdateTournamentProps> = ({ searchParams }) => 
                 onChange={(e) => setTournament({ ...tournament, tournamentName: e.target.value })}
               />
             </LabelInputContainer>
-            <LabelInputContainer className="mb-4">
-              <Label htmlFor="sportType">Update Sport Type</Label>
-              <select
-                id="sportType"
-                value={tournament.sportType}
-                onChange={(e) => setTournament({ ...tournament, sportType: e.target.value })}
-                className="w-full p-2 border rounded"
-              >
-                <option value="">Select Sport Type</option>
-                <option value="Football">Football</option>
-                <option value="Cricket">Cricket</option>
-              </select>
-            </LabelInputContainer>
-            <LabelInputContainer className="mb-4">
-              <Label htmlFor="perTeamCoin">Update Per Team Coin</Label>
-              <Input
-                id="perTeamCoin"
-                placeholder="Enter Per Team Coin"
-                type="text"
-                value={tournament.perTeamCoin}
-                onChange={(e) => setTournament({ ...tournament, perTeamCoin: e.target.value })}
-              />
-            </LabelInputContainer>
-            <LabelInputContainer className="mb-4">
-              <Label htmlFor="playerBaseCoin">Update Player Base Coin</Label>
-              <Input
-                id="playerBaseCoin"
-                placeholder="Enter Player Base Coin"
-                type="text"
-                value={tournament.playerBaseCoin}
-                onChange={(e) => setTournament({ ...tournament, playerBaseCoin: e.target.value })}
-              />
-            </LabelInputContainer>
-            <LabelInputContainer className="mb-4">
-              <Label htmlFor="tournamentDate">Update Tournament Date</Label>
-              <Input
-                id="tournamentDate"
-                type="date"
-                value={tournament.tournamentDate.split('T')[0]} // Format the date to 'YYYY-MM-DD'
-                onChange={(e) => setTournament({ ...tournament, tournamentDate: e.target.value })}
-              />
-            </LabelInputContainer>
-            <LabelInputContainer className="mb-4">
-              <Label htmlFor="profile-pic">Update Tournament Logo</Label>
-              <Input id="profile-pic" type="file" accept="image/*" onChange={handleTournamentLogoChange} />
-            </LabelInputContainer>
+            <div className='flex justify-between gap-4'>
+              <LabelInputContainer className="mb-4">
+                <Label htmlFor="sportType">Update Sport Type</Label>
+                <select
+                  id="sportType"
+                  value={tournament.sportType}
+                  onChange={(e) => setTournament({ ...tournament, sportType: e.target.value })}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="">Select Sport Type</option>
+                  <option value="Football">Football</option>
+                  <option value="Cricket">Cricket</option>
+                </select>
+              </LabelInputContainer>
+              <LabelInputContainer className="mb-4">
+                <Label htmlFor="tournamentDate">Update Tournament Date</Label>
+                <Input
+                  id="tournamentDate"
+                  type="date"
+                  value={tournament.tournamentDate.split('T')[0]} // Format the date to 'YYYY-MM-DD'
+                  onChange={(e) => setTournament({ ...tournament, tournamentDate: e.target.value })}
+                />
+              </LabelInputContainer>
+            </div>
+            <div className='flex justify-between gap-4'>
+              <LabelInputContainer className="mb-4">
+                <Label htmlFor="perTeamCoin">Update Per Team Coin</Label>
+                <Input
+                  id="perTeamCoin"
+                  placeholder="Enter Per Team Coin"
+                  type="text"
+                  value={tournament.perTeamCoin}
+                  onChange={(e) => setTournament({ ...tournament, perTeamCoin: e.target.value })}
+                />
+              </LabelInputContainer>
+              <LabelInputContainer className="mb-4">
+                <Label htmlFor="playerBaseCoin">Update Player Base Coin</Label>
+                <Input
+                  id="playerBaseCoin"
+                  placeholder="Enter Player Base Coin"
+                  type="text"
+                  value={tournament.playerBaseCoin}
+                  onChange={(e) => setTournament({ ...tournament, playerBaseCoin: e.target.value })}
+                />
+              </LabelInputContainer>
+            </div>
 
+            <div className='flex justify-between gap-4'>
+              <LabelInputContainer className="mb-4">
+                <Label htmlFor="profile-pic">Update Tournament Logo</Label>
+                <Input id="profile-pic" type="file" accept="image/*" onChange={handleTournamentLogoChange} />
+              </LabelInputContainer>
+
+              <LabelInputContainer className="mb-4">
+                <Label htmlFor="num_of_player">Number of player per team</Label>
+                <Input
+                  id="num_of_player"
+                  placeholder="Number of player"
+                  type="number"
+                  value={tournament.num_of_player}
+                  onChange={(e) => setTournament({ ...tournament, num_of_player: e.target.value })}
+                />
+              </LabelInputContainer>
+            </div>
             <hr className='mb-4' style={{ border: '1px solid #ddd', width: '100%' }} />
-
             <div className="flex justify-center w-full mb-4">
               <button type="submit" className="px-8 w-full py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white">
                 Update Tournament

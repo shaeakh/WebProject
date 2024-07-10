@@ -32,6 +32,7 @@ const Page: React.FC = () => {
     const [date, setDate] = useState<Date>(new Date());
     const [coverpic, set_coverpic] = useState<File | undefined>(undefined);
     const [initial_team_points, set_initial_team_point] = useState<number | undefined>(undefined);
+    const [num_of_player, set_num_of_player] = useState<number | undefined>(7);
     const [base_player_point, set_base_player_point] = useState<number | undefined>(undefined);
     const [error, setError] = useState("");
     const [isError, setisError] = useState(false);
@@ -56,7 +57,7 @@ const Page: React.FC = () => {
         const fetchUserData = async () => {
             const token = Cookies.get('token');
             if (!token) {
-                router.push('/authpage'); 
+                router.push('/authpage');
                 return;
             }
         }
@@ -72,9 +73,9 @@ const Page: React.FC = () => {
 
     const handleDateSelect = (day: Date | undefined) => {
         if (day) {
-          setDate(day);
+            setDate(day);
         }
-      };
+    };
 
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -90,10 +91,11 @@ const Page: React.FC = () => {
         formData.append("sportType", tournament_type);
         formData.append("playerBaseCoin", base_player_point !== undefined ? base_player_point.toString() : "");
         formData.append("perTeamCoin", initial_team_points !== undefined ? initial_team_points.toString() : "");
+        formData.append("num_of_player", num_of_player !== undefined ? num_of_player.toString() : "");
 
         if (date) {
             formData.append("tournamentDate", date.toISOString());
-          }
+        }
 
         if (coverpic) {
             formData.append("logoPicUrl", coverpic);
@@ -205,10 +207,18 @@ const Page: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
-                    <Label htmlFor="picture">Upload tournament logo</Label>
-                    <Input id="picture" type="file" onChange={handleFileChange} />
+                <div className='flex justify-around gap-4'>
+                    <div className="grid w-1/2 max-w-sm items-center gap-1.5 mb-4">
+                        <Label htmlFor="picture">Upload tournament logo</Label>
+                        <Input id="picture" type="file" onChange={handleFileChange} />
+                    </div>
+                    <LabelInputContainer className="mb-4 w-1/2 ">
+                        <Label htmlFor="points">Number of players</Label>
+                        <Input id="points" placeholder="7 (default)" type="number" value={num_of_player} onChange={(e) => set_num_of_player(Number(e.target.value))} />
+                    </LabelInputContainer>
                 </div>
+
+
 
                 <div className='flex justify-between'>
                     <LabelInputContainer className="mb-4 mr-4">

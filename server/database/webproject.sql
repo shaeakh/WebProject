@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 08, 2024 at 06:49 PM
+-- Generation Time: Jul 10, 2024 at 06:02 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -160,15 +160,16 @@ CREATE TABLE `tournament` (
   `player_base_coin` int(11) NOT NULL,
   `per_team_coin` int(11) NOT NULL,
   `tournament_logo_url` varchar(255) DEFAULT NULL,
-  `join_code` varchar(255) NOT NULL
+  `join_code` varchar(255) NOT NULL,
+  `num_of_player` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tournament`
 --
 
-INSERT INTO `tournament` (`tournament_id`, `tournament_name`, `tournament_date`, `sport_type`, `reg_no`, `player_base_coin`, `per_team_coin`, `tournament_logo_url`, `join_code`) VALUES
-(7, 'SWE Inter Depertment Tournament ', '2024-07-29', 'Football', '2020831022', 200, 10000, 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986537/aflhf6xquwroagh2av50.jpg', 'wqxmn2kye');
+INSERT INTO `tournament` (`tournament_id`, `tournament_name`, `tournament_date`, `sport_type`, `reg_no`, `player_base_coin`, `per_team_coin`, `tournament_logo_url`, `join_code`, `num_of_player`) VALUES
+(7, 'SWE Inter Depertment Tournament ', '2024-07-29', 'Football', '2020831022', 200, 10000, 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986537/aflhf6xquwroagh2av50.jpg', 'wqxmn2kye', NULL);
 
 -- --------------------------------------------------------
 
