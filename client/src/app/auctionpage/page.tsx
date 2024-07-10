@@ -26,6 +26,14 @@ type Player = {
     sold: any
 }
 
+type Real_time_data = {
+    team_id:bigint;
+    current_player_index : string;
+    current_bid: bigint;
+    sold: boolean;
+    pause:boolean;
+}
+
 
 interface auctionpage_Props {
     searchParams: {
@@ -47,6 +55,9 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
     const [index, setIndex] = useState(0);
     const [token, setToken] = useState<string | undefined>(undefined);
     const [last_bidding_team,set_last_bidding_team] = useState<Team | undefined>(undefined);
+
+    const [real_time_data,set_real_time_data] = useState<Real_time_data | undefined>(undefined);
+
     const [pause, set_Pause] = React.useState(false);
     async function handle_Pause(a_pause :any) {
         const update_pause_state = await fetch('http://localhost:5000/api/auction/update_pause', {
@@ -73,9 +84,13 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
             },
             body: JSON.stringify({ tournamentId: searchParams.tournament, current_player_index: index })
         });
-        data = await player_response.json();
-        console.log(data.body);
-        setIndex(index);
+        // // data = await player_response.json();
+        // // console.log(data.body);
+        // setIndex(index);
+    }
+
+    const fetch_real_time_data =()=>{
+
     }
 
     const last_bidding_team_fetch = async () => {
