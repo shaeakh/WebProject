@@ -47,7 +47,6 @@ exports.getTeamsByTournamentId = (req, res) => {
 
   exports.update_pause = (req, res) =>{
     const {tournamentId,pause } = req.body;
-    console.log(tournamentId,pause);
     AuctionModels.update_pause(tournamentId,pause, (err) => {
       if (err) {
         return res.status(500).json({ message: 'Error pausing auction', error: err });
@@ -64,6 +63,17 @@ exports.getTeamsByTournamentId = (req, res) => {
       }
       res.status(200).json({ message: 'Player index shifting successful' });
     });
+  }
+
+  exports.fetch_real_time_info = (req,res) =>{
+    const {tournamentId} = req.body;
+
+    AuctionModels.fetch_real_time_info(tournamentId,(err,result)=>{
+      if (err) {
+        return res.status(500).json({ message: 'Error loading realtime info', error: err });
+      }      
+      res.status(200).json(result[0]);
+    })
   }
 
 

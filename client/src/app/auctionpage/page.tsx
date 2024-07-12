@@ -26,15 +26,6 @@ type Player = {
     sold: any
 }
 
-type Real_time_data = {
-    team_id:bigint;
-    current_player_index : string;
-    current_bid: bigint;
-    sold: boolean;
-    pause:boolean;
-}
-
-
 interface auctionpage_Props {
     searchParams: {
         tournament: any;
@@ -55,10 +46,10 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
     const [index, setIndex] = useState(0);
     const [token, setToken] = useState<string | undefined>(undefined);
     const [last_bidding_team,set_last_bidding_team] = useState<Team | undefined>(undefined);
-
-    const [real_time_data,set_real_time_data] = useState<Real_time_data | undefined>(undefined);
-
+    const [current_bid, set_Current_bid] = React.useState(200);
+    const [playerSold,set_playerSold] = useState(false);
     const [pause, set_Pause] = React.useState(false);
+
     async function handle_Pause(a_pause :any) {
         const update_pause_state = await fetch('http://localhost:5000/api/auction/update_pause', {
             method: 'POST',
@@ -71,7 +62,6 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
         });
         set_Pause(a_pause);
         const data = await update_pause_state.json();
-        console.log(data.body);
     }
 
     const handle_player_index = async (index: any) => {
@@ -83,30 +73,34 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({ tournamentId: searchParams.tournament, current_player_index: index })
-        });
-        // // data = await player_response.json();
-        // // console.log(data.body);
-        // setIndex(index);
+        });        
     }
 
-    const fetch_real_time_data =()=>{
-
-    }
-
-    const last_bidding_team_fetch = async () => {
-        const last_bidding_team_response = await fetch('http://localhost:5000/api/auction/team_details', {
+    const fetch_real_time_data = async ()=>{
+        const realtimedata_res = await fetch('http://localhost:5000/api/auction/realtime_info', {
             method: 'POST',
             credentials: 'include', // Include cookies in the request
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ tournamentId: searchParams.tournament })
+            body: JSON.stringify({ tournamentId: searchParams.tournament})
         });
-        data = await last_bidding_team_response.json();
-        set_last_bidding_team(data);
-    }
+        const d = await realtimedata_res.json();
 
+        setIndex(d.current_player_index );    
+        set_Current_bid(d.current_bid);
+        set_playerSold(d.sold);
+        handle_Pause(d.pause);
+
+        set_last_bidding_team({
+            team_name : d.team_name ,
+            manager_name : d.manager ,
+            team_logo : d.team_logo,
+            total_players : d.total_players ,
+            current_balance : d.balance 
+        })
+    }
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -167,8 +161,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
             }
         }
         fetchUserData()
-        handle_Pause(false)
-        last_bidding_team_fetch()
+        fetch_real_time_data();
     },
         [router]
     )
@@ -182,11 +175,9 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
         min: 2,
         sec: 30
     }
-    let values = {
-        sold: false
-    }
+    
     const [bid_able, set_Bid_able] = React.useState(true);
-    const [current_bid, set_Current_bid] = React.useState(200);
+    
 
     function handle_Bid_ability(current_bid: any, bid_increase: any) {
         if (manager.maxbid < (current_bid + bid_increase)) {
@@ -197,6 +188,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
         }
     }
 
+    
 
     return (
         <div className='w-screen h-screen flex justify-center'>
@@ -280,8 +272,8 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                         <p>{players[index]?.category}</p>
                     </div>
                 </div>
-                <p className='border-2 border-black p-2 rounded-lg'>Current Bid : {players[index]?.current_value || players[index]?.base_value}</p>
-                <p>{(players[index]?.sold == null || players[index]?.sold == false) ? "Available" : "sold"}</p>
+                <p className='border-2 border-black p-2 rounded-lg'> Current Bid : {current_bid || players[index]?.base_value}</p>
+                <p>{(playerSold == null || playerSold == false) ? "Available" : "sold"}</p>
                 {(user_role === "admin") && (
                     <div className='flex flex-col items-center gap-4'>
                         <div className='flex w-full justify-around'>
