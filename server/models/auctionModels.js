@@ -104,18 +104,15 @@ AuctionModels.update_player_index = (tournamentId, current_player_index, callbac
   db.query(query, [current_player_index, tournamentId], callback);
 }
 
-AuctionModels.fetch_real_time_info = (tournamentId, callback) => {
+AuctionModels.fetch_last_bidding_team = (tournamentId, callback) => {
   const query = `
     SELECT 
-      t.team_logo, 
-      t.team_name, 
+      t.team_logo AS team_logo, 
+      t.team_name AS team_name, 
       u.name AS manager, 
       t.coin AS balance, 
-      COUNT(p.reg_no) AS total_players, 
-      au.current_player_index,
-      au.current_bid,
-      au.sold,
-      au.pause 
+      COUNT(p.reg_no) AS total_players
+      
     FROM 
       auction_page AS au 
     JOIN 
@@ -126,6 +123,24 @@ AuctionModels.fetch_real_time_info = (tournamentId, callback) => {
       JOIN player AS p ON p.team_id = au.team_id 
     WHERE au.tournament_id = ?
     GROUP BY t.team_logo, t.team_name, u.name, t.coin;
+  `
+
+  db.query(query, [tournamentId], callback);
+}
+
+AuctionModels.fetch_real_time_info = (tournamentId, callback) => {
+  const query =
+    `
+    SELECT 
+      au.current_player_index,
+      au.current_bid,
+      au.sold,
+      au.start,
+      au.pause
+    FROM 
+      auction_page AS au 
+    LEFT 
+      JOIN player AS p ON p.team_id = au.team_id 
   `
   db.query(query, [tournamentId], callback);
 }
