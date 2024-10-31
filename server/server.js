@@ -5,15 +5,15 @@ const homeRoutes = require('./routes/homeRoutes');
 const auctionRouter = require('./routes/auctionRoutes');
 const cookieParser = require('cookie-parser');
 const cloudinary = require('cloudinary').v2;
-const cors=require("cors");
+const cors = require("cors");
 
 
 require('dotenv').config();
 
-const corsOptions ={
-   origin:'http://localhost:3000', 
-   credentials:true,           
-   optionSuccessStatus:200,
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+  optionSuccessStatus: 200,
 }
 
 

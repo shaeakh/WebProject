@@ -16,18 +16,18 @@ const JoinTournament: React.FC = () => {
   const router = useRouter();
 
     
-    useEffect(() => {
-        const fetchUserData = async () => {
-            const token = Cookies.get('token');
-            if (!token) {
-                router.push('/authpage'); // Redirect to login if no token is found
-                return;
-            }
-        }
-        fetchUserData()
-    },
-        [router]
-    )
+    // useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         const token = Cookies.get('token');
+    //         if (!token) {
+    //             router.push('/authpage'); // Redirect to login if no token is found
+    //             return;
+    //         }
+    //     }
+    //     fetchUserData()
+    // },
+    //     [router]
+    // )
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -65,11 +65,9 @@ const JoinTournament: React.FC = () => {
         },
         body: formData
       });
-
       if (!response.ok) {
         throw new Error('Failed to join tournament');
       }
-
       // Navigate to homepage upon successful join
       router.push('/homepage');
       alert('Joined request sent Successfully ');
