@@ -86,7 +86,7 @@ User.createTournament = (tournament, callback) => {
 
       const tournamentId = result.insertId;
 
-      const auctionQuery = 'INSERT INTO auction_page (tournament_id, team_id, current_player_index, current_bid, sold, start, pause) VALUES (?, null, null, null, false, null, null)';
+      const auctionQuery = `INSERT INTO auction_page (tournament_id, team_id, current_player_index, current_bid, sold, start, pause) VALUES (?, null, 0, ${playerBaseCoin}, false, false, null)`;
       
       db.query(auctionQuery, [tournamentId], (err) => {
         if (err) {

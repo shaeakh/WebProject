@@ -65,13 +65,51 @@ exports.getTeamsByTournamentId = (req, res) => {
     });
   }
 
+  exports.fetch_last_bidding_team =(req,res) =>{
+    const {tournamentId} = req.body;
+    AuctionModels.fetch_last_bidding_team(tournamentId,(err,result)=>{
+      if (err) {
+        return res.status(500).json({ message: 'Error fetching last bidding team', error: err });
+      }
+      if(result.length === 0){
+        const initialobj = {
+          team_logo: 'https://static.vecteezy.com/system/resources/previews/000/552/791/non_2x/flag-waving-vector-icon.jpg',
+          team_name: 'No team has bid yet',
+          manager: 'none',
+          total_players: 0,
+          balance: 0
+        };
+        return res.status(200).json(initialobj);
+      }
+      res.status(200).json(result[0]);
+    })
+  }
+
   exports.fetch_real_time_info = (req,res) =>{
     const {tournamentId} = req.body;
 
     AuctionModels.fetch_real_time_info(tournamentId,(err,result)=>{
       if (err) {
         return res.status(500).json({ message: 'Error loading realtime info', error: err });
-      }      
+      }
+      if(result.length === 0){
+        const initialobj = {
+          team_logo : '',
+          team_name : '',
+          manager : '',
+          total_players : 0,
+          
+          balance : 0,
+          current_bid : 0,
+          current_player_index : 0,
+           // this have to be fetched from the player table
+          sold : 0, // this have to be fetched from the player table
+          start : false,
+          pause : false,
+
+        }
+        return res.status(200).json(initialobj);
+      }
       res.status(200).json(result[0]);
     })
   }
