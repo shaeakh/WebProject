@@ -50,6 +50,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
     const [playerSold, set_playerSold] = useState(false);
     const [pause, set_Pause] = React.useState(false);
     const [start, set_Start] = React.useState(false);
+    const [fetch_players, set_fetch_players] = React.useState(false);
 
     async function handle_Pause(a_pause: any) {
         const update_pause_state = await fetch('http://localhost:5000/api/auction/update_pause', {
@@ -96,7 +97,6 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
             total_players: d.total_players,
             current_balance: d.balance
         })
-
     }
 
     const fetch_real_time_data = async () => {
@@ -131,10 +131,14 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
     // const handle_bid = (bid:any,team_id:any)=>{
 
     // }
+    void async function fetch_all_players_info(token: any) {
+
+    }
 
     useEffect(() => {
         const fetchUserData = async () => {
             const token = Cookies.get('token');
+            console.log(token);
             setToken(token);
             if (!token) {
                 router.push('/authpage'); // Redirect to login if no token is found
@@ -152,26 +156,28 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                     body: JSON.stringify({ tournament_id })
                 });
 
-
                 data = await response.json();
 
                 if (data.role === 'unauthorized') {
                     router.push('/tournament');
                 } else {
                     set_user_role(data.role);
+                    if (data.role == "admin") {
+                        const team_update_response = await fetch('http://localhost:5000/api/auction/teams', {
+                            method: 'POST',
+                            credentials: 'include', // Include cookies in the request
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ tournamentId: searchParams.tournament })
+                        });
+                        data = await team_update_response.json();
+                        setTeams_update(data);
+                    }
+                    if (data.role == "manager") {
 
-                    const team_update_response = await fetch('http://localhost:5000/api/auction/teams', {
-                        method: 'POST',
-                        credentials: 'include', // Include cookies in the request
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ tournamentId: searchParams.tournament })
-                    });
-                    data = await team_update_response.json();
-                    setTeams_update(data);
-
+                    }
                     const player_response = await fetch('http://localhost:5000/api/auction/players', {
                         method: 'POST',
                         credentials: 'include', // Include cookies in the request
@@ -182,8 +188,6 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                         body: JSON.stringify({ tournamentId: searchParams.tournament })
                     });
                     data = await player_response.json();
-
-
                     set_players(data);
                 }
             } catch (error) {
@@ -378,3 +382,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
 }
 
 export default auctionpage
+
+function fetch_all_players_info(token: string) {
+    throw new Error('Function not implemented.');
+}

@@ -23,9 +23,21 @@ exports.getTeamsByTournamentId = (req, res) => {
     });
   };
 
-  exports.getTeamsDetailsByTournamentId = (req, res) => {
-      const {tournamentId } = req.body;
+  exports.team_details_manager = (req,res)=>{
     
+    
+    const {tournamentId,reg_no} = req.body;
+    AuctionModels.team_details_manager(tournamentId,reg_no,(err,result)=>{
+      if(err){
+        return res.status(500).json({ message: 'Error fetching team management info', error: err });
+      }
+      res.status(200).json(result[0]);
+    })
+  }
+
+  exports.getTeamsDetailsByTournamentId = (req, res) => {
+      const {tournamentId, reg_no } = req.body;
+      
       AuctionModels.getTeamsDetailsByTournamentId(tournamentId, (err, teams) => {
         if (err) {
           return res.status(500).json({ message: 'Error fetching teams', error: err });

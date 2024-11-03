@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 10, 2024 at 06:02 AM
+-- Generation Time: Oct 31, 2024 at 05:46 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -42,7 +42,10 @@ CREATE TABLE `auction_page` (
 --
 
 INSERT INTO `auction_page` (`tournament_id`, `team_id`, `current_player_index`, `current_bid`, `sold`, `start`, `pause`) VALUES
-(7, 6, 1, 300, 0, 1, 0);
+(7, 6, 1, 300, 0, 1, NULL),
+(8, NULL, NULL, NULL, 0, 1, NULL),
+(9, NULL, NULL, NULL, 0, 1, NULL),
+(10, NULL, NULL, NULL, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -89,7 +92,11 @@ INSERT INTO `participated_tournament` (`tournament_id`, `reg_no`, `role`) VALUES
 (7, '2020831030', 'player'),
 (7, '2020831033', 'player'),
 (7, '2020831036', 'player'),
-(7, '2020831023', 'manager');
+(7, '2020831023', 'manager'),
+(8, '2020831004', 'admin'),
+(9, '2020831004', 'admin'),
+(9, '2020831043', 'manager'),
+(10, '2020831043', 'admin');
 
 -- --------------------------------------------------------
 
@@ -143,7 +150,8 @@ CREATE TABLE `team` (
 INSERT INTO `team` (`team_id`, `tournament_id`, `reg_no`, `team_name`, `team_logo`, `coin`) VALUES
 (5, 7, '2020831023', 'Team Alpha', 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986628/xev9vz7walf4lfgdbusl.jpg', 10000),
 (6, 7, '2020831004', 'Team Beta', 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986686/fhoc4lkrxydynsuusbft.jpg', 10000),
-(7, 7, '2020831026', 'Team Gama', 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986733/kwckm8uky7biwpcpclv8.jpg', 10000);
+(7, 7, '2020831026', 'Team Gama', 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986733/kwckm8uky7biwpcpclv8.jpg', 10000),
+(8, 9, '2020831043', 'Not gonna win', 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1730000286/tztw46w4bptam1hlhfjn.png', 10000);
 
 -- --------------------------------------------------------
 
@@ -169,7 +177,10 @@ CREATE TABLE `tournament` (
 --
 
 INSERT INTO `tournament` (`tournament_id`, `tournament_name`, `tournament_date`, `sport_type`, `reg_no`, `player_base_coin`, `per_team_coin`, `tournament_logo_url`, `join_code`, `num_of_player`) VALUES
-(7, 'SWE Inter Depertment Tournament ', '2024-07-29', 'Football', '2020831022', 200, 10000, 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986537/aflhf6xquwroagh2av50.jpg', 'wqxmn2kye', NULL);
+(7, 'SWE Inter Depertment Tournament ', '2024-07-29', 'Football', '2020831022', 200, 10000, 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986537/aflhf6xquwroagh2av50.jpg', 'wqxmn2kye', NULL),
+(8, '', '2024-09-23', 'Tournament type', '2020831004', 200, 10000, 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1727099972/dhzvnd9ceqsp4ccf2i79.jpg', 'jvbdud07s', 7),
+(9, 'SWE Inter Depertment Cricket Tournament ', '2024-10-21', 'Cricket', '2020831004', 200, 10000, 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476640/rmxa26ctdkr4m0jrgwog.png', 'x0szd1joh', 7),
+(10, 'EEE Inter Depertment Football Tournament ', '2024-10-07', 'Cricket', '2020831043', 500, 20000, 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476640/rmxa26ctdkr4m0jrgwog.png', '52tqwcjg1', 7);
 
 -- --------------------------------------------------------
 
@@ -275,19 +286,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `member_request`
 --
 ALTER TABLE `member_request`
-  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `team`
 --
 ALTER TABLE `team`
-  MODIFY `team_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `team_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tournament`
 --
 ALTER TABLE `tournament`
-  MODIFY `tournament_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `tournament_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
