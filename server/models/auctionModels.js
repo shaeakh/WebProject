@@ -76,6 +76,14 @@ AuctionModels.getTeamsDetailsByTournamentId = (tournamentId, callback) => {
   db.query(query, [tournamentId], callback);
 };
 
+AuctionModels.team_details_manager = (tournamentId,reg_no,callback)=>{
+  console.log(tournamentId,reg_no);
+  
+  const query = `SELECT * FROM team WHERE tournament_id = ? and reg_no = ?`
+  db.query(query, [tournamentId,reg_no], callback);
+}
+
+
 AuctionModels.start_Auction = (tournamentId, callback) => {
   const query = `
     UPDATE auction_page 
@@ -95,7 +103,7 @@ AuctionModels.update_pause = (tournamentId, pause, callback) => {
 }
 
 AuctionModels.update_player_index = (tournamentId, current_player_index, callback) => {
-
+  
   const query = `
       UPDATE auction_page
       SET current_player_index = ?
@@ -138,9 +146,8 @@ AuctionModels.fetch_real_time_info = (tournamentId, callback) => {
       au.start,
       au.pause
     FROM 
-      auction_page AS au 
-    LEFT 
-      JOIN player AS p ON p.team_id = au.team_id 
+      auction_page AS au
+    WHERE au.tournament_id = ?;
   `
   db.query(query, [tournamentId], callback);
 }
