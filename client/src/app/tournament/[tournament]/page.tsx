@@ -78,8 +78,6 @@ function Page({ params }: { params: { tournament: string } }) {
                     const data2 = await t_info_res.json();
 
                     set_tournament(data2);
-
-
                     if (data.role === "admin") {
                         const teams_res = await fetch('http://localhost:5000/api/home/tournament-teams', {
                             method: 'POST',
@@ -94,7 +92,6 @@ function Page({ params }: { params: { tournament: string } }) {
                         set_teams(data3);
                     }
                     if (data.role == "manager") {
-
                         const team_res = await fetch('http://localhost:5000/api/home/team-details-managerview', {
                             method: 'POST',
                             credentials: 'include', // Include cookies in the request
