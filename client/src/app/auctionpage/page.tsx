@@ -46,7 +46,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
     const [index, setIndex] = useState(0);
     const [token, setToken] = useState<string | undefined>(undefined);
     const [last_bidding_team, set_last_bidding_team] = useState<Team | undefined>(undefined);
-    const [current_bid, set_Current_bid] = React.useState(200);
+    const [current_bid, set_Current_bid] = React.useState(0);
     const [playerSold, set_playerSold] = useState(false);
     const [pause, set_Pause] = React.useState(false);
     const [start, set_Start] = React.useState(false);
@@ -157,6 +157,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                 });
 
                 data = await response.json();
+                console.log(data);
 
                 if (data.role === 'unauthorized') {
                     router.push('/tournament');
@@ -176,6 +177,15 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                         setTeams_update(data);
                     }
                     if (data.role == "manager") {
+                        const team_details_manager = await fetch('http://localhost:5000/api/auction/team_details_manager', {
+                            method: 'POST',
+                            credentials: 'include', // Include cookies in the request
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ tournamentId: searchParams.tournament,reg_no: data.reg_no })
+                        });
 
                     }
                     const player_response = await fetch('http://localhost:5000/api/auction/players', {
@@ -202,10 +212,16 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
     )
 
     let manager = {
-        maxbid: 600,
+        team_id : 6,
+        team_name: "Brazil",
+        team_logo : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986686/fhoc4lkrxydynsuusbft.jpg",
         current_balance: 8000,
+        base_player_value : 200,
+        maxbid_ : 200,
+        base_player_num : 7,
         players_bought: 2
     }
+
     let remaining_time = {
         min: 2,
         sec: 30
@@ -215,11 +231,28 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
 
 
     function handle_Bid_ability(current_bid: any, bid_increase: any) {
-        if (manager.maxbid < (current_bid + bid_increase)) {
-            set_Bid_able(false);
+        if(current_bid == 0){
+            set_Current_bid(manager.base_player_value);   
+            if ( (manager.current_balance - (manager.base_player_num-manager.players_bought)*manager.base_player_value) < (manager.base_player_value + bid_increase)) {
+                set_Bid_able(false);
+                setTimeout(() => {
+                    set_Bid_able(true);
+                }, 2000);
+            }
+            else {
+                set_Current_bid(manager.base_player_value + bid_increase);
+            }
         }
-        else {
-            set_Current_bid(current_bid + bid_increase);
+        else{
+            if ( (manager.current_balance - (manager.base_player_num-manager.players_bought)*manager.base_player_value) < (current_bid + bid_increase)) {
+                set_Bid_able(false);
+                setTimeout(() => {
+                    set_Bid_able(true);
+                }, 2000);
+            }
+            else {
+                set_Current_bid(current_bid + bid_increase);
+            }
         }
     }
 
@@ -230,42 +263,42 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
             {user_role === "manager" && (
                 <div className='w-1/3 bg-black bg-opacity-15  flex flex-col justify-around items-center bg-grey-300'>
                     {(bid_able === false) && <div className='m-2 p-2 rounded-lg font-mono font-bold text-2xl  text-center bg-red-500 bg-opacity-75'>
-                        You can't bid more then {manager.maxbid} points
+                        You can't bid more then {manager.current_balance - (manager.base_player_num-manager.players_bought)*manager.base_player_value} points
                     </div>}
-                    <p className='p-2 border-2 border-black font-mono font-bold text-xl  rounded-lg'>Your Team</p>
+                    <p className='p-2 border-2 border-black font-mono font-bold text-xl  rounded-lg'>Team:{manager.team_name}</p>
                     <div className='h-36 overflow-hidden rounded-lg flex justify-center w-full'>
-                        <img className='object-cover rounded-lg h-full ' src={last_bidding_team?.team_logo} alt="" />
+                        <img className='object-cover rounded-lg h-full ' src={manager.team_logo} alt="" />
                     </div>
-                    <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Current Balance : {5000000}</div>
-                    <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Players Bought : {500}</div>
+                    <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Current Balance : {manager.current_balance}</div>
+                    <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Players Bought : {manager.players_bought}</div>
                     <div className='border-2 border-black rounded-lg'>
                         <div className='flex justify-around w-full' >
                             <p className='m-2 p-2 font-mono font-bold text-xl '>{pause == true ? "Bidding is paused" : ""}</p>
                         </div>
 
                         <div className='flex justify-around w-full' >
-                            <p className='m-2 p-2 font-mono font-bold text-xl '>Place you bid</p>
-                            <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Your max bid : {-50}</div>
+                            <p className='m-2 p-2 font-mono font-bold text-xl '>Place your bid</p>
+                            <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Your max bid : {manager.current_balance - (manager.base_player_num-manager.players_bought)*manager.base_player_value}</div>
                         </div>
                         <div className='w-full m-2 p-2 rounded-lg h-max '>
                             <div className=' flex flex-col justify-around items-around gap-5'>
                                 <div className='flex justify-around w-full px-2'>
                                     {/*  */}
                                     <button className={`px-8 py-2 ${pause == true ? "bg-[#525252] text-[#949494]" : "bg-black text-white transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black "}  w-20 flex justify-center rounded-md  font-bold `}
-                                        disabled={pause} onClick={() => handle_Bid_ability(players[0].current_value, 50)}>50</button>
+                                        disabled={pause} onClick={() => handle_Bid_ability(current_bid, 50)}>50</button>
                                     <button className={`px-8 py-2 ${pause == true ? "bg-[#525252] text-[#949494]" : "bg-black text-white transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black "}  w-20 flex justify-center rounded-md  font-bold `}
-                                        disabled={pause} onClick={() => handle_Bid_ability(players[0].current_value, 100)}>100</button>
+                                        disabled={pause} onClick={() => handle_Bid_ability(current_bid, 100)}>100</button>
                                     <button className={`px-8 py-2 ${pause == true ? "bg-[#525252] text-[#949494]" : "bg-black text-white transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black "}  w-20 flex justify-center rounded-md  font-bold `}
-                                        disabled={pause} onClick={() => handle_Bid_ability(players[0].current_value, 150)}>150</button>
+                                        disabled={pause} onClick={() => handle_Bid_ability(current_bid, 150)}>150</button>
 
                                 </div>
                                 <div className='flex justify-around w-full px-2'>
                                     <button className={`px-8 py-2 ${pause == true ? "bg-[#525252] text-[#949494]" : "bg-black text-white transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black "}  w-20 flex justify-center rounded-md  font-bold `}
-                                        disabled={pause} onClick={() => handle_Bid_ability(players[0].current_value, 200)}>200</button>
+                                        disabled={pause} onClick={() => handle_Bid_ability(current_bid, 200)}>200</button>
                                     <button className={`px-8 py-2 ${pause == true ? "bg-[#525252] text-[#949494]" : "bg-black text-white transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black "}  w-20 flex justify-center rounded-md  font-bold `}
-                                        disabled={pause} onClick={() => handle_Bid_ability(players[0].current_value, 250)}>250</button>
+                                        disabled={pause} onClick={() => handle_Bid_ability(current_bid, 250)}>250</button>
                                     <button className={`px-8 py-2 ${pause == true ? "bg-[#525252] text-[#949494]" : "bg-black text-white transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-black "}  w-20 flex justify-center rounded-md  font-bold `}
-                                        disabled={pause} onClick={() => handle_Bid_ability(players[0].current_value, 300)}>300</button>
+                                        disabled={pause} onClick={() => handle_Bid_ability(current_bid, 300)}>300</button>
                                 </div>
                             </div>
                         </div>

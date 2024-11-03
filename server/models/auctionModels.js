@@ -26,6 +26,8 @@ AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
   db.query(query, [tournamentId], callback);
 };
 
+
+
 AuctionModels.getPlayersByTournamentId = (tournamentId, callback) => {
   const query = `
       SELECT 
@@ -76,11 +78,31 @@ AuctionModels.getTeamsDetailsByTournamentId = (tournamentId, callback) => {
   db.query(query, [tournamentId], callback);
 };
 
-AuctionModels.team_details_manager = (tournamentId,reg_no,callback)=>{
-  console.log(tournamentId,reg_no);
-  
-  const query = `SELECT * FROM team WHERE tournament_id = ? and reg_no = ?`
-  db.query(query, [tournamentId,reg_no], callback);
+AuctionModels.team_details_manager = (tournamentId, reg_no, callback) => {
+  console.log(tournamentId, reg_no);
+
+  const query =
+    `
+    SELECT 
+      t.team_id,
+      t.team_name,
+      t.team_logo,
+      t.coin AS current_balance,
+      tt.num_of_player as base_player_num,
+      tt.player_base_coin as base_player_value,
+      COUNT(p.reg_no) AS players_bought
+    FROM 
+        team AS t
+    JOIN
+        player AS p ON p.team_id = t.team_id
+    JOIN
+      tournament as tt on tt.tournament_id = t.tournament_id
+    WHERE 
+        t.tournament_id = ? AND t.reg_no = ?
+    GROUP BY
+        t.team_id;
+    `
+  db.query(query, [tournamentId, reg_no], callback);
 }
 
 
@@ -103,7 +125,7 @@ AuctionModels.update_pause = (tournamentId, pause, callback) => {
 }
 
 AuctionModels.update_player_index = (tournamentId, current_player_index, callback) => {
-  
+
   const query = `
       UPDATE auction_page
       SET current_player_index = ?

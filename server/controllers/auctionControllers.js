@@ -24,11 +24,11 @@ exports.getTeamsByTournamentId = (req, res) => {
   };
 
   exports.team_details_manager = (req,res)=>{
-    
-    
-    const {tournamentId,reg_no} = req.body;
+    const {tournamentId} = req.body;
+    const reg_no = req.user.reg_no;
     AuctionModels.team_details_manager(tournamentId,reg_no,(err,result)=>{
       if(err){
+        
         return res.status(500).json({ message: 'Error fetching team management info', error: err });
       }
       res.status(200).json(result[0]);
