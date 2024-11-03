@@ -28,11 +28,21 @@ exports.getTeamsByTournamentId = (req, res) => {
     const reg_no = req.user.reg_no;
     AuctionModels.team_details_manager(tournamentId,reg_no,(err,result)=>{
       if(err){
-        
+
         return res.status(500).json({ message: 'Error fetching team management info', error: err });
       }
       res.status(200).json(result[0]);
     })
+  }
+
+  exports.place_bidding_by_manager = (req, res) => {
+    const { current_bid, team_id, tournament_id } = req.body;
+    AuctionModels.place_bidding_by_manager(current_bid, team_id, tournament_id, (err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error placing bid', error: err });
+      }
+      res.status(200).json({ message: 'Bid placed successfully' });
+    });
   }
 
   exports.getTeamsDetailsByTournamentId = (req, res) => {

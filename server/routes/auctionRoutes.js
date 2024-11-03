@@ -1,5 +1,5 @@
 const express = require('express');
-const {getTeamsByTournamentId, getPlayersByTournamentId, getTeamsDetailsByTournamentId,startAuction,update_pause,update_player_index,fetch_real_time_info,fetch_last_bidding_team,team_details_manager} = require('../controllers/auctionControllers');
+const {getTeamsByTournamentId, getPlayersByTournamentId, getTeamsDetailsByTournamentId,startAuction,update_pause,update_player_index,fetch_real_time_info,fetch_last_bidding_team,team_details_manager,place_bidding_by_manager} = require('../controllers/auctionControllers');
 const {protect} = require('../middlewares/authMiddleware');
 const { upload, uploadToCloudinary } = require('../middlewares/cloudinaryMiddleware');
 const auctionRouter = express.Router();
@@ -13,6 +13,7 @@ auctionRouter.post('/update_pause', protect, update_pause);
 auctionRouter.post('/update_player_index', protect, update_player_index);
 auctionRouter.post('/realtime_info', protect, fetch_real_time_info);
 auctionRouter.post('/last_bidding_team', protect, fetch_last_bidding_team);
+auctionRouter.post('/place_bidding_by_manager', protect, place_bidding_by_manager);
 
 
 module.exports = auctionRouter;
