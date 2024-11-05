@@ -34,14 +34,7 @@ router.delete('/member-requests/:requestId/reject', protect, rejectMemberRequest
 
 // set player categories routes
 router.get('/players/:tournamentId', protect, getPlayersByTournament);
-router.post('/players/categories', protect, updatePlayerCategories); /*{
-{
-  "players": [
-    { "tournament_id": 1, "reg_no": "2020831", "category": "Platinum" },
-    { "tournament_id": 1, "reg_no": "2020832", "category": "Gold" }
-  ]
-}
-}*/
+router.post('/players/categories', protect, updatePlayerCategories); 
 
 // manager view page
 router.post('/team-details-managerview', protect, getTeamDetailsByManager);
