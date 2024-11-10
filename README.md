@@ -1,7 +1,9 @@
 
+<h1>Figma Prototype link : <a href="https://www.figma.com/proto/X4BZTASVykPbO7Bznw2mtS/Online-Player-auction?node-id=1-1016&starting-point-node-id=1%3A1016&scaling=contain&content-scaling=fixed"> Prototype </a></h1>
+<h1>ER diagram for MySql Database</h1>
 ![DB er diagram](https://github.com/user-attachments/assets/11681f97-96e7-4f6b-aa52-f0ddb9907465)
 
-Figma Prototype link : <a href="https://www.figma.com/proto/X4BZTASVykPbO7Bznw2mtS/Online-Player-auction?node-id=1-1016&starting-point-node-id=1%3A1016&scaling=contain&content-scaling=fixed"> Prototype </a>
+<h1>Demonstration</h1>
 <img src="https://github.com/user-attachments/assets/3736db29-c0b0-4e50-9ed3-09d286a3d4d6">
 <img src="https://github.com/user-attachments/assets/d9c3230d-f037-4fd8-a0ca-536c095f66b9">
 <img src="https://github.com/user-attachments/assets/e46b0caa-8583-4da3-afb0-43b9361aa104"> 
