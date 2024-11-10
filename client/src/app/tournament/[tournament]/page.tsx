@@ -153,10 +153,8 @@ function Page({ params }: { params: { tournament: string } }) {
                         const data5 = await players_res.json();
                         set_Players(data5);
                     }
-
                 }
             } catch (error) {
-
             }
         }
         fetchUserData()

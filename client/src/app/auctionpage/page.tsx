@@ -332,7 +332,6 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
 
     async function handle_Bid_ability(current_bid: any, bid_increase: any) {
         if (current_bid == 0) {
-            set_Current_bid(manager_team_Details.base_player_value);
             if ((manager_team_Details.current_balance - (manager_team_Details.base_player_num - manager_team_Details.players_bought) * manager_team_Details.base_player_value) < (manager_team_Details.base_player_value + bid_increase)) {
                 set_Bid_able(false);
                 setTimeout(() => {
@@ -340,7 +339,6 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                 }, 2000);
             }
             else {
-                set_Current_bid(manager_team_Details.base_player_value + bid_increase);
                 const place_bidding_by_manager = await fetch('http://localhost:5000/api/auction/place_bidding_by_manager', {
                     method: 'POST',
                     credentials: 'include', // Include cookies in the request
@@ -361,7 +359,6 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                 }, 2000);
             }
             else {
-                set_Current_bid(current_bid + bid_increase);
                 const place_bidding_by_manager = await fetch('http://localhost:5000/api/auction/place_bidding_by_manager', {
                     method: 'POST',
                     credentials: 'include', // Include cookies in the request
@@ -369,7 +366,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ current_bid: current_bid + bid_increase + bid_increase, team_id: manager_team_Details.team_id, tournament_id: searchParams.tournament })
+                    body: JSON.stringify({ current_bid: current_bid + bid_increase , team_id: manager_team_Details.team_id, tournament_id: searchParams.tournament })
                 });
             }
         }
