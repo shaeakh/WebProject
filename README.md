@@ -3,7 +3,8 @@
 
 Figma Prototype link : <a href="https://www.figma.com/proto/X4BZTASVykPbO7Bznw2mtS/Online-Player-auction?node-id=1-1016&starting-point-node-id=1%3A1016&scaling=contain&content-scaling=fixed"> Prototype </a>
 <h1>Login and Registration</h1>
-https://github.com/user-attachments/assets/3736db29-c0b0-4e50-9ed3-09d286a3d4d6
+<img src="https://github.com/user-attachments/assets/3736db29-c0b0-4e50-9ed3-09d286a3d4d6">
+
 
 <h1>User Dashboard</h1>
 <h3>Without valid token user will be redirected to the "/" directory</h3>
