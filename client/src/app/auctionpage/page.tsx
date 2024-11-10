@@ -6,6 +6,7 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { ScrollArea } from "@/components/ui/SCscroll-area"
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/SCbutton';
 
 type Team = {
     team_name: string;
@@ -50,7 +51,8 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
     const [playerSold, set_playerSold] = useState(false);
     const [pause, set_Pause] = React.useState(false);
     const [start, set_Start] = React.useState(false);
-    const [fetch_players, set_fetch_players] = React.useState(false);
+
+
     const [manager_team_Details, set_manager_team_Details] = useState({
         team_id: 0,
         team_name: "Team Name",
@@ -85,6 +87,10 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
             },
             body: JSON.stringify({ tournamentId: searchParams.tournament, current_player_index: index })
         });
+    }
+
+    const handle_assign =()=>{
+        console.log("Player is assigned")
     }
 
     const fetch_last_bidding_team = async () => {
@@ -126,28 +132,13 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
         set_playerSold(d.sold);
         handle_Pause(d.pause);
         set_Start(d.start);
-        if (d.start == false) {
-            setTimeout(() => {
-                alert("This auction hasn't been started yet.");
-                router.push(`/tournament/${searchParams.tournament}`);
-            }, 3000);
-            router.push(`/tournament/${searchParams.tournament}`);
-        }
-
-
     }
 
-    // const handle_bid = (bid:any,team_id:any)=>{
 
-    // }
-    void async function fetch_all_players_info(token: any) {
-
-    }
 
     useEffect(() => {
         const fetchUserData = async () => {
             const token = Cookies.get('token');
-            console.log(token);
             setToken(token);
             if (!token) {
                 router.push('/authpage'); // Redirect to login if no token is found
@@ -166,7 +157,6 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                 });
 
                 data = await response.json();
-                console.log(data);
 
                 if (data.role === 'unauthorized') {
                     router.push('/tournament');
@@ -228,15 +218,12 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
         fetchUserData()
         fetch_real_time_data();
         fetch_last_bidding_team();
+
+
+
     },
         [router]
     )
-
-    let remaining_time = {
-        min: 2,
-        sec: 30
-    }
-
     const [bid_able, set_Bid_able] = React.useState(true);
 
 
@@ -258,7 +245,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ current_bid : manager_team_Details.base_player_value + bid_increase, team_id: manager_team_Details.team_id,tournament_id: searchParams.tournament })
+                    body: JSON.stringify({ current_bid: manager_team_Details.base_player_value + bid_increase, team_id: manager_team_Details.team_id, tournament_id: searchParams.tournament })
                 });
 
             }
@@ -279,7 +266,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ current_bid : current_bid + bid_increase + bid_increase, team_id: manager_team_Details.team_id,tournament_id: searchParams.tournament })
+                    body: JSON.stringify({ current_bid: current_bid + bid_increase + bid_increase, team_id: manager_team_Details.team_id, tournament_id: searchParams.tournament })
                 });
             }
         }
@@ -423,19 +410,21 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                     {user_role === "admin" && (<p className='text-nowrap'>Players Bought</p>)}
                     {user_role === "admin" && (<p>:</p>)}
                     {user_role === "admin" && (<p>{last_bidding_team?.total_players || "Null"}</p>)}
+
+
                 </div>
-                <div className='w-44 m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Time remaining</div>
-                <div className='flex justify-center m-2 p-2  rounded-lg font-mono font-bold text-xl  text-center '>
-                    <div className='w-12 border-2 border-black rounded-lg'>{remaining_time.min}m</div>
-                    <div className='mx-2'>:</div>
-                    <div className='w-12 border-2 border-black rounded-lg'>{remaining_time.sec}s</div>
+                <div className='w-full border-2 border-black flex justify-center'>
+                    <button onClick={handle_assign} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black " >
+                        Assign
+                    </button>
                 </div>
-                {(user_role === "admin") && (
+
+                {/* {(user_role === "admin") && (
                     <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  "  >
                         Assign
                     </button>
                 )
-                }
+                } */}
 
             </div>
         </div>

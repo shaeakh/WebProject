@@ -245,6 +245,7 @@ exports.getMemberRequests = (req, res) => {
 // Accept Member Request
 exports.acceptMemberRequest = (req, res) => {
   const { tournamentId,requestId } = req.params;
+  console.log("dhukse");
   
   User.getMemberRequests(tournamentId, (err, requests) => {
     if (err) {

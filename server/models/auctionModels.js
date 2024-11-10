@@ -3,6 +3,10 @@ const bcrypt = require('bcryptjs');
 
 const AuctionModels = {};
 
+AuctionModels.assign_playe = (tournamentId, callback) =>{
+
+}
+
 AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
   const query = `
       SELECT 

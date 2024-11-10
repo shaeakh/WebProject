@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/SClabel'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/SCselect'
 import React, { use, useEffect, useState } from 'react'
 import { FaRegCopy } from "react-icons/fa6";
+import { MdFileDownloadDone } from "react-icons/md";
+
 import { MoviingBorderButton } from "@/components/ui/SCmoving-border";
 import Teams from './Teams'
 import Teamheader from './Teamheader'
@@ -28,6 +30,8 @@ function Page({ params }: { params: { tournament: string } }) {
     );
     const token = Cookies.get('token');
 
+    const [codeCopy,set_codeCopy] = React.useState(false);
+ 
     const [teams, set_teams] = React.useState([]);
 
     const [Players, set_Players] = React.useState([]);
@@ -174,6 +178,10 @@ function Page({ params }: { params: { tournament: string } }) {
         console.log(data.body);
     }
 
+    const handleCopy = () =>{
+        set_codeCopy(true);
+        navigator.clipboard.writeText(tournament.join_code);
+    }
 
     return (
         <div className='flex flex-col justify-center items-center p-5'>
@@ -191,8 +199,8 @@ function Page({ params }: { params: { tournament: string } }) {
                                     <div className='w-9/12 bg-black rounded-lg bg-opacity-50 py-2 px-4'>
                                         <p className='text-xl text-white font-bold'>{tournament.join_code}</p>
                                     </div>
-                                    <button className="px-4 py-2 w-min rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
-                                        <FaRegCopy className='h-full' />
+                                    <button onClick={handleCopy} className="px-2 w-min rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                                        {codeCopy === true ? <MdFileDownloadDone  className='h-full text-2xl' /> : <FaRegCopy  className='h-full  text-xl' />}
                                     </button>
                                 </div>
                             </div>
