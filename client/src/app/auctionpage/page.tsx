@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/SCscroll-area"
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/SCbutton';
-
+import {io} from 'socket.io-client';
 type Team = {
     team_name: string;
     manager_name: string;
@@ -51,6 +51,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
     const [playerSold, set_playerSold] = useState(false);
     const [pause, set_Pause] = React.useState(false);
     const [start, set_Start] = React.useState(false);
+    const [socket,set_Socket] = useState(undefined);
 
 
     const [manager_team_Details, set_manager_team_Details] = useState({
@@ -146,35 +147,124 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
 
 
 
+    // useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         const token = Cookies.get('token');
+    //         setToken(token);
+    //         if (!token) {
+    //             router.push('/authpage'); // Redirect to login if no token is found
+    //             return;
+    //         }
+    //         try {
+    //             const tournament_id = searchParams.tournament;
+    //             const response = await fetch('http://localhost:5000/api/home/tournament-role', {
+    //                 method: 'POST',
+    //                 credentials: 'include', // Include cookies in the request
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     'Authorization': `Bearer ${token}`
+    //                 },
+    //                 body: JSON.stringify({ tournament_id })
+    //             });
+
+    //             data = await response.json();
+
+    //             if (data.role === 'unauthorized') {
+    //                 router.push('/tournament');
+    //             } else {
+    //                 set_user_role(data.role);
+    //                 const player_response = await fetch('http://localhost:5000/api/auction/players', {
+    //                     method: 'POST',
+    //                     credentials: 'include', // Include cookies in the request
+    //                     headers: {
+    //                         'Content-Type': 'application/json',
+    //                         'Authorization': `Bearer ${token}`
+    //                     },
+    //                     body: JSON.stringify({ tournamentId: searchParams.tournament })
+    //                 });
+    //                 const player_data = await player_response.json();
+    //                 set_players(player_data);
+    //                 if (data.role == "admin") {
+    //                     const team_update_response = await fetch('http://localhost:5000/api/auction/teams', {
+    //                         method: 'POST',
+    //                         credentials: 'include', // Include cookies in the request
+    //                         headers: {
+    //                             'Content-Type': 'application/json',
+    //                             'Authorization': `Bearer ${token}`
+    //                         },
+    //                         body: JSON.stringify({ tournamentId: searchParams.tournament })
+    //                     });
+    //                     data = await team_update_response.json();
+    //                     setTeams_update(data);
+    //                 }
+    //                 if (data.role == "manager") {
+    //                     const team_details_manager = await fetch('http://localhost:5000/api/auction/team_details_manager', {
+    //                         method: 'POST',
+    //                         credentials: 'include', // Include cookies in the request
+    //                         headers: {
+    //                             'Content-Type': 'application/json',
+    //                             'Authorization': `Bearer ${token}`
+    //                         },
+    //                         body: JSON.stringify({ tournamentId: searchParams.tournament, reg_no: data.reg_no })
+    //                     });
+    //                     if (team_details_manager.ok) {
+    //                         const teamDetailsManager = await team_details_manager.json();
+    //                         console.log(teamDetailsManager);
+    //                         set_manager_team_Details({
+    //                             team_id: teamDetailsManager.team_id,
+    //                             team_name: teamDetailsManager.team_name,
+    //                             team_logo: teamDetailsManager.team_logo,
+    //                             current_balance: teamDetailsManager.current_balance,
+    //                             base_player_value: teamDetailsManager.base_player_value,
+    //                             base_player_num: teamDetailsManager.base_player_num,
+    //                             players_bought: teamDetailsManager.players_bought,
+    //                         });
+    //                     }
+
+    //                 }
+    //             }
+    //         } catch (error) {
+
+    //         }
+    //     }
+    //     fetchUserData()
+    //     fetch_real_time_data();
+    //     fetch_last_bidding_team();
+
+
+
+    // },
+    //     [router,manager_team_Details,pause,current_bid,last_bidding_team,index,teams_update]
+    // )
     useEffect(() => {
         const fetchUserData = async () => {
             const token = Cookies.get('token');
             setToken(token);
             if (!token) {
-                router.push('/authpage'); // Redirect to login if no token is found
+                router.push('/authpage');
                 return;
             }
             try {
                 const tournament_id = searchParams.tournament;
                 const response = await fetch('http://localhost:5000/api/home/tournament-role', {
                     method: 'POST',
-                    credentials: 'include', // Include cookies in the request
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ tournament_id })
                 });
-
+    
                 data = await response.json();
-
+    
                 if (data.role === 'unauthorized') {
                     router.push('/tournament');
                 } else {
                     set_user_role(data.role);
                     const player_response = await fetch('http://localhost:5000/api/auction/players', {
                         method: 'POST',
-                        credentials: 'include', // Include cookies in the request
+                        credentials: 'include',
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`
@@ -183,10 +273,11 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                     });
                     const player_data = await player_response.json();
                     set_players(player_data);
-                    if (data.role == "admin") {
+    
+                    if (data.role === "admin") {
                         const team_update_response = await fetch('http://localhost:5000/api/auction/teams', {
                             method: 'POST',
-                            credentials: 'include', // Include cookies in the request
+                            credentials: 'include',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': `Bearer ${token}`
@@ -195,11 +286,10 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                         });
                         data = await team_update_response.json();
                         setTeams_update(data);
-                    }
-                    if (data.role == "manager") {
+                    } else if (data.role === "manager") {
                         const team_details_manager = await fetch('http://localhost:5000/api/auction/team_details_manager', {
                             method: 'POST',
-                            credentials: 'include', // Include cookies in the request
+                            credentials: 'include',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': `Bearer ${token}`
@@ -208,7 +298,6 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                         });
                         if (team_details_manager.ok) {
                             const teamDetailsManager = await team_details_manager.json();
-                            console.log(teamDetailsManager);
                             set_manager_team_Details({
                                 team_id: teamDetailsManager.team_id,
                                 team_name: teamDetailsManager.team_name,
@@ -219,22 +308,25 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                                 players_bought: teamDetailsManager.players_bought,
                             });
                         }
-
                     }
                 }
             } catch (error) {
-
+                console.error('Error fetching user data:', error);
             }
-        }
-        fetchUserData()
+        };
+    
+        const fetchDataInterval = setInterval(() => {
+            fetchUserData();
+            fetch_real_time_data();
+            fetch_last_bidding_team();
+        }, 50); // Poll every 5 seconds
+    
+        fetchUserData();
         fetch_real_time_data();
         fetch_last_bidding_team();
-
-
-
-    },
-        [router]
-    )
+        return () => clearInterval(fetchDataInterval); // Clean up interval on unmount
+    }, [router]);
+    
     const [bid_able, set_Bid_able] = React.useState(true);
 
 
@@ -425,7 +517,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
 
                 </div>
                 {user_role === "admin" ?
-                    <div className='w-full border-2 border-black flex justify-center'>
+                    <div className='w-full  flex justify-center'>
                         <button onClick={handle_assign} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black " >
                             Assign
                         </button>

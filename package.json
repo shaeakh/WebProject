@@ -2,6 +2,7 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "framer-motion": "^11.2.10",
+    "mysql2": "^3.11.4",
     "tailwind-merge": "^2.3.0"
   }
 }

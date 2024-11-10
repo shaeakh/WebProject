@@ -7,7 +7,15 @@ const auctionRouter = require('./routes/auctionRoutes');
 const cookieParser = require('cookie-parser');
 const cloudinary = require('cloudinary').v2;
 const cors = require("cors");
-
+const io = require('socket.io')(3001, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"]
+  }
+});
+io.on("connection", (socket) => {
+  console.log(first)
+});
 
 require('dotenv').config();
 
