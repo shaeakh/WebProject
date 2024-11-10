@@ -3,9 +3,49 @@ const bcrypt = require('bcryptjs');
 
 const AuctionModels = {};
 
-AuctionModels.assign_playe = (tournamentId, callback) =>{
+AuctionModels.assign_auction_table = (tournamentId, callback) => {
+  const query = `
+    UPDATE 
+      auction_page AS a
+    JOIN 
+      tournament AS t ON t.tournament_id = a.tournament_id
+    SET     
+      a.team_id = NULL,
+      a.current_player_index = a.current_player_index + 1,    
+      a.current_bid = t.player_base_coin
+    WHERE 
+      t.tournament_id = ?;
+  `;
+  db.query(query, [tournamentId], callback);
 
 }
+
+AuctionModels.assign_to_team = (tournamentId, callback) => {
+  const query = `
+    UPDATE team as t 
+    JOIN auction_page as au ON au.team_id = t.team_id
+    SET 
+      t.coin = t.coin - au.current_bid
+    WHERE t.team_id = au.team_id AND t.tournament_id = ?
+  `;
+  db.query(query, [tournamentId], callback);
+}
+
+
+AuctionModels.assign_player = (tournamentId, reg_no, callback) => {
+  const query = `
+  UPDATE player
+  JOIN auction_page AS au ON au.tournament_id = player.tournament_id
+  SET player.team_id = au.team_id, player.player_price = au.current_bid
+  WHERE player.tournament_id = ? AND player.reg_no = ?
+`;
+  db.query(query, [tournamentId, reg_no], callback);
+
+}
+
+
+
+
 
 AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
   const query = `
@@ -32,7 +72,7 @@ AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
 
 AuctionModels.place_bidding_by_manager = (current_bid, team_id, tournament_id, callback) => {
   const query =
-  `
+    `
   UPDATE 
     auction_page
   SET 
@@ -94,28 +134,27 @@ AuctionModels.getTeamsDetailsByTournamentId = (tournamentId, callback) => {
 };
 
 AuctionModels.team_details_manager = (tournamentId, reg_no, callback) => {
-  console.log(tournamentId, reg_no);
-
   const query =
     `
     SELECT 
-      t.team_id,
-      t.team_name,
-      t.team_logo,
-      t.coin AS current_balance,
-      tt.num_of_player as base_player_num,
-      tt.player_base_coin as base_player_value,
-      COUNT(p.reg_no) AS players_bought
-    FROM 
-        team AS t
-    JOIN
-        player AS p ON p.team_id = t.team_id
-    JOIN
-      tournament as tt on tt.tournament_id = t.tournament_id
-    WHERE 
-        t.tournament_id = ? AND t.reg_no = ?
-    GROUP BY
-        t.team_id;
+    t.team_id,
+    t.team_name,
+    t.team_logo,
+    t.coin AS current_balance,
+    tt.num_of_player AS base_player_num,
+    tt.player_base_coin AS base_player_value,
+    IFNULL(COUNT(p.reg_no), 0) AS players_bought
+FROM 
+    team AS t
+JOIN 
+    tournament AS tt ON tt.tournament_id = t.tournament_id
+LEFT JOIN 
+    player AS p ON p.team_id = t.team_id
+WHERE 
+    t.tournament_id = ? AND t.reg_no = ? 
+GROUP BY 
+    t.team_id;
+
     `
   db.query(query, [tournamentId, reg_no], callback);
 }

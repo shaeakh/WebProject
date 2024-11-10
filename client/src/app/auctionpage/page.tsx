@@ -89,8 +89,18 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
         });
     }
 
-    const handle_assign =()=>{
+    const handle_assign = () => {
         console.log("Player is assigned")
+        console.log(searchParams.tournament, players[index].reg_no);
+        fetch("http://localhost:5000/api/auction/assign_player_to_team", {
+            method: "POST",
+            credentials: 'include', // Include cookies in the request
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ tournamentId: searchParams.tournament, reg_no: players[index].reg_no }),
+        })
     }
 
     const fetch_last_bidding_team = async () => {
@@ -162,6 +172,17 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                     router.push('/tournament');
                 } else {
                     set_user_role(data.role);
+                    const player_response = await fetch('http://localhost:5000/api/auction/players', {
+                        method: 'POST',
+                        credentials: 'include', // Include cookies in the request
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ tournamentId: searchParams.tournament })
+                    });
+                    const player_data = await player_response.json();
+                    set_players(player_data);
                     if (data.role == "admin") {
                         const team_update_response = await fetch('http://localhost:5000/api/auction/teams', {
                             method: 'POST',
@@ -187,6 +208,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                         });
                         if (team_details_manager.ok) {
                             const teamDetailsManager = await team_details_manager.json();
+                            console.log(teamDetailsManager);
                             set_manager_team_Details({
                                 team_id: teamDetailsManager.team_id,
                                 team_name: teamDetailsManager.team_name,
@@ -199,17 +221,6 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                         }
 
                     }
-                    const player_response = await fetch('http://localhost:5000/api/auction/players', {
-                        method: 'POST',
-                        credentials: 'include', // Include cookies in the request
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ tournamentId: searchParams.tournament })
-                    });
-                    data = await player_response.json();
-                    set_players(data);
                 }
             } catch (error) {
 
@@ -413,11 +424,14 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
 
 
                 </div>
-                <div className='w-full border-2 border-black flex justify-center'>
-                    <button onClick={handle_assign} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black " >
-                        Assign
-                    </button>
-                </div>
+                {user_role === "admin" ?
+                    <div className='w-full border-2 border-black flex justify-center'>
+                        <button onClick={handle_assign} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black " >
+                            Assign
+                        </button>
+                    </div> : <></>
+                }
+
 
                 {/* {(user_role === "admin") && (
                     <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  "  >
