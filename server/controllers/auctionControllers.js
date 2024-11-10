@@ -28,7 +28,6 @@ exports.getTeamsByTournamentId = (req, res) => {
     const reg_no = req.user.reg_no;
     AuctionModels.team_details_manager(tournamentId,reg_no,(err,result)=>{
       if(err){
-
         return res.status(500).json({ message: 'Error fetching team management info', error: err });
       }
       res.status(200).json(result[0]);
@@ -137,3 +136,31 @@ exports.getTeamsByTournamentId = (req, res) => {
   }
 
 
+  exports.assign_player_to_team = (req, res) => {
+    const { tournamentId, reg_no } = req.body;
+    const handleError = (message, err) => {
+      return res.status(500).json({ message, error: err });
+    };
+  
+    AuctionModels.assign_player(tournamentId, reg_no, (err) => {
+    
+      if (err) {
+        return handleError('Error assigning player to team', err);
+      }
+
+      AuctionModels.assign_to_team(tournamentId, (err) => {
+        if (err) {
+          return handleError('Error assigning player to team', err);
+        }
+  
+        AuctionModels.assign_auction_table(tournamentId, (err) => {
+          if (err) {
+            return handleError('Error assigning player to team', err);
+          }
+  
+          res.status(200).json({ message: 'Player assigned to team successfully' });
+        });
+      });
+    });
+  };
+  
