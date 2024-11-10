@@ -3,6 +3,10 @@ const bcrypt = require('bcryptjs');
 
 const AuctionModels = {};
 
+AuctionModels.assign_playe = (tournamentId, callback) =>{
+
+}
+
 AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
   const query = `
       SELECT 
@@ -26,7 +30,18 @@ AuctionModels.getTeamsByTournamentId = (tournamentId, callback) => {
   db.query(query, [tournamentId], callback);
 };
 
-
+AuctionModels.place_bidding_by_manager = (current_bid, team_id, tournament_id, callback) => {
+  const query =
+  `
+  UPDATE 
+    auction_page
+  SET 
+    current_bid = ?, team_id = ?
+  WHERE 
+    tournament_id = ?
+  `
+  db.query(query, [current_bid, team_id, tournament_id], callback);
+}
 
 AuctionModels.getPlayersByTournamentId = (tournamentId, callback) => {
   const query = `

@@ -6,6 +6,7 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { ScrollArea } from "@/components/ui/SCscroll-area"
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/SCbutton';
 
 type Team = {
     team_name: string;
@@ -50,7 +51,17 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
     const [playerSold, set_playerSold] = useState(false);
     const [pause, set_Pause] = React.useState(false);
     const [start, set_Start] = React.useState(false);
-    const [fetch_players, set_fetch_players] = React.useState(false);
+
+
+    const [manager_team_Details, set_manager_team_Details] = useState({
+        team_id: 0,
+        team_name: "Team Name",
+        team_logo: "https://raw.githubusercontent.com/shaeakh/code-share/refs/heads/main/54eef4c7137ee66cb57bc225d3d90bad.jpg",
+        current_balance: 0,
+        base_player_value: 0,
+        base_player_num: 0,
+        players_bought: 0,
+    });
 
     async function handle_Pause(a_pause: any) {
         const update_pause_state = await fetch('http://localhost:5000/api/auction/update_pause', {
@@ -76,6 +87,10 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
             },
             body: JSON.stringify({ tournamentId: searchParams.tournament, current_player_index: index })
         });
+    }
+
+    const handle_assign =()=>{
+        console.log("Player is assigned")
     }
 
     const fetch_last_bidding_team = async () => {
@@ -117,28 +132,13 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
         set_playerSold(d.sold);
         handle_Pause(d.pause);
         set_Start(d.start);
-        if (d.start == false) {
-            setTimeout(() => {
-                alert("This auction hasn't been started yet.");
-                router.push(`/tournament/${searchParams.tournament}`);
-            }, 3000);
-            router.push(`/tournament/${searchParams.tournament}`);
-        }
-
-
     }
 
-    // const handle_bid = (bid:any,team_id:any)=>{
 
-    // }
-    void async function fetch_all_players_info(token: any) {
-
-    }
 
     useEffect(() => {
         const fetchUserData = async () => {
             const token = Cookies.get('token');
-            console.log(token);
             setToken(token);
             if (!token) {
                 router.push('/authpage'); // Redirect to login if no token is found
@@ -157,7 +157,6 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                 });
 
                 data = await response.json();
-                console.log(data);
 
                 if (data.role === 'unauthorized') {
                     router.push('/tournament');
@@ -184,8 +183,20 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                                 'Content-Type': 'application/json',
                                 'Authorization': `Bearer ${token}`
                             },
-                            body: JSON.stringify({ tournamentId: searchParams.tournament,reg_no: data.reg_no })
+                            body: JSON.stringify({ tournamentId: searchParams.tournament, reg_no: data.reg_no })
                         });
+                        if (team_details_manager.ok) {
+                            const teamDetailsManager = await team_details_manager.json();
+                            set_manager_team_Details({
+                                team_id: teamDetailsManager.team_id,
+                                team_name: teamDetailsManager.team_name,
+                                team_logo: teamDetailsManager.team_logo,
+                                current_balance: teamDetailsManager.current_balance,
+                                base_player_value: teamDetailsManager.base_player_value,
+                                base_player_num: teamDetailsManager.base_player_num,
+                                players_bought: teamDetailsManager.players_bought,
+                            });
+                        }
 
                     }
                     const player_response = await fetch('http://localhost:5000/api/auction/players', {
@@ -207,44 +218,40 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
         fetchUserData()
         fetch_real_time_data();
         fetch_last_bidding_team();
+
+
+
     },
         [router]
     )
-
-    let manager = {
-        team_id : 6,
-        team_name: "Brazil",
-        team_logo : "https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986686/fhoc4lkrxydynsuusbft.jpg",
-        current_balance: 8000,
-        base_player_value : 200,
-        maxbid_ : 200,
-        base_player_num : 7,
-        players_bought: 2
-    }
-
-    let remaining_time = {
-        min: 2,
-        sec: 30
-    }
-
     const [bid_able, set_Bid_able] = React.useState(true);
 
 
-    function handle_Bid_ability(current_bid: any, bid_increase: any) {
-        if(current_bid == 0){
-            set_Current_bid(manager.base_player_value);   
-            if ( (manager.current_balance - (manager.base_player_num-manager.players_bought)*manager.base_player_value) < (manager.base_player_value + bid_increase)) {
+    async function handle_Bid_ability(current_bid: any, bid_increase: any) {
+        if (current_bid == 0) {
+            set_Current_bid(manager_team_Details.base_player_value);
+            if ((manager_team_Details.current_balance - (manager_team_Details.base_player_num - manager_team_Details.players_bought) * manager_team_Details.base_player_value) < (manager_team_Details.base_player_value + bid_increase)) {
                 set_Bid_able(false);
                 setTimeout(() => {
                     set_Bid_able(true);
                 }, 2000);
             }
             else {
-                set_Current_bid(manager.base_player_value + bid_increase);
+                set_Current_bid(manager_team_Details.base_player_value + bid_increase);
+                const place_bidding_by_manager = await fetch('http://localhost:5000/api/auction/place_bidding_by_manager', {
+                    method: 'POST',
+                    credentials: 'include', // Include cookies in the request
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ current_bid: manager_team_Details.base_player_value + bid_increase, team_id: manager_team_Details.team_id, tournament_id: searchParams.tournament })
+                });
+
             }
         }
-        else{
-            if ( (manager.current_balance - (manager.base_player_num-manager.players_bought)*manager.base_player_value) < (current_bid + bid_increase)) {
+        else {
+            if ((manager_team_Details.current_balance - (manager_team_Details.base_player_num - manager_team_Details.players_bought) * manager_team_Details.base_player_value) < (current_bid + bid_increase)) {
                 set_Bid_able(false);
                 setTimeout(() => {
                     set_Bid_able(true);
@@ -252,6 +259,15 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
             }
             else {
                 set_Current_bid(current_bid + bid_increase);
+                const place_bidding_by_manager = await fetch('http://localhost:5000/api/auction/place_bidding_by_manager', {
+                    method: 'POST',
+                    credentials: 'include', // Include cookies in the request
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ current_bid: current_bid + bid_increase + bid_increase, team_id: manager_team_Details.team_id, tournament_id: searchParams.tournament })
+                });
             }
         }
     }
@@ -263,14 +279,14 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
             {user_role === "manager" && (
                 <div className='w-1/3 bg-black bg-opacity-15  flex flex-col justify-around items-center bg-grey-300'>
                     {(bid_able === false) && <div className='m-2 p-2 rounded-lg font-mono font-bold text-2xl  text-center bg-red-500 bg-opacity-75'>
-                        You can't bid more then {manager.current_balance - (manager.base_player_num-manager.players_bought)*manager.base_player_value} points
+                        You can't bid more then {manager_team_Details.current_balance - (manager_team_Details.base_player_num - manager_team_Details.players_bought) * manager_team_Details.base_player_value} points
                     </div>}
-                    <p className='p-2 border-2 border-black font-mono font-bold text-xl  rounded-lg'>Team:{manager.team_name}</p>
+                    <p className='p-2 border-2 border-black font-mono font-bold text-xl  rounded-lg'>Team:{manager_team_Details.team_name}</p>
                     <div className='h-36 overflow-hidden rounded-lg flex justify-center w-full'>
-                        <img className='object-cover rounded-lg h-full ' src={manager.team_logo} alt="" />
+                        <img className='object-cover rounded-lg h-full ' src={manager_team_Details.team_logo} alt="" />
                     </div>
-                    <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Current Balance : {manager.current_balance}</div>
-                    <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Players Bought : {manager.players_bought}</div>
+                    <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Current Balance : {manager_team_Details.current_balance}</div>
+                    <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Players Bought : {manager_team_Details.players_bought}</div>
                     <div className='border-2 border-black rounded-lg'>
                         <div className='flex justify-around w-full' >
                             <p className='m-2 p-2 font-mono font-bold text-xl '>{pause == true ? "Bidding is paused" : ""}</p>
@@ -278,7 +294,7 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
 
                         <div className='flex justify-around w-full' >
                             <p className='m-2 p-2 font-mono font-bold text-xl '>Place your bid</p>
-                            <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Your max bid : {manager.current_balance - (manager.base_player_num-manager.players_bought)*manager.base_player_value}</div>
+                            <div className='m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Your max bid : {manager_team_Details.current_balance - (manager_team_Details.base_player_num - manager_team_Details.players_bought) * manager_team_Details.base_player_value}</div>
                         </div>
                         <div className='w-full m-2 p-2 rounded-lg h-max '>
                             <div className=' flex flex-col justify-around items-around gap-5'>
@@ -394,19 +410,21 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
                     {user_role === "admin" && (<p className='text-nowrap'>Players Bought</p>)}
                     {user_role === "admin" && (<p>:</p>)}
                     {user_role === "admin" && (<p>{last_bidding_team?.total_players || "Null"}</p>)}
+
+
                 </div>
-                <div className='w-44 m-2 p-2 border-2 border-black rounded-lg font-mono font-bold text-xl  text-center '>Time remaining</div>
-                <div className='flex justify-center m-2 p-2  rounded-lg font-mono font-bold text-xl  text-center '>
-                    <div className='w-12 border-2 border-black rounded-lg'>{remaining_time.min}m</div>
-                    <div className='mx-2'>:</div>
-                    <div className='w-12 border-2 border-black rounded-lg'>{remaining_time.sec}s</div>
+                <div className='w-full border-2 border-black flex justify-center'>
+                    <button onClick={handle_assign} className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black " >
+                        Assign
+                    </button>
                 </div>
-                {(user_role === "admin") && (
+
+                {/* {(user_role === "admin") && (
                     <button className="px-8 py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black border-2 border-white  "  >
                         Assign
                     </button>
                 )
-                }
+                } */}
 
             </div>
         </div>
