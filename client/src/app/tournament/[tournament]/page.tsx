@@ -109,7 +109,7 @@ function Page({ params }: { params: { tournament: string } }) {
                         const data4 = await team_res.json();
                         set_team(data4);
 
-                        const players_res = await fetch('http://localhost:5000/api/home/team-players', {
+                        const players_res = await fetch('http://localhost:5000/api/home/team-players-managerview', {
                             method: 'POST',
                             credentials: 'include', // Include cookies in the request
                             headers: {
