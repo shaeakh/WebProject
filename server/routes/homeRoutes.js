@@ -1,5 +1,5 @@
 const express = require('express');
-const { updateUser, createTournament,startAuction, updateTournament, getUserDetails, getCurrentTournamentDetails, getUserParticipatedTournaments, joinTournament, getMemberRequests, acceptMemberRequest, rejectMemberRequest, getPlayersByTournament, updatePlayerCategories, getTeamDetailsByManager,getTeamDetailsByPlayer,getTeamPlayersByPlayer, getTournamentDetailsWithTeams, getTeamsInTournament,findTournamentRoleByUser,getTournamentInfo,getPlayersInTeam  } = require('../controllers/homeController');
+const { updateUser, createTournament,startAuction, updateTournament, getUserDetails, getCurrentTournamentDetails, getUserParticipatedTournaments, joinTournament, getMemberRequests, acceptMemberRequest, rejectMemberRequest, getPlayersByTournament, updatePlayerCategories, getTeamDetailsByManager,getTeamDetailsByPlayer,getTeamPlayersByPlayer, getTournamentDetailsWithTeams, getTeamsInTournament,findTournamentRoleByUser,getTournamentInfo,getPlayersInTeam,deleteActivityLog,getActivityLogsByRegNo  } = require('../controllers/homeController');
 const {protect} = require('../middlewares/authMiddleware');
 const { upload, uploadToCloudinary } = require('../middlewares/cloudinaryMiddleware');
 const router = express.Router();
@@ -48,8 +48,9 @@ router.post('/tournament-info', protect, getTournamentInfo);
 // admin auction page
 router.post('/tournament-teams', protect, getTeamsInTournament);
 
-// manager auction page
-
+// delete activity routes
+router.delete('/activity-log/:regNo', deleteActivityLog);
+router.get('/activity-logs/:regNo', getActivityLogsByRegNo);
 
 // general auction page
 
