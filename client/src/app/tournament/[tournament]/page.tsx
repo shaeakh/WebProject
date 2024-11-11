@@ -30,8 +30,8 @@ function Page({ params }: { params: { tournament: string } }) {
     );
     const token = Cookies.get('token');
 
-    const [codeCopy,set_codeCopy] = React.useState(false);
- 
+    const [codeCopy, set_codeCopy] = React.useState(false);
+
     const [teams, set_teams] = React.useState([]);
 
     const [Players, set_Players] = React.useState([]);
@@ -109,7 +109,7 @@ function Page({ params }: { params: { tournament: string } }) {
                         const data4 = await team_res.json();
                         set_team(data4);
 
-                        const players_res = await fetch('http://localhost:5000/api/home/team-players', {
+                        const players_res = await fetch('http://localhost:5000/api/home/team-players-managerview', {
                             method: 'POST',
                             credentials: 'include', // Include cookies in the request
                             headers: {
@@ -153,10 +153,8 @@ function Page({ params }: { params: { tournament: string } }) {
                         const data5 = await players_res.json();
                         set_Players(data5);
                     }
-
                 }
             } catch (error) {
-
             }
         }
         fetchUserData()
@@ -178,7 +176,7 @@ function Page({ params }: { params: { tournament: string } }) {
         console.log(data.body);
     }
 
-    const handleCopy = () =>{
+    const handleCopy = () => {
         set_codeCopy(true);
         navigator.clipboard.writeText(tournament.join_code);
     }
@@ -200,7 +198,7 @@ function Page({ params }: { params: { tournament: string } }) {
                                         <p className='text-xl text-white font-bold'>{tournament.join_code}</p>
                                     </div>
                                     <button onClick={handleCopy} className="px-2 w-min rounded-md bg-black text-white font-bold text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
-                                        {codeCopy === true ? <MdFileDownloadDone  className='h-full text-2xl' /> : <FaRegCopy  className='h-full  text-xl' />}
+                                        {codeCopy === true ? <MdFileDownloadDone className='h-full text-2xl' /> : <FaRegCopy className='h-full  text-xl' />}
                                     </button>
                                 </div>
                             </div>
@@ -208,7 +206,7 @@ function Page({ params }: { params: { tournament: string } }) {
                         <div className='flex flex-col justify-center'>
                             <Link href={{
                                 pathname: '/auctionpage',
-                                query: {tournament: params.tournament}
+                                query: { tournament: params.tournament }
                             }}>
                                 <MoviingBorderButton
                                     onClick={Start_auction}

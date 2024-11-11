@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 31, 2024 at 05:46 PM
+-- Generation Time: Nov 10, 2024 at 06:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,7 @@ CREATE TABLE `auction_page` (
 --
 
 INSERT INTO `auction_page` (`tournament_id`, `team_id`, `current_player_index`, `current_bid`, `sold`, `start`, `pause`) VALUES
-(7, 6, 1, 300, 0, 1, NULL),
+(7, NULL, 7, 200, 0, 1, 0),
 (8, NULL, NULL, NULL, 0, 1, NULL),
 (9, NULL, NULL, NULL, 0, 1, NULL),
 (10, NULL, NULL, NULL, 0, NULL, NULL);
@@ -118,13 +118,13 @@ CREATE TABLE `player` (
 --
 
 INSERT INTO `player` (`tournament_id`, `reg_no`, `team_id`, `position`, `player_price`, `category`) VALUES
-(7, '2020831043', NULL, 'Midfielder ', 200, 'Platinum'),
-(7, '2020831040', NULL, 'Defender ', 200, 'Gold'),
+(7, '2020831043', 6, 'Midfielder ', 200, 'Platinum'),
+(7, '2020831040', 6, 'Defender ', 200, 'Gold'),
 (7, '2020831005', NULL, 'Goalkeeper ', 200, 'Silver'),
 (7, '2020831012', NULL, 'Defender ', 200, 'Bronze'),
-(7, '2020831016', NULL, 'Midfielder ', 200, 'Platinum'),
-(7, '2020831017', NULL, 'Goalkeeper ', 200, 'Gold'),
-(7, '2020831030', NULL, 'Defender ', 200, 'Silver'),
+(7, '2020831016', 7, 'Midfielder ', 900, 'Platinum'),
+(7, '2020831017', 7, 'Goalkeeper ', 500, 'Gold'),
+(7, '2020831030', 7, 'Defender ', 800, 'Silver'),
 (7, '2020831033', NULL, 'Midfielder ', 200, 'Bronze'),
 (7, '2020831036', NULL, 'Goalkeeper ', 200, 'Platinum');
 
@@ -148,9 +148,9 @@ CREATE TABLE `team` (
 --
 
 INSERT INTO `team` (`team_id`, `tournament_id`, `reg_no`, `team_name`, `team_logo`, `coin`) VALUES
-(5, 7, '2020831023', 'Team Alpha', 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986628/xev9vz7walf4lfgdbusl.jpg', 10000),
-(6, 7, '2020831004', 'Team Beta', 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986686/fhoc4lkrxydynsuusbft.jpg', 10000),
-(7, 7, '2020831026', 'Team Gama', 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986733/kwckm8uky7biwpcpclv8.jpg', 10000),
+(5, 7, '2020831023', 'Team Alpha', 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986628/xev9vz7walf4lfgdbusl.jpg', 7000),
+(6, 7, '2020831004', 'Team Beta', 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986686/fhoc4lkrxydynsuusbft.jpg', 9000),
+(7, 7, '2020831026', 'Team Gama', 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986733/kwckm8uky7biwpcpclv8.jpg', 7800),
 (8, 9, '2020831043', 'Not gonna win', 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1730000286/tztw46w4bptam1hlhfjn.png', 10000);
 
 -- --------------------------------------------------------
@@ -177,7 +177,7 @@ CREATE TABLE `tournament` (
 --
 
 INSERT INTO `tournament` (`tournament_id`, `tournament_name`, `tournament_date`, `sport_type`, `reg_no`, `player_base_coin`, `per_team_coin`, `tournament_logo_url`, `join_code`, `num_of_player`) VALUES
-(7, 'SWE Inter Depertment Tournament ', '2024-07-29', 'Football', '2020831022', 200, 10000, 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986537/aflhf6xquwroagh2av50.jpg', 'wqxmn2kye', NULL),
+(7, 'SWE Inter Depertment Tournament ', '2024-07-29', 'Football', '2020831022', 200, 10000, 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1719986537/aflhf6xquwroagh2av50.jpg', 'wqxmn2kye', 7),
 (8, '', '2024-09-23', 'Tournament type', '2020831004', 200, 10000, 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1727099972/dhzvnd9ceqsp4ccf2i79.jpg', 'jvbdud07s', 7),
 (9, 'SWE Inter Depertment Cricket Tournament ', '2024-10-21', 'Cricket', '2020831004', 200, 10000, 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476640/rmxa26ctdkr4m0jrgwog.png', 'x0szd1joh', 7),
 (10, 'EEE Inter Depertment Football Tournament ', '2024-10-07', 'Cricket', '2020831043', 500, 20000, 'https://res.cloudinary.com/dsd4b2lkg/image/upload/v1718476640/rmxa26ctdkr4m0jrgwog.png', '52tqwcjg1', 7);
