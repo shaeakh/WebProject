@@ -3,7 +3,7 @@ const { use } = require('../routes/authRoutes');
 const generateToken = require('../utils/generateToken');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
-
+const db = require('../config/db');
 
 const isValidEmail = (email) => {
   const regex = /^[a-zA-Z]+[0-9]*@student\.sust\.edu$/;
@@ -77,11 +77,25 @@ exports.authUser = (req, res) => {
     // console.log(bcrypt.compareSync(password, user.password))
     if (bcrypt.compareSync(password, user.password)) {
       const token = generateToken(user.reg_no);
-      res.cookie('token', token, { maxAge: 30 * 24 * 60 * 60 * 1000 });
+
+      const data_and_time = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      const query = `
+      INSERT INTO activity_log (reg_no, activity_title, token, data_and_time)
+      VALUES (?, ?, ?, ?)
+    `;
+    db.execute(query, [user.reg_no, 'User login', token, data_and_time], (err, results) => {
+      if (err) {
+        console.error('Error inserting activity log:', err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      // Send the token to the client
+      res.cookie('token', token, { maxAge: 30 * 24 * 60 * 60 * 1000 });  // 30 days expiry
       res.json({ token });
-    } else {
-      res.status(401).json({ message: 'Invalid email or password' });
-    }
+    });
+  } else {
+    res.status(401).json({ message: 'Invalid email or password' });
+  }
   });
 };
 

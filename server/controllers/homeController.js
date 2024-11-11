@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
+const db = require('../config/db');
+
 
 
 
@@ -34,7 +36,25 @@ exports.updateUser = (req, res) => {
       if (err) {
         return res.status(500).json({ message: 'Error updating user', error: err });
       }
-      res.status(200).json({ message: 'User updated successfully' });
+      const token = req.headers.authorization;
+      if (!token) {
+        return res.status(401).json({ message: 'Unauthorized: No token provided' });
+      }
+      const data_and_time = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      const query = `
+        INSERT INTO activity_log (reg_no, activity_title, token, data_and_time)
+        VALUES (?, ?, ?, ?)
+      `;
+
+      db.execute(query, [regNo, 'User updated', token, data_and_time], (err, results) => {
+        if (err) {
+          console.error('Error inserting activity log:', err);
+          return res.status(500).json({ message: 'Internal Server Error' });
+        }
+
+        // Respond with a success message
+        res.status(200).json({ message: 'User updated successfully' });
+      });
     });
   });
 };
@@ -75,7 +95,25 @@ exports.createTournament = (req, res) => {
       if (err) {
         return res.status(500).json({ message: 'Error adding creator to participated_tournament', error: err });
       }
+      const data_and_time = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      const token = req.headers.authorization;
+      if (!token) {
+        return res.status(401).json({ message: 'Unauthorized: No token provided' });
+      }
+      
+      const query = `
+      INSERT INTO activity_log (reg_no, activity_title, token, data_and_time)
+      VALUES (?, ?, ?, ?)
+    `;
+    db.execute(query, [regNo, 'Tournament created', token, data_and_time], (err, results) => {
+      if (err) {
+        console.error('Error inserting activity log:', err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      // Respond with a success message
       res.status(201).json({ message: 'Tournament created successfully', tournamentId: tournamentId });
+    });
     });
   });
 };
@@ -86,6 +124,28 @@ exports.startAuction = (req, res) => {
     if (err) {
       return res.status(500).json({ message: 'Error starting auction', error: err });
     }
+
+    const token = req.headers.authorization; 
+
+    if (!token) {
+      return res.status(401).json({ message: 'Unauthorized: No token provided' });
+    }
+
+    const data_and_time = new Date().toISOString().slice(0, 19).replace('T', ' ');  
+    
+    const query = `
+      INSERT INTO activity_log (reg_no, activity_title, token, data_and_time)
+      VALUES (?, ?, ?, ?)
+    `;
+    
+    db.execute(query, [regNo, 'Auction started', token, data_and_time], (err, results) => {
+      if (err) {
+        console.error('Error inserting activity log:', err);
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      res.status(201).json({ message: 'Auction started successfully', result: result });
+    });
     res.status(201).json({ message: 'Auction started successfully',result: result});
   });
 }
@@ -408,3 +468,66 @@ exports.getPlayersInTeam = (req, res) => {
   });
 }
 
+
+
+
+
+exports.deleteActivityLog = (req, res) => {
+  const regNo = req.user.reg_no; 
+
+  if (!regNo) {
+    return res.status(400).json({ message: 'Missing regNo parameter' });
+  }
+
+
+  const query = `
+    DELETE FROM activity_log
+    WHERE reg_no = ?
+  `;
+
+
+  db.execute(query, [regNo], (err, results) => {
+    if (err) {
+      console.error('Error deleting activity log:', err);
+      return res.status(500).json({ message: 'Error deleting activity log', error: err });
+    }
+
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: 'No activity log found for the provided regNo' });
+    }
+
+    res.status(200).json({ message: 'Activity log deleted successfully' });
+  });
+};
+
+
+exports.getActivityLogsByRegNo = (req, res) => {
+  const regNo = req.user.reg_no; // regNo will be passed as a URL parameter
+
+  if (!regNo) {
+    return res.status(400).json({ message: 'Missing regNo parameter' });
+  }
+
+  // SQL query to get all activity logs for the given regNo
+  const query = `
+    SELECT * FROM activity_log
+    WHERE reg_no = ?
+    ORDER BY data_and_time DESC
+  `;
+
+  // Execute the query
+  db.execute(query, [regNo], (err, results) => {
+    if (err) {
+      console.error('Error fetching activity logs:', err);
+      return res.status(500).json({ message: 'Error fetching activity logs', error: err });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No activity logs found for the provided regNo' });
+    }
+
+    // Respond with the activity logs
+    res.status(200).json({ message: 'Activity logs retrieved successfully', data: results });
+  });
+};
