@@ -319,12 +319,12 @@ const auctionpage: React.FC<auctionpage_Props> = ({ searchParams }: {
             fetchUserData();
             fetch_real_time_data();
             fetch_last_bidding_team();
-        }, 50); // Poll every 5 seconds
+        }, 50);
     
         fetchUserData();
         fetch_real_time_data();
         fetch_last_bidding_team();
-        return () => clearInterval(fetchDataInterval); // Clean up interval on unmount
+        return () => clearInterval(fetchDataInterval);  
     }, [router]);
     
     const [bid_able, set_Bid_able] = React.useState(true);
