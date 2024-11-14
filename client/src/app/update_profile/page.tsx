@@ -137,6 +137,14 @@ const Page: React.FC = () => {
                     <p className='font-mono text-lg'>{profile.department}</p>
                     <p className='font-mono text-lg'>{profile.phone_number}</p>
                 </div>
+                <div className='w-full flex justify-center'>
+                    <button onClick={()=>{
+                        router.push('/acitivity_log');
+                    }} className="px-8 w-min whitespace-nowrap py-2 rounded-md bg-black text-white font-bold transition duration-200 hover:bg-white hover:text-black hover:border-2 hover:border-black ">
+                        Acitivity Log
+                    </button>
+                </div>
+
             </div>
             <div className='w-5/6 flex flex-col justify-center items-center'>
                 <div className='w-1/3 p-4'>
